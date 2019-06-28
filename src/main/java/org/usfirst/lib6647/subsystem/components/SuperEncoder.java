@@ -61,7 +61,7 @@ public interface SuperEncoder {
 		}
 	}
 
-	private EncodingType getEncodingType(String encodingType) {
+	default EncodingType getEncodingType(String encodingType) {
 		switch (encodingType) {
 		case "k1X":
 			return EncodingType.k1X;
