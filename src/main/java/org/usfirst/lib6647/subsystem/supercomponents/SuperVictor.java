@@ -91,4 +91,12 @@ public interface SuperVictor extends MotorUtils {
 			System.exit(1);
 		}
 	}
+
+	/**
+	 * Gets {@link HyperVictor} HashMap.
+	 * @return {@link HyperVictor} HashMap
+	 */
+	default HashMap<String, HyperVictor> getVictors() {
+		return victors;
+	}
 }

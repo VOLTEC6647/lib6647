@@ -55,4 +55,8 @@ public interface SuperUltrasonic {
 			System.exit(1);
 		}
 	}
+
+	default HashMap<String, Ultrasonic> getUltrasonics() {
+		return ultrasonics;
+	}
 }

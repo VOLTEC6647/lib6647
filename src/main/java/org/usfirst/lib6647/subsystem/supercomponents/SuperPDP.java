@@ -54,4 +54,8 @@ public interface SuperPDP {
 			System.exit(1);
 		}
 	}
+
+	default HashMap<String, PowerDistributionPanel> getPDPs() {
+		return PDPs;
+	}
 }

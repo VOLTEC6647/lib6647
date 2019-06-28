@@ -95,4 +95,12 @@ public interface SuperTalon extends MotorUtils {
 			System.exit(1);
 		}
 	}
+
+	/**
+	 * Gets {@link HyperTalon} HashMap.
+	 * @return {@link HyperTalon} HashMap
+	 */
+	default HashMap<String, HyperTalon> getVictors() {
+		return talons;
+	}
 }

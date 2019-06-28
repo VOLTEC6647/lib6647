@@ -73,4 +73,8 @@ public interface SuperEncoder {
 			return null;
 		}
 	}
+
+	default HashMap<String, Encoder> getEncoders() {
+		return encoders;
+	}
 }

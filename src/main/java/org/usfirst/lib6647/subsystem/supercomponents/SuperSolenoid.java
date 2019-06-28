@@ -58,4 +58,8 @@ public interface SuperSolenoid {
 			System.exit(1);
 		}
 	}
+
+	default HashMap<String, Solenoid> getSolenoids() {
+		return solenoids;
+	}
 }

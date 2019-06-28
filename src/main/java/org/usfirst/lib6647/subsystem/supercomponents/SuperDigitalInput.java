@@ -54,4 +54,8 @@ public interface SuperDigitalInput {
 			System.exit(1);
 		}
 	}
+
+	default HashMap<String, DigitalInput> getDigitalInputs() {
+		return digitalInputs;
+	}
 }

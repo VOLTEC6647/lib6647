@@ -54,4 +54,8 @@ public interface SuperCompressor {
 			System.exit(1);
 		}
 	}
+
+	default HashMap<String, Compressor> getCompressor() {
+		return compressors;
+	}
 }
