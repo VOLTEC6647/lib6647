@@ -24,6 +24,15 @@ public class HyperVictor extends WPI_VictorSPX {
 	}
 
 	/**
+	 * Returns {@link #limiter} value for Victor speed.
+	 * 
+	 * @return
+	 */
+	public double getLimiter() {
+		return limiter;
+	}
+
+	/**
 	 * Sets {@link #limiter limiter} for Victor speed.
 	 */
 	public void setLimiter(double limiter) {
