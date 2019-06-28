@@ -55,7 +55,13 @@ public interface SuperCompressor {
 		}
 	}
 
-	default HashMap<String, Compressor> getCompressor() {
-		return compressors;
+	/**
+	 * Gets specified {@link Compressor}.
+	 * 
+	 * @return {@link Compressor}
+	 * @param compressorName
+	 */
+	default Compressor getCompressor(String compressorName) {
+		return compressors.get(compressorName);
 	}
 }

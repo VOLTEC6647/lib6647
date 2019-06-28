@@ -55,7 +55,13 @@ public interface SuperDigitalInput {
 		}
 	}
 
-	default HashMap<String, DigitalInput> getDigitalInputs() {
-		return digitalInputs;
+	/**
+	 * Gets specified {@link DigitalInput}.
+	 * 
+	 * @return {@link DigitalInput}
+	 * @param digitalInputName
+	 */
+	default DigitalInput getDigitalInput(String digitalInputName) {
+		return digitalInputs.get(digitalInputName);
 	}
 }

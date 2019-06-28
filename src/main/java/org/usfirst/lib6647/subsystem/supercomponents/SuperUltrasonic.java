@@ -56,7 +56,13 @@ public interface SuperUltrasonic {
 		}
 	}
 
-	default HashMap<String, Ultrasonic> getUltrasonics() {
-		return ultrasonics;
+	/**
+	 * Gets specified {@link Ultrasonic}.
+	 * 
+	 * @return {@link Ultrasonic}
+	 * @param ultrasonicName
+	 */
+	default Ultrasonic getUltrasonic(String ultrasonicName) {
+		return ultrasonics.get(ultrasonicName);
 	}
 }

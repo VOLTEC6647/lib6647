@@ -74,7 +74,13 @@ public interface SuperEncoder {
 		}
 	}
 
-	default HashMap<String, Encoder> getEncoders() {
-		return encoders;
+	/**
+	 * Gets specified {@link Encoder}.
+	 * 
+	 * @return {@link Encoder}
+	 * @param encoderName
+	 */
+	default Encoder getEncoder(String encoderName) {
+		return encoders.get(encoderName);
 	}
 }

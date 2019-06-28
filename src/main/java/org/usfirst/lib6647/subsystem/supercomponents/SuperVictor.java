@@ -93,10 +93,12 @@ public interface SuperVictor extends MotorUtils {
 	}
 
 	/**
-	 * Gets {@link HyperVictor} HashMap.
-	 * @return {@link HyperVictor} HashMap
+	 * Gets specified {@link HyperVictor}.
+	 * 
+	 * @return {@link HyperVictor}
+	 * @param victorName
 	 */
-	default HashMap<String, HyperVictor> getVictors() {
-		return victors;
+	default HyperVictor getVictor(String victorName) {
+		return victors.get(victorName);
 	}
 }

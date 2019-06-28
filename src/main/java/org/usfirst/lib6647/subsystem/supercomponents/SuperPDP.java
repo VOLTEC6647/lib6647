@@ -55,7 +55,13 @@ public interface SuperPDP {
 		}
 	}
 
-	default HashMap<String, PowerDistributionPanel> getPDPs() {
-		return PDPs;
+	/**
+	 * Gets specified {@link PowerDistributionPanel}.
+	 * 
+	 * @return {@link PowerDistributionPanel}
+	 * @param pdpName
+	 */
+	default PowerDistributionPanel getPDP(String pdpName) {
+		return PDPs.get(pdpName);
 	}
 }

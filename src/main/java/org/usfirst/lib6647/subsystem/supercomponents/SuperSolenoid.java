@@ -59,7 +59,13 @@ public interface SuperSolenoid {
 		}
 	}
 
-	default HashMap<String, Solenoid> getSolenoids() {
-		return solenoids;
+	/**
+	 * Gets specified {@link Solenoid}.
+	 * 
+	 * @return {@link Solenoid}
+	 * @param solenoidName
+	 */
+	default Solenoid getSolenoid(String solenoidName) {
+		return solenoids.get(solenoidName);
 	}
 }

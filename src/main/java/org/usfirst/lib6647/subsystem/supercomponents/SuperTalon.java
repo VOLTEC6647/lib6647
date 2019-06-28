@@ -97,10 +97,12 @@ public interface SuperTalon extends MotorUtils {
 	}
 
 	/**
-	 * Gets {@link HyperTalon} HashMap.
-	 * @return {@link HyperTalon} HashMap
+	 * Gets specified {@link HyperTalon}.
+	 * 
+	 * @return {@link HyperTalon}
+	 * @param talonName
 	 */
-	default HashMap<String, HyperTalon> getTalons() {
-		return talons;
+	default HyperTalon getTalon(String talonName) {
+		return talons.get(talonName);
 	}
 }
