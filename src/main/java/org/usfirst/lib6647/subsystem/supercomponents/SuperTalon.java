@@ -100,7 +100,7 @@ public interface SuperTalon extends MotorUtils {
 	 * Gets {@link HyperTalon} HashMap.
 	 * @return {@link HyperTalon} HashMap
 	 */
-	default HashMap<String, HyperTalon> getVictors() {
+	default HashMap<String, HyperTalon> getTalons() {
 		return talons;
 	}
 }
