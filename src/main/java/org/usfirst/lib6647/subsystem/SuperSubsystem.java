@@ -10,17 +10,21 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
- * Class to allow usage of JSON files for Subsystem creation.
+ * Abstract class to allow usage of {@link #robotMap JSON files} for
+ * {@link Subsystem} creation.
  */
 public abstract class SuperSubsystem extends Subsystem {
 
+	/**
+	 * Bread and butter of {@link SuperSubsystem}.
+	 */
 	protected JSONObject robotMap;
 
 	/**
-	 * Constructor for the class.
+	 * Constructor for {@link SuperSubsystem}.
 	 * 
-	 * @param name
-	 * @param fileName (of JSON)
+	 * @param name     (of the {@link Subsystem})
+	 * @param fileName (to {@link #robotMap JSON file})
 	 */
 	public SuperSubsystem(String name, String fileName) {
 		super(name);
@@ -29,9 +33,9 @@ public abstract class SuperSubsystem extends Subsystem {
 	}
 
 	/**
-	 * Method to initialize JSON at the given path.
+	 * Method to initialize {@link #robotMap} at the given path.
 	 * 
-	 * @param fileName
+	 * @param fileName (to {@link #robotMap JSON file})
 	 */
 	private void initJSON(String fileName) {
 		try {
@@ -48,7 +52,7 @@ public abstract class SuperSubsystem extends Subsystem {
 	}
 
 	/**
-	 * Method to clear JSONObject.
+	 * Method to clear {@link #robotMap}.
 	 */
 	public void finishedJSONInit() {
 		robotMap.clear();
