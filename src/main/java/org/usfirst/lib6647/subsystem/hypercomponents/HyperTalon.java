@@ -25,6 +25,7 @@ public class HyperTalon extends WPI_TalonSRX {
 
 	/**
 	 * Returns {@link #limiter} value for Talon speed.
+	 * 
 	 * @return
 	 */
 	public double getLimiter() {
@@ -45,6 +46,16 @@ public class HyperTalon extends WPI_TalonSRX {
 	 */
 	public void raiseLimiter(double amount) {
 		limiter += amount;
+	}
+
+	/**
+	 * Sets {@link HyperTalon} to a given speed, in {@link ControlMode#PercentOutput
+	 * PercentOutput}.
+	 * 
+	 * @param speed
+	 */
+	public void setTalon(double speed) {
+		setTalon(speed, false);
 	}
 
 	/**

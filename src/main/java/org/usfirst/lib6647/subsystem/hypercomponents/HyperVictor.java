@@ -53,6 +53,16 @@ public class HyperVictor extends WPI_VictorSPX {
 	 * {@link ControlMode#PercentOutput PercentOutput}.
 	 * 
 	 * @param speed
+	 */
+	public void setVictor(double speed) {
+		setVictor(speed, false);
+	}
+
+	/**
+	 * Sets {@link HyperVictor} to a given speed, in
+	 * {@link ControlMode#PercentOutput PercentOutput}.
+	 * 
+	 * @param speed
 	 * @param limited
 	 */
 	public void setVictor(double speed, boolean limited) {
