@@ -126,4 +126,14 @@ public abstract class PIDSuperSubsystem extends PIDSubsystem {
 
 		getPIDController().setPID(p, i, d);
 	}
+
+	/**
+	 * Method to return {@link #pidOutput}, must be updated in a PID loop in order
+	 * to be useful.
+	 * 
+	 * @return pidOutput
+	 */
+	public double getPIDOutput() {
+		return pidOutput;
+	}
 }
