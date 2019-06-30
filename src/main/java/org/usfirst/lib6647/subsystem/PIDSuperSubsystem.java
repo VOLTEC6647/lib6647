@@ -21,6 +21,7 @@ public abstract class PIDSuperSubsystem extends PIDSubsystem {
 	 */
 	protected JSONObject robotMap;
 	protected float p = 0.0f, i = 0.0f, d = 0.0f;
+	protected double pidOutput;
 
 	/**
 	 * Constructor for {@link PIDSuperSubsystem}. Initializes the
