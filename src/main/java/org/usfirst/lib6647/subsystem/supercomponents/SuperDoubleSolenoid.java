@@ -22,42 +22,42 @@ public interface SuperDoubleSolenoid {
 	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperDoubleSolenoid
 	 * HyperDoubleSolenoids}.
 	 */
-	public HashMap<String, HyperDoubleSolenoid> solenoids = new HashMap<String, HyperDoubleSolenoid>();
+	public HashMap<String, HyperDoubleSolenoid> doubleSolenoids = new HashMap<String, HyperDoubleSolenoid>();
 
 	/**
 	 * Method to initialize {@link HyperDoubleSolenoid HyperDoubleSolenoids}
 	 * declared in the {@link SuperSubsystem#robotMap robotMap} JSON file, and add
-	 * them to the {@link #solenoids} HashMap using its declared name as its key.
+	 * them to the {@link #doubleSolenoids} HashMap using its declared name as its key.
 	 * 
 	 * @param {@link SuperSubsystem#robotMap}
 	 * @param {@link SuperSubsystem#getName}
 	 */
-	default void initSolenoids(JSONObject robotMap, String subsystemName) {
+	default void initDoubleSolenoids(JSONObject robotMap, String subsystemName) {
 		// Create a JSONArray out of the declared objects.
-		JSONArray solenoidArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems"))
+		JSONArray doubleSolenoidArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems"))
 				.get(subsystemName)).get("doubleSolenoids");
 		// Create a stream to cast each entry in the JSONArray into a JSONObject, in
 		// order to configure it using the values declared in the robotMap file.
-		Arrays.stream(solenoidArray.toArray()).map(json -> (JSONObject) json).forEach(json -> {
+		Arrays.stream(doubleSolenoidArray.toArray()).map(json -> (JSONObject) json).forEach(json -> {
 			try {
 				if (json.containsKey("name") && json.containsKey("forwardChannel")
 						&& json.containsKey("reverseChannel")) {
 
-					HyperDoubleSolenoid solenoid;
+					HyperDoubleSolenoid doubleSolenoid;
 					try {
 						// Try to initialize an object from an index in the JSONArray.
-						solenoid = new HyperDoubleSolenoid(Integer.parseInt(json.get("forwardChannel").toString()),
+						doubleSolenoid = new HyperDoubleSolenoid(Integer.parseInt(json.get("forwardChannel").toString()),
 								Integer.parseInt(json.get("reverseChannel").toString()));
 					} catch (NumberFormatException e) {
 						throw new ComponentInitException(String.format(
 								"[!] INVALID OR EMPTY CHANNEL VALUE(S) FOR DOUBLESOLENOID '%1$s' IN SUBSYSTEM '%2$s'",
 								json.get("name").toString(), subsystemName));
 					}
-					solenoid.stop();
+					doubleSolenoid.stop();
 
 					// Put object in HashMap with its declared name as key after initialization and
 					// configuration.
-					solenoids.put(json.get("name").toString(), solenoid);
+					doubleSolenoids.put(json.get("name").toString(), doubleSolenoid);
 				} else {
 					System.out.println(String.format("[!] UNDECLARED OR EMPTY DOUBLESOLENOID ENTRY IN SUBSYSTEM '%s'",
 							subsystemName.toUpperCase()));
@@ -72,16 +72,16 @@ public interface SuperDoubleSolenoid {
 		});
 		// Clear JSONArray after use, not sure if it does anything, but it might free
 		// some unused memory.
-		solenoidArray.clear();
+		doubleSolenoidArray.clear();
 	}
 
 	/**
 	 * Gets specified {@link HyperDoubleSolenoid}.
 	 * 
 	 * @return {@link HyperDoubleSolenoid}
-	 * @param solenoidName
+	 * @param doubleSolenoidName
 	 */
-	default HyperDoubleSolenoid getSolenoid(String solenoidName) {
-		return solenoids.get(solenoidName);
+	default HyperDoubleSolenoid getDoubleSolenoid(String doubleSolenoidName) {
+		return doubleSolenoids.get(doubleSolenoidName);
 	}
 }
