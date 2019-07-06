@@ -21,6 +21,9 @@ repositories {
 	maven {
 		url "http://devsite.ctr-electronics.com/maven/release"
 	}
+    maven {
+        url "https://repo1.maven.org/maven2/"
+    }
 }
 
 dependencies {
@@ -46,6 +49,9 @@ dependencies {
 	//Phoenix dependencies.
 	compile group: 'com.ctre.phoenix', name: 'api-java', version: '5.14.1'
 	compile group: 'com.ctre.phoenix', name: 'wpiapi-java', version: '5.14.1'
+
+    //Kauai Labs dependencies.
+    compile group: 'com.kauailabs.navx.frc', name: 'navx-java', version: '3.1.367'
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')

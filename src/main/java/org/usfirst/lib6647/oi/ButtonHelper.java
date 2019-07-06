@@ -9,18 +9,25 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.buttons.Button;
 
 /**
- * Helper class for registering button input.
+ * Helper class for registering {@link Button} input.
  */
 public class ButtonHelper {
-	public HashMap<String, JController> joysticks;
-	String fileName;
 
 	/**
-	 * Constructor for the class.
+	 * HashMap where declared {@link JController joysticks} are stored.
+	 */
+	public HashMap<String, JController> joysticks;
+
+	/**
+	 * Location of the JSON file for {@link Button} nicknames.
+	 */
+	private String fileName;
+
+	/**
+	 * Helper class for registering {@link Button} input.
 	 * 
 	 * @param fileName
 	 */
@@ -31,75 +38,79 @@ public class ButtonHelper {
 	}
 
 	/**
-	 * Method for getting a button with a JSON name from a given joystick. Returns
-	 * null if no button is found.
+	 * Method for getting a {@link Button} with a friendly name (declared in the
+	 * JSON configuration) from a given {@link #joysticks joystick}. Returns null if
+	 * no {@link Button} is found at that key.
 	 * 
-	 * @param joystick
+	 * @param joystickName
 	 * @param buttonName
-	 * @return button from the given joystick
+	 * @return {@link Button}
 	 */
 	public Button oiButton(String joystickName, String buttonName) {
 		try {
+			// Create a new JSONParser and JSONObject with the given key.
 			JSONParser parser = new JSONParser();
 			Reader file = new FileReader(fileName);
 			JSONObject jsonJoystick = (JSONObject) ((JSONObject) parser.parse(file))
 					.get(joysticks.get(joystickName).getName());
 
+			// Create Button object and initialize it with values from the JSONObject.
 			Button button = joysticks.get(joystickName).buttons.get(jsonJoystick.get(buttonName).toString());
 
+			// Clear JSONObject and JSONParser after use, and close Reader. Not sure if it
+			// does anything, but it might free some unused memory.
 			jsonJoystick.clear();
 			file.close();
 			parser.reset();
 
+			// Finally, return Button object from the friendly name.
 			return button;
 		} catch (IOException e) {
-			DriverStation.reportError("[!] OIBUTTON " + buttonName + " IO ERROR: " + e.getMessage(), false);
 			System.out.println("[!] OIBUTTON " + buttonName + " IO ERROR: " + e.getMessage());
-			System.exit(1);
 		} catch (ParseException e) {
-			DriverStation.reportError("[!] OIBUTTON " + buttonName + " PARSE ERROR: " + e.getMessage(), false);
 			System.out.println("[!] OIBUTTON " + buttonName + " PARSE ERROR: " + e.getMessage());
-			System.exit(1);
 		} catch (Exception e) {
-			DriverStation.reportError("[!] OIBUTTON " + buttonName + " ERROR: " + e.getMessage(), false);
 			System.out.println("[!] OIBUTTON " + buttonName + " ERROR: " + e.getMessage());
-			System.exit(1);
 		}
 		return null;
 	}
 
 	/**
-	 * Method for getting a button from a given joystick.
+	 * Method for getting a {@link Button} from a given {@link JController#joysticks
+	 * joystick}.
 	 * 
 	 * @param joystickName
 	 * @param button
-	 * @return button from the given joystick
+	 * @return button from the given {@link JController#joysticks joystick}
 	 */
 	public Button oiButton(String joystickName, int button) {
 		return joysticks.get(joystickName).buttons.get("Button" + button);
 	}
 
 	/**
-	 * Method for getting an axisButton from a given joystick.
+	 * Method for getting a {@link Button} from an axisButton or dPadButton, from a
+	 * given {@link JController#joysticks joystick}.
 	 * 
 	 * @param joystickName
 	 * @param type
 	 * @param axis
-	 * @return axisButton from the given joystick, for the given axis
+	 * @return {@link Button} from the given {@link JController#joysticks joystick},
+	 *         for the given axis or dPad
 	 */
 	public Button oiButton(String joystickName, String type, int axis) {
 		return joysticks.get(joystickName).buttons.get(type + axis);
 	}
 
 	/**
-	 * Method for getting an axisButton from a given joystick, at a specific angle.
+	 * Method for getting a {@link Button} from an axisButton or dPadButton, from a
+	 * given {@link JController#joysticks joystick}, at a specific angle.
 	 * 
 	 * @param joystickName
 	 * @param type
 	 * @param axis
 	 * @param angle
-	 * @return axisButton from the given joystick, for the given axis, for the given
-	 *         angle
+	 * @return {@link Button} from the given {@link JController#joysticks joystick},
+	 *         for the given axis or dPad, for the given angle or value
 	 */
 	public Button oiButton(String joystickName, String type, int axis, int angle) {
 		return joysticks.get(joystickName).buttons.get(type + axis + "_" + angle);
