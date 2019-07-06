@@ -9,8 +9,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 public class HyperTalon extends WPI_TalonSRX {
 
 	/**
-	 * Limits how fast the Talon can go if using {@link #setTalonWithRamp(double)}
-	 * or {@link #setTalon(double, boolean)} if true.
+	 * Limits how fast the Talon can go as a percentage if using
+	 * {@link #setTalonWithRamp(double)} or {@link #setTalon(double, boolean)} if
+	 * true.
 	 */
 	private double limiter = 1;
 
@@ -21,10 +22,12 @@ public class HyperTalon extends WPI_TalonSRX {
 	 */
 	public HyperTalon(int port) {
 		super(port);
+
+		configFactoryDefault();
 	}
 
 	/**
-	 * Returns {@link #limiter} value for Talon speed.
+	 * Returns {@link #limiter} value for {@link WPI_TalonSRX} speed.
 	 * 
 	 * @return
 	 */
@@ -33,7 +36,7 @@ public class HyperTalon extends WPI_TalonSRX {
 	}
 
 	/**
-	 * Sets {@link #limiter} for Talon speed.
+	 * Sets {@link #limiter} for {@link WPI_TalonSRX} speed.
 	 */
 	public void setLimiter(double limiter) {
 		this.limiter = limiter;

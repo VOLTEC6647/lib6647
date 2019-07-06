@@ -6,7 +6,6 @@ import java.io.Reader;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -51,8 +50,6 @@ public abstract class PIDSuperSubsystem extends PIDSubsystem {
 			robotMap = (JSONObject) parser.parse(file);
 			file.close();
 		} catch (Exception e) {
-			DriverStation.reportError(
-					"[!] SUBSYSTEM '" + getName().toUpperCase() + "' JSON INIT ERROR: " + e.getMessage(), false);
 			System.out.println("[!] SUBSYSTEM '" + getName().toUpperCase() + "' JSON INIT ERROR: " + e.getMessage());
 			System.exit(1);
 		}
@@ -86,8 +83,6 @@ public abstract class PIDSuperSubsystem extends PIDSubsystem {
 			// some unused memory.
 			pid.clear();
 		} catch (Exception e) {
-			DriverStation.reportError(
-					"[!] SUBSYSTEM '" + getName().toUpperCase() + "' PID INIT ERROR: " + e.getMessage(), false);
 			System.out.println("[!] SUBSYSTEM '" + getName().toUpperCase() + "' PID INIT ERROR: " + e.getMessage());
 			System.exit(1);
 		}

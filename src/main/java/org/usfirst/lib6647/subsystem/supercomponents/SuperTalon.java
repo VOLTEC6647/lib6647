@@ -3,14 +3,15 @@ package org.usfirst.lib6647.subsystem.supercomponents;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.subsystem.hypercomponents.HyperTalon;
+import org.usfirst.lib6647.util.ComponentInitException;
 import org.usfirst.lib6647.util.MotorUtils;
-
-import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  * Interface to allow {@link HyperTalon} initialization via JSON. Subsystems
@@ -31,21 +32,26 @@ public interface SuperTalon extends MotorUtils {
 	 * 
 	 * @param {@link SuperSubsystem#robotMap}
 	 * @param {@link SuperSubsystem#getName}
-	 * 
-	 * @Note ALWAYS declare and initialize masters before followers!
 	 */
 	default void initTalons(JSONObject robotMap, String subsystemName) {
-		try {
-			// Create a JSONArray out of the declared objects.
-			JSONArray talonArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems"))
-					.get(subsystemName)).get("talons");
-			// Create a stream to cast each entry in the JSONArray into a JSONObject, in
-			// order to configure it using the values declared in the robotMap file.
-			Arrays.stream(talonArray.toArray()).map(json -> (JSONObject) json).forEach(json -> {
-				try {
-					// Create an object out of one index in the JSONArray.
-					HyperTalon talon = new HyperTalon(Integer.parseInt(json.get("port").toString()));
+		// Create a JSONArray out of the declared objects.
+		JSONArray talonArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems")).get(subsystemName))
+				.get("talons");
+		// Create a stream to cast each entry in the JSONArray into a JSONObject, in
+		// order to configure it using the values declared in the robotMap file.
+		Arrays.stream(talonArray.toArray()).map(json -> (JSONObject) json).forEach(json -> {
+			try {
+				if (json.containsKey("name") && json.containsKey("port")) {
 
+					HyperTalon talon;
+					try {
+						// Try to initialize an object from an index in the JSONArray.
+						talon = new HyperTalon(Integer.parseInt(json.get("port").toString()));
+					} catch (NumberFormatException e) {
+						throw new ComponentInitException(
+								String.format("[!] INVALID OR EMPTY PORT VALUE FOR TALON '%1$s' IN SUBSYSTEM '%2$s'",
+										json.get("name").toString(), subsystemName));
+					}
 					talon.setName(json.get("name").toString());
 
 					if (json.containsKey("limiter"))
@@ -57,8 +63,10 @@ public interface SuperTalon extends MotorUtils {
 					if (json.containsKey("inverted"))
 						setInverted(json, talon);
 
-					if (json.containsKey("loopRamp"))
-						setLoopRamp(json, talon);
+					if (json.containsKey("loopRamp")) {
+						setClosedloopRamp(json, talon);
+						setOpenloopRamp(json, talon);
+					}
 
 					if (json.containsKey("sensor"))
 						setSensors(json, talon);
@@ -71,28 +79,196 @@ public interface SuperTalon extends MotorUtils {
 					// Put object in HashMap with its declared name as key after initialization and
 					// configuration.
 					talons.put(json.get("name").toString(), talon);
-				} catch (Exception e) {
-					DriverStation.reportError(
-							"[!] SUBSYSTEM '" + subsystemName.toUpperCase() + "' TALON INIT ERROR: " + e.getMessage(),
-							false);
-					System.out.println(
-							"[!] SUBSYSTEM '" + subsystemName.toUpperCase() + "' TALON INIT ERROR: " + e.getMessage());
-					System.exit(1);
-				} finally {
-					// Clear JSONObject after use, not sure if it does anything, but it might free
-					// some unused memory.
-					json.clear();
+				} else {
+					System.out.println(String.format("[!] UNDECLARED OR EMPTY TALON ENTRY IN SUBSYSTEM '%s'",
+							subsystemName.toUpperCase()));
 				}
-			});
-			// Clear JSONArray after use, not sure if it does anything, but it might free
-			// some unused memory.
-			talonArray.clear();
-		} catch (Exception e) {
-			DriverStation.reportError(
-					"[!] SUBSYSTEM '" + subsystemName.toUpperCase() + "' TALON INIT ERROR: " + e.getMessage(), false);
-			System.out
-					.println("[!] SUBSYSTEM '" + subsystemName.toUpperCase() + "' TALON INIT ERROR: " + e.getMessage());
-			System.exit(1);
+			} catch (ComponentInitException e) {
+				System.out.println(e.getMessage());
+			} finally {
+				// Clear JSONObject after use, not sure if it does anything, but it might free
+				// some unused memory.
+				json.clear();
+			}
+		});
+		// Clear JSONArray after use, not sure if it does anything, but it might free
+		// some unused memory.
+		talonArray.clear();
+	}
+
+	/**
+	 * Sets a given {@link HyperTalon}'s {@link HyperTalon#limiter limiter} value
+	 * from a {@link JSONObject}. Max value is 1, min value is 0 (which would make
+	 * the {@link HyperTalon} stop).
+	 * 
+	 * @param {@link JSONObject}
+	 * @param {@link HyperTalon}
+	 * @throws ComponentInitException if {@link JSONObject} key is defined, but
+	 *                                empty or not a number.
+	 */
+	default void setLimiter(JSONObject json, HyperTalon talon) throws ComponentInitException {
+		try {
+			double limiter = Double.parseDouble(json.get("limiter").toString());
+			talon.setLimiter(limiter < 0.0 ? 0.0 : limiter > 1.0 ? 1.0 : limiter);
+		} catch (NullPointerException e) {
+			throw new ComponentInitException(String.format("[!] EMPTY LIMITER VALUE FOR TALON '%s'.",
+					json.get("name").toString().toUpperCase()));
+		} catch (NumberFormatException e) {
+			throw new ComponentInitException(String.format("[!] INVALID LIMITER VALUE FOR TALON '%s'.",
+					json.get("name").toString().toUpperCase()));
+		}
+	}
+
+	/**
+	 * Sets a given {@link HyperTalon}'s inverted value from a {@link JSONObject}.
+	 * 
+	 * @param {@link JSONObject}
+	 * @param {@link HyperTalon}
+	 * @throws ComponentInitException if {@link JSONObject} key is defined, but
+	 *                                empty.
+	 */
+	default void setInverted(JSONObject json, HyperTalon talon) throws ComponentInitException {
+		if (json.get("inverted").toString().isEmpty())
+			throw new ComponentInitException(String.format("[!] EMPTY INVERTED VALUE FOR TALON '%s'.",
+					json.get("name").toString().toUpperCase()));
+
+		talon.setInverted(Boolean.parseBoolean(json.get("inverted").toString()));
+	}
+
+	/**
+	 * Sets a given {@link HyperTalon}'s {@link NeutralMode} from a
+	 * {@link JSONObject} key.
+	 * 
+	 * @param {@link JSONObject}
+	 * @param {@link HyperTalon}
+	 * @throws ComponentInitException if {@link JSONObject} key is defined, but
+	 *                                empty or invalid.
+	 * 
+	 * @note There are three types of {@link NeutralMode NeutralModes}:
+	 *       {@link NeutralMode#Coast Coast}, {@link NeutralMode#Brake Brake}, and
+	 *       {@link NeutralMode#EEPROMSetting EEPROMSetting}. All of which must
+	 *       share the same name in the {@link JSONObject}.
+	 */
+	default void setNeutralMode(JSONObject json, HyperTalon talon) throws ComponentInitException {
+		if (getNeutralMode(json.get("neutralMode").toString()) == null)
+			throw new ComponentInitException(
+					String.format("[!] INVALID OR EMPTY NEUTRAL MODE CONFIGURATION FOR TALON '%s'.",
+							json.get("name").toString().toUpperCase()));
+
+		talon.setNeutralMode(getNeutralMode(json.get("neutralMode").toString()));
+	}
+
+	/**
+	 * Sets a given {@link HyperTalon}'s ClosedloopRamp from a {@link JSONObject}
+	 * key.
+	 * 
+	 * @param {@link JSONObject}
+	 * @param {@link HyperTalon}
+	 * @throws ComponentInitException if {@link JSONObject} key is not found, or its
+	 *                                subkeys are invalid or empty.
+	 */
+	default void setClosedloopRamp(JSONObject json, HyperTalon talon) throws ComponentInitException {
+		try {
+			JSONObject closed = (JSONObject) ((JSONObject) json.get("loopRamp")).get("closed");
+
+			if (closed.containsKey("timeoutMs"))
+				talon.configClosedloopRamp(Double.parseDouble(closed.get("secondsFromNeutralToFull").toString()),
+						Integer.parseInt(closed.get("timeoutMs").toString()));
+			else
+				talon.configClosedloopRamp(Double.parseDouble(closed.get("secondsFromNeutralToFull").toString()));
+		} catch (NullPointerException e) {
+			throw new ComponentInitException(String.format("[!] EMPTY CLOSEDLOOP RAMP VALUE(S) FOR TALON '%s'.",
+					json.get("name").toString().toUpperCase()));
+		} catch (NumberFormatException e) {
+			throw new ComponentInitException(String.format("[!] INVALID CLOSEDLOOP RAMP VALUE(S) FOR TALON '%s'.",
+					json.get("name").toString().toUpperCase()));
+		}
+	}
+
+	/**
+	 * Sets a given {@link HyperTalon}'s OpenloopRamp from a {@link JSONObject} key.
+	 * 
+	 * @param {@link JSONObject}
+	 * @param {@link HyperTalon}
+	 * @throws ComponentInitException if {@link JSONObject} key is not found, or its
+	 *                                subkeys are invalid or empty.
+	 */
+	default void setOpenloopRamp(JSONObject json, HyperTalon talon) throws ComponentInitException {
+		try {
+			JSONObject open = (JSONObject) ((JSONObject) json.get("loopRamp")).get("open");
+
+			if (open.containsKey("timeoutMs"))
+				talon.configOpenloopRamp(Double.parseDouble(open.get("secondsFromNeutralToFull").toString()),
+						Integer.parseInt(open.get("timeoutMs").toString()));
+			else
+				talon.configOpenloopRamp(Double.parseDouble(open.get("secondsFromNeutralToFull").toString()));
+		} catch (NullPointerException e) {
+			throw new ComponentInitException(String.format("[!] EMPTY OPENLOOP RAMP VALUE(S) FOR TALON '%s'.",
+					json.get("name").toString().toUpperCase()));
+		} catch (NumberFormatException e) {
+			throw new ComponentInitException(String.format("[!] INVALID OPENLOOP RAMP VALUE(S) FOR TALON '%s'.",
+					json.get("name").toString().toUpperCase()));
+		}
+	}
+
+	/**
+	 * Sets a given {@link HyperTalon}'s sensors from a {@link JSONObject} key
+	 * (fairly limited in terms of configuration at the moment).
+	 * 
+	 * @param {@link JSONObject}
+	 * @param {@link HyperTalon}
+	 * @throws ComponentInitException if {@link JSONObject} key is not found, or its
+	 *                                subkeys are invalid or empty.
+	 */
+	default void setSensors(JSONObject json, HyperTalon talon) throws ComponentInitException {
+		try {
+			JSONObject sensor = (JSONObject) json.get("sensor");
+			JSONObject feedback = (JSONObject) sensor.get("feedback");
+
+			talon.configSelectedFeedbackSensor(getFeedbackDevice(feedback.get("feedbackDevice").toString()),
+					Integer.parseInt(feedback.get("pidIdx").toString()),
+					Integer.parseInt(feedback.get("timeoutMs").toString()));
+
+			talon.setSensorPhase(Boolean.parseBoolean(sensor.get("phase").toString()));
+
+			talon.setSelectedSensorPosition(Integer.parseInt(sensor.get("sensorPos").toString()),
+					Integer.parseInt(sensor.get("pidIdx").toString()),
+					Integer.parseInt(sensor.get("timeoutMs").toString()));
+		} catch (NullPointerException e) {
+			throw new ComponentInitException(String.format("[!] EMPTY SENSOR VALUE(S) FOR TALON '%s'.",
+					json.get("name").toString().toUpperCase()));
+		} catch (NumberFormatException e) {
+			throw new ComponentInitException(String.format("[!] INVALID SENSOR VALUE(S) FOR TALON '%s'.",
+					json.get("name").toString().toUpperCase()));
+		}
+	}
+
+	/**
+	 * Sets a given {@link HyperTalon}'s PID values from a {@link JSONObject} key.
+	 * 
+	 * @param {@link JSONObject}
+	 * @param {@link HyperTalon}
+	 * @throws ComponentInitException if {@link JSONObject} key is not found, or its
+	 *                                subkeys are invalid or empty.
+	 */
+	default void setPIDValues(JSONObject json, HyperTalon talon) throws ComponentInitException {
+		try {
+			JSONObject pid = (JSONObject) json.get("pid");
+
+			talon.config_kP(Integer.parseInt(pid.get("slotIdx").toString()),
+					Double.parseDouble(pid.get("p").toString()));
+			talon.config_kI(Integer.parseInt(pid.get("slotIdx").toString()),
+					Double.parseDouble(pid.get("i").toString()));
+			talon.config_kD(Integer.parseInt(pid.get("slotIdx").toString()),
+					Double.parseDouble(pid.get("d").toString()));
+			talon.config_kF(Integer.parseInt(pid.get("slotIdx").toString()),
+					Double.parseDouble(pid.get("f").toString()));
+		} catch (NullPointerException e) {
+			throw new ComponentInitException(
+					String.format("[!] EMPTY PID VALUE(S) FOR TALON '%s'.", json.get("name").toString().toUpperCase()));
+		} catch (NumberFormatException e) {
+			throw new ComponentInitException(String.format("[!] INVALID PID VALUE(S) FOR TALON '%s'.",
+					json.get("name").toString().toUpperCase()));
 		}
 	}
 

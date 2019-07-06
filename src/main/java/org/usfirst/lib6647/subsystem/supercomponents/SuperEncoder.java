@@ -7,9 +7,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
+import org.usfirst.lib6647.util.ComponentInitException;
+import org.usfirst.lib6647.util.MotorUtils;
 
-import edu.wpi.first.wpilibj.CounterBase.EncodingType;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 
 /**
@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.Encoder;
  * and implement this interface in order to initialize {@link Encoder Encoders}
  * declared in {@link SuperSubsystem#robotMap robotMap}.
  */
-public interface SuperEncoder {
+public interface SuperEncoder extends MotorUtils {
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s {@link Encoder Encoders}.
 	 */
@@ -33,60 +33,45 @@ public interface SuperEncoder {
 	 * @param {@link SuperSubsystem#getName}
 	 */
 	default void initEncoders(JSONObject robotMap, String subsystemName) {
-		try {
-			// Create a JSONArray out of the declared objects.
-			JSONArray encoderArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems"))
-					.get(subsystemName)).get("encoders");
-			// Create a stream to cast each entry in the JSONArray into a JSONObject, in
-			// order to configure it using the values declared in the robotMap file.
-			Arrays.stream(encoderArray.toArray()).map(json -> (JSONObject) json).forEach(json -> {
-				try {
-					// Create an object out of one index in the JSONArray.
-					Encoder encoder = new Encoder(Integer.parseInt(json.get("channelA").toString()),
-							Integer.parseInt(json.get("channelB").toString()),
-							Boolean.parseBoolean(json.get("reverse").toString()),
-							getEncodingType(json.get("encodingType").toString()));
+		// Create a JSONArray out of the declared objects.
+		JSONArray encoderArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems")).get(subsystemName))
+				.get("encoders");
+		// Create a stream to cast each entry in the JSONArray into a JSONObject, in
+		// order to configure it using the values declared in the robotMap file.
+		Arrays.stream(encoderArray.toArray()).map(json -> (JSONObject) json).forEach(json -> {
+			try {
+				if (json.containsKey("name") && json.containsKey("channelA") && json.containsKey("channelB")
+						&& json.containsKey("reverse") && json.containsKey("encodingType")) {
+
+					Encoder encoder;
+					try {
+						// Try to initialize an object from an index in the JSONArray.
+						encoder = new Encoder(Integer.parseInt(json.get("channelA").toString()),
+								Integer.parseInt(json.get("channelB").toString()),
+								Boolean.parseBoolean(json.get("reverse").toString()),
+								getEncodingType(json.get("encodingType").toString()));
+					} catch (NullPointerException | NumberFormatException e) {
+						throw new ComponentInitException(
+								String.format("[!] INVALID OR EMPTY VALUE(S) FOR ENCODER '%1$s' IN SUBSYSTEM '%2$s'",
+										json.get("name").toString(), subsystemName));
+					}
 					encoder.reset();
 
 					// Put object in HashMap with its declared name as key after initialization and
 					// configuration.
 					encoders.put(json.get("name").toString(), encoder);
-				} catch (Exception e) {
-					DriverStation.reportError(
-							"[!] SUBSYSTEM '" + subsystemName.toUpperCase() + "' ENCODER INIT ERROR: " + e.getMessage(),
-							false);
-					System.out.println("[!] SUBSYSTEM '" + subsystemName.toUpperCase() + "' ENCODER INIT ERROR: "
-							+ e.getMessage());
-					System.exit(1);
-				} finally {
-					// Clear JSONObject after use, not sure if it does anything, but it might free
-					// some unused memory.
-					json.clear();
 				}
-			});
-			// Clear JSONArray after use, not sure if it does anything, but it might free
-			// some unused memory.
-			encoderArray.clear();
-		} catch (Exception e) {
-			DriverStation.reportError(
-					"[!] SUBSYSTEM '" + subsystemName.toUpperCase() + "' ENCODER INIT ERROR: " + e.getMessage(), false);
-			System.out.println(
-					"[!] SUBSYSTEM '" + subsystemName.toUpperCase() + "' ENCODER INIT ERROR: " + e.getMessage());
-			System.exit(1);
-		}
-	}
-
-	default EncodingType getEncodingType(String encodingType) {
-		switch (encodingType) {
-		case "k1X":
-			return EncodingType.k1X;
-		case "k2X":
-			return EncodingType.k2X;
-		case "k4X":
-			return EncodingType.k4X;
-		default:
-			return null;
-		}
+			} catch (ComponentInitException e) {
+				System.out.println(e.getMessage());
+			} finally {
+				// Clear JSONObject after use, not sure if it does anything, but it might free
+				// some unused memory.
+				json.clear();
+			}
+		});
+		// Clear JSONArray after use, not sure if it does anything, but it might free
+		// some unused memory.
+		encoderArray.clear();
 	}
 
 	/**

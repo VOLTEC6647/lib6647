@@ -9,8 +9,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 public class HyperVictor extends WPI_VictorSPX {
 
 	/**
-	 * Limits how fast the Victor can go if using {@link #setVictorWithRamp(double)}
-	 * or {@link #setVictor(double, boolean)} if true.
+	 * Limits how fast the Victor can go as a percentage if using
+	 * {@link #setVictorWithRamp(double)} or {@link #setVictor(double, boolean)} if
+	 * true.
 	 */
 	private double limiter = 1;
 
@@ -21,6 +22,8 @@ public class HyperVictor extends WPI_VictorSPX {
 	 */
 	public HyperVictor(int port) {
 		super(port);
+
+		configFactoryDefault();
 	}
 
 	/**

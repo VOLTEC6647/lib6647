@@ -7,9 +7,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
+import org.usfirst.lib6647.util.ComponentInitException;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  * Interface to allow {@link DigitalInput} initialization via JSON. Subsystems
@@ -33,42 +33,40 @@ public interface SuperDigitalInput {
 	 * @param {@link SuperSubsystem#getName}
 	 */
 	default void initDigitalInputs(JSONObject robotMap, String subsystemName) {
-		try {
-			// Create a JSONArray out of the declared objects.
-			JSONArray digitalInputArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems"))
-					.get(subsystemName)).get("digitalInputs");
-			// Create a stream to cast each entry in the JSONArray into a JSONObject, in
-			// order to configure it using the values declared in the robotMap file.
-			Arrays.stream(digitalInputArray.toArray()).map(json -> (JSONObject) json).forEach(json -> {
-				try {
-					// Create an object out of one index in the JSONArray.
-					DigitalInput digitalInput = new DigitalInput(Integer.parseInt(json.get("channel").toString()));
+		// Create a JSONArray out of the declared objects.
+		JSONArray digitalInputArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems"))
+				.get(subsystemName)).get("digitalInputs");
+		// Create a stream to cast each entry in the JSONArray into a JSONObject, in
+		// order to configure it using the values declared in the robotMap file.
+		Arrays.stream(digitalInputArray.toArray()).map(json -> (JSONObject) json).forEach(json -> {
+			try {
+				if (json.containsKey("name") && json.containsKey("channel")) {
+
+					DigitalInput digitalInput;
+					try {
+						// Try to initialize an object from an index in the JSONArray.
+						digitalInput = new DigitalInput(Integer.parseInt(json.get("channel").toString()));
+					} catch (NumberFormatException e) {
+						throw new ComponentInitException(String.format(
+								"[!] INVALID OR EMPTY CHANNEL VALUE FOR DIGITALINPUT '%1$s' IN SUBSYSTEM '%2$s'",
+								json.get("name").toString(), subsystemName));
+					}
+
 					// Put object in HashMap with its declared name as key after initialization and
 					// configuration.
 					digitalInputs.put(json.get("name").toString(), digitalInput);
-				} catch (Exception e) {
-					DriverStation.reportError("[!] SUBSYSTEM '" + subsystemName.toUpperCase()
-							+ "' DIGITAL INPUT INIT ERROR: " + e.getMessage(), false);
-					System.out.println("[!] SUBSYSTEM '" + subsystemName.toUpperCase() + "' DIGITAL INPUT INIT ERROR: "
-							+ e.getMessage());
-					System.exit(1);
-				} finally {
-					// Clear JSONObject after use, not sure if it does anything, but it might free
-					// some unused memory.
-					json.clear();
 				}
-			});
-			// Clear JSONArray after use, not sure if it does anything, but it might free
-			// some unused memory.
-			digitalInputArray.clear();
-		} catch (Exception e) {
-			DriverStation.reportError(
-					"[!] SUBSYSTEM '" + subsystemName.toUpperCase() + "' DIGITAL INPUT INIT ERROR: " + e.getMessage(),
-					false);
-			System.out.println(
-					"[!] SUBSYSTEM '" + subsystemName.toUpperCase() + "' DIGITAL INPUT INIT ERROR: " + e.getMessage());
-			System.exit(1);
-		}
+			} catch (ComponentInitException e) {
+				System.out.println(e.getMessage());
+			} finally {
+				// Clear JSONObject after use, not sure if it does anything, but it might free
+				// some unused memory.
+				json.clear();
+			}
+		});
+		// Clear JSONArray after use, not sure if it does anything, but it might free
+		// some unused memory.
+		digitalInputArray.clear();
 	}
 
 	/**

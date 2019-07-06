@@ -131,7 +131,7 @@ public class JController extends Joystick {
 		return new Button() {
 			@Override
 			public boolean get() {
-				return Math.abs(controller.getRawAxis(axis)) < 0.15;
+				return Math.abs(controller.getRawAxis(axis)) < 0.30;
 			}
 		};
 	}
@@ -148,7 +148,7 @@ public class JController extends Joystick {
 		return new Button() {
 			@Override
 			public boolean get() {
-				return controller.getRawAxis(axis) < -0.15;
+				return controller.getRawAxis(axis) < -0.30;
 			}
 		};
 	}
@@ -165,7 +165,7 @@ public class JController extends Joystick {
 		return new Button() {
 			@Override
 			public boolean get() {
-				return controller.getRawAxis(axis) > 0.15;
+				return controller.getRawAxis(axis) > 0.30;
 			}
 		};
 	}

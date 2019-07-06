@@ -7,8 +7,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
+import org.usfirst.lib6647.util.ComponentInitException;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Ultrasonic;
 
 /**
@@ -32,43 +32,44 @@ public interface SuperUltrasonic {
 	 * @param {@link SuperSubsystem#getName}
 	 */
 	default void initUltrasonics(JSONObject robotMap, String subsystemName) {
-		try {
-			// Create a JSONArray out of the declared objects.
-			JSONArray ultrasonicArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems"))
-					.get(subsystemName)).get("ultrasonics");
-			// Create a stream to cast each entry in the JSONArray into a JSONObject, in
-			// order to configure it using the values declared in the robotMap file.
-			Arrays.stream(ultrasonicArray.toArray()).map(json -> (JSONObject) json).forEach(json -> {
-				try {
-					// Create an object out of one index in the JSONArray.
-					Ultrasonic ultrasonic = new Ultrasonic(Integer.parseInt(json.get("pingChannel").toString()),
-							Integer.parseInt(json.get("echoChannel").toString()));
+		// Create a JSONArray out of the declared objects.
+		JSONArray ultrasonicArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems"))
+				.get(subsystemName)).get("ultrasonics");
+		// Create a stream to cast each entry in the JSONArray into a JSONObject, in
+		// order to configure it using the values declared in the robotMap file.
+		Arrays.stream(ultrasonicArray.toArray()).map(json -> (JSONObject) json).forEach(json -> {
+			try {
+				if (json.containsKey("name") && json.containsKey("pingChannel") && json.containsKey("echoChannel")) {
+
+					Ultrasonic ultrasonic;
+					try {
+						// Create an object out of one index in the JSONArray.
+						ultrasonic = new Ultrasonic(Integer.parseInt(json.get("pingChannel").toString()),
+								Integer.parseInt(json.get("echoChannel").toString()));
+					} catch (NumberFormatException e) {
+						throw new ComponentInitException(
+								String.format("[!] INVALID OR EMPTY VALUE(S) FOR ULTRASONIC '%1$s' IN SUBSYSTEM '%2$s'",
+										json.get("name").toString(), subsystemName));
+					}
+
 					// Put object in HashMap with its declared name as key after initialization and
 					// configuration.
 					ultrasonics.put(json.get("name").toString(), ultrasonic);
-				} catch (Exception e) {
-					DriverStation.reportError("[!] SUBSYSTEM '" + subsystemName.toUpperCase()
-							+ "' ULTRASONIC INIT ERROR: " + e.getMessage(), false);
-					System.out.println("[!] SUBSYSTEM '" + subsystemName.toUpperCase() + "' ULTRASONIC INIT ERROR: "
-							+ e.getMessage());
-					System.exit(1);
-				} finally {
-					// Clear JSONObject after use, not sure if it does anything, but it might free
-					// some unused memory.
-					json.clear();
+				} else {
+					System.out.println(String.format("[!] UNDECLARED OR EMPTY ULTRASONIC ENTRY IN SUBSYSTEM '%s'",
+							subsystemName.toUpperCase()));
 				}
-			});
-			// Clear JSONArray after use, not sure if it does anything, but it might free
-			// some unused memory.
-			ultrasonicArray.clear();
-		} catch (Exception e) {
-			DriverStation.reportError(
-					"[!] SUBSYSTEM '" + subsystemName.toUpperCase() + "' ULTRASONIC INIT ERROR: " + e.getMessage(),
-					false);
-			System.out.println(
-					"[!] SUBSYSTEM '" + subsystemName.toUpperCase() + "' ULTRASONIC INIT ERROR: " + e.getMessage());
-			System.exit(1);
-		}
+			} catch (ComponentInitException e) {
+				System.out.println(e.getMessage());
+			} finally {
+				// Clear JSONObject after use, not sure if it does anything, but it might free
+				// some unused memory.
+				json.clear();
+			}
+		});
+		// Clear JSONArray after use, not sure if it does anything, but it might free
+		// some unused memory.
+		ultrasonicArray.clear();
 	}
 
 	/**

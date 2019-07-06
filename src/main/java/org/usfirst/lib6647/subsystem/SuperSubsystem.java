@@ -6,7 +6,6 @@ import java.io.Reader;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -44,8 +43,6 @@ public abstract class SuperSubsystem extends Subsystem {
 			robotMap = (JSONObject) parser.parse(file);
 			file.close();
 		} catch (Exception e) {
-			DriverStation.reportError(
-					"[!] SUBSYSTEM '" + getName().toUpperCase() + "' JSON INIT ERROR: " + e.getMessage(), false);
 			System.out.println("[!] SUBSYSTEM '" + getName().toUpperCase() + "' JSON INIT ERROR: " + e.getMessage());
 			System.exit(1);
 		}

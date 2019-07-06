@@ -7,24 +7,24 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Solenoid;
+import org.usfirst.lib6647.subsystem.hypercomponents.HyperSolenoid;
+import org.usfirst.lib6647.util.ComponentInitException;
 
 /**
- * Interface to allow {@link Solenoid} initialization via JSON. Subsystems
+ * Interface to allow {@link HyperSolenoid} initialization via JSON. Subsystems
  * declared need to extend {@link SuperSubsystem} or {@link PIDSuperSubsystem}
- * and implement this interface in order to initialize {@link Solenoid
- * Solenoids} declared in {@link SuperSubsystem#robotMap robotMap}.
+ * and implement this interface in order to initialize {@link HyperSolenoid
+ * HyperSolenoids} declared in {@link SuperSubsystem#robotMap robotMap}.
  */
 public interface SuperSolenoid {
 	/**
-	 * HashMap storing the {@link SuperSubsystem}'s {@link Solenoid Solenoids}.
+	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperSolenoid
+	 * HyperSolenoids}.
 	 */
-	public HashMap<String, Solenoid> solenoids = new HashMap<String, Solenoid>();
+	public HashMap<String, HyperSolenoid> solenoids = new HashMap<String, HyperSolenoid>();
 
 	/**
-	 * Method to initialize {@link Solenoid Solenoids} declared in the
+	 * Method to initialize {@link HyperSolenoid HyperSolenoids} declared in the
 	 * {@link SuperSubsystem#robotMap robotMap} JSON file, and add them to the
 	 * {@link #solenoids} HashMap using its declared name as its key.
 	 * 
@@ -32,55 +32,72 @@ public interface SuperSolenoid {
 	 * @param {@link SuperSubsystem#getName}
 	 */
 	default void initSolenoids(JSONObject robotMap, String subsystemName) {
-		try {
-			// Create a JSONArray out of the declared objects.
-			JSONArray solenoidArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems"))
-					.get(subsystemName)).get("solenoids");
-			// Create a stream to cast each entry in the JSONArray into a JSONObject, in
-			// order to configure it using the values declared in the robotMap file.
-			Arrays.stream(solenoidArray.toArray()).map(json -> (JSONObject) json).forEach(json -> {
-				try {
-					// Create an object out of one index in the JSONArray.
-					Solenoid solenoid = new Solenoid(Integer.parseInt(json.get("channel").toString()));
+		// Create a JSONArray out of the declared objects.
+		JSONArray solenoidArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems"))
+				.get(subsystemName)).get("solenoids");
+		// Create a stream to cast each entry in the JSONArray into a JSONObject, in
+		// order to configure it using the values declared in the robotMap file.
+		Arrays.stream(solenoidArray.toArray()).map(json -> (JSONObject) json).forEach(json -> {
+			try {
+				if (json.containsKey("name") && json.containsKey("channel")) {
+
+					HyperSolenoid solenoid;
+					try {
+						// Create an object out of one index in the JSONArray.
+						solenoid = new HyperSolenoid(Integer.parseInt(json.get("channel").toString()));
+					} catch (NumberFormatException e) {
+						throw new ComponentInitException(String.format(
+								"[!] INVALID OR EMPTY CHANNEL VALUE(S) FOR SOLENOID '%1$s' IN SUBSYSTEM '%2$s'",
+								json.get("name").toString(), subsystemName));
+					}
 
 					if (json.containsKey("initialValue"))
-						solenoid.set(Boolean.parseBoolean(json.get("initialValue").toString()));
+						setInitialValue(json, solenoid);
 
 					// Put object in HashMap with its declared name as key after initialization and
 					// configuration.
 					solenoids.put(json.get("name").toString(), solenoid);
-				} catch (Exception e) {
-					DriverStation.reportError("[!] SUBSYSTEM '" + subsystemName.toUpperCase()
-							+ "' SOLENOID INIT ERROR: " + e.getMessage(), false);
-					System.out.println("[!] SUBSYSTEM '" + subsystemName.toUpperCase() + "' SOLENOID INIT ERROR: "
-							+ e.getMessage());
-					System.exit(1);
-				} finally {
-					// Clear JSONObject after use, not sure if it does anything, but it might free
-					// some unused memory.
-					json.clear();
+				} else {
+					System.out.println(String.format("[!] UNDECLARED OR EMPTY SOLENOID ENTRY IN SUBSYSTEM '%s'",
+							subsystemName.toUpperCase()));
 				}
-			});
-			// Clear JSONArray after use, not sure if it does anything, but it might free
-			// some unused memory.
-			solenoidArray.clear();
-		} catch (Exception e) {
-			DriverStation.reportError(
-					"[!] SUBSYSTEM '" + subsystemName.toUpperCase() + "' SOLENOID INIT ERROR: " + e.getMessage(),
-					false);
-			System.out.println(
-					"[!] SUBSYSTEM '" + subsystemName.toUpperCase() + "' SOLENOID INIT ERROR: " + e.getMessage());
-			System.exit(1);
-		}
+			} catch (ComponentInitException e) {
+				System.out.println(e.getMessage());
+			} finally {
+				// Clear JSONObject after use, not sure if it does anything, but it might free
+				// some unused memory.
+				json.clear();
+			}
+		});
+		// Clear JSONArray after use, not sure if it does anything, but it might free
+		// some unused memory.
+		solenoidArray.clear();
 	}
 
 	/**
-	 * Gets specified {@link Solenoid}.
+	 * Sets a given {@link HyperSolenoid}'s inverted value from a
+	 * {@link JSONObject}.
 	 * 
-	 * @return {@link Solenoid}
+	 * @param {@link JSONObject}
+	 * @param {@link HyperSolenoid}
+	 * @throws ComponentInitException if {@link JSONObject} key is defined, but
+	 *                                empty.
+	 */
+	default void setInitialValue(JSONObject json, HyperSolenoid solenoid) throws ComponentInitException {
+		if (json.get("initialValue").toString().isEmpty())
+			throw new ComponentInitException(String.format("[!] EMPTY INITIAL VALUE FOR SOLENOID '%s'.",
+					json.get("name").toString().toUpperCase()));
+
+		solenoid.set(Boolean.parseBoolean(json.get("initialValue").toString()));
+	}
+
+	/**
+	 * Gets specified {@link HyperSolenoid}.
+	 * 
+	 * @return {@link HyperSolenoid}
 	 * @param solenoidName
 	 */
-	default Solenoid getSolenoid(String solenoidName) {
+	default HyperSolenoid getSolenoid(String solenoidName) {
 		return solenoids.get(solenoidName);
 	}
 }
