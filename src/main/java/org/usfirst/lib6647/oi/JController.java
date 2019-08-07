@@ -1,6 +1,13 @@
 package org.usfirst.lib6647.oi;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.HashMap;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -24,6 +31,11 @@ public class JController extends Joystick {
 	private int leftAxis = 1, rightAxis = 5;
 
 	/**
+	 * Location of the JSON file for {@link Button} nicknames.
+	 */
+	private String filePath;
+
+	/**
 	 * Constructor for {@link JController}.
 	 * 
 	 * Initializes each and every {@link Button} from the {@link Joystick} found at
@@ -32,8 +44,10 @@ public class JController extends Joystick {
 	 * 
 	 * @param port
 	 */
-	public JController(int port) {
+	public JController(int port, String filePath) {
 		super(port);
+
+		this.filePath = filePath;
 
 		// Button initialization. Starting at 1.
 		for (int i = 1; i <= this.getButtonCount(); i++) {
@@ -83,6 +97,80 @@ public class JController extends Joystick {
 	 */
 	public double getRightAxis() {
 		return getRawAxis(rightAxis);
+	}
+
+	/**
+	 * Method for getting a {@link Button} with a friendly name (declared in the
+	 * JSON configuration) from this {@link JController}. Returns null if no
+	 * {@link Button} is found at that specific key.
+	 * 
+	 * @param joystickName
+	 * @param buttonName
+	 * @return {@link Button}
+	 */
+	public Button get(String buttonName) {
+		try {
+			// Create a new JSONParser and JSONObject with the given key.
+			JSONParser parser = new JSONParser();
+			Reader file = new FileReader(filePath);
+			JSONObject jsonJoystick = (JSONObject) ((JSONObject) parser.parse(file)).get(getName());
+
+			// Create Button object and initialize it with values from the JSONObject.
+			Button button = buttons.get(jsonJoystick.get(buttonName).toString());
+
+			// Clear JSONObject and JSONParser after use, and close Reader. Not sure if it
+			// does anything, but it might free some unused memory.
+			jsonJoystick.clear();
+			file.close();
+			parser.reset();
+
+			// Finally, return Button object from the friendly name.
+			return button;
+		} catch (IOException e) {
+			System.out.println("[!] OIBUTTON " + buttonName + " IO ERROR: " + e.getMessage());
+		} catch (ParseException e) {
+			System.out.println("[!] OIBUTTON " + buttonName + " PARSE ERROR: " + e.getMessage());
+		} catch (Exception e) {
+			System.out.println("[!] OIBUTTON " + buttonName + " ERROR: " + e.getMessage());
+		}
+		return null;
+	}
+
+	/**
+	 * Method for getting a {@link Button} from the {@link JController}.
+	 * 
+	 * @param button
+	 * @return button from the given {@link JController#joysticks joystick}
+	 */
+	public Button get(int button) {
+		return buttons.get("Button" + button);
+	}
+
+	/**
+	 * Method for getting a {@link Button} from either a Stick or dPad from the
+	 * {@link JController}.
+	 * 
+	 * @param type
+	 * @param axis
+	 * @return {@link Button} from the {@link JController}, for the given Stick or
+	 *         dPad
+	 */
+	public Button get(String type, int axis) {
+		return buttons.get(type + axis);
+	}
+
+	/**
+	 * Method for getting a {@link Button} from either a Stick or dPad from the
+	 * {@link JController}, at a specific angle or value.
+	 * 
+	 * @param type
+	 * @param axis
+	 * @param angle
+	 * @return {@link Button} from the {@link JController}, for the given Stick or
+	 *         dPad, for the given angle or value
+	 */
+	public Button get(String type, int axis, int angle) {
+		return buttons.get(type + axis + "_" + angle);
 	}
 
 	/**
