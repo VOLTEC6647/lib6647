@@ -1,7 +1,7 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
@@ -37,9 +37,12 @@ public interface SuperTalon extends MotorUtils {
 		// Create a JSONArray out of the declared objects.
 		JSONArray talonArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems")).get(subsystemName))
 				.get("talons");
-		// Create a stream to cast each entry in the JSONArray into a JSONObject, in
-		// order to configure it using the values declared in the robotMap file.
-		Arrays.stream(talonArray.toArray()).map(json -> (JSONObject) json).forEach(json -> {
+
+		// Create a parallel stream from the JSONArray.
+		Stream<?> stream = talonArray.parallelStream();
+		// Cast each entry into a JSONObject, and configure it using the values declared
+		// in the JSON file.
+		stream.map(json -> (JSONObject) json).forEach(json -> {
 			try {
 				if (json.containsKey("name") && json.containsKey("port")) {
 
@@ -91,6 +94,7 @@ public interface SuperTalon extends MotorUtils {
 				json.clear();
 			}
 		});
+
 		// Clear JSONArray after use, not sure if it does anything, but it might free
 		// some unused memory.
 		talonArray.clear();
@@ -106,7 +110,7 @@ public interface SuperTalon extends MotorUtils {
 	 * @throws ComponentInitException if {@link JSONObject} key is defined, but
 	 *                                empty or not a number.
 	 */
-	default void setLimiter(JSONObject json, HyperTalon talon) throws ComponentInitException {
+	private void setLimiter(JSONObject json, HyperTalon talon) throws ComponentInitException {
 		try {
 			double limiter = Double.parseDouble(json.get("limiter").toString());
 			talon.setLimiter(limiter < 0.0 ? 0.0 : limiter > 1.0 ? 1.0 : limiter);
@@ -127,7 +131,7 @@ public interface SuperTalon extends MotorUtils {
 	 * @throws ComponentInitException if {@link JSONObject} key is defined, but
 	 *                                empty.
 	 */
-	default void setInverted(JSONObject json, HyperTalon talon) throws ComponentInitException {
+	private void setInverted(JSONObject json, HyperTalon talon) throws ComponentInitException {
 		if (json.get("inverted").toString().isEmpty())
 			throw new ComponentInitException(String.format("[!] EMPTY INVERTED VALUE FOR TALON '%s'.",
 					json.get("name").toString().toUpperCase()));
@@ -149,7 +153,7 @@ public interface SuperTalon extends MotorUtils {
 	 *       {@link NeutralMode#EEPROMSetting EEPROMSetting}. All of which must
 	 *       share the same name in the {@link JSONObject}.
 	 */
-	default void setNeutralMode(JSONObject json, HyperTalon talon) throws ComponentInitException {
+	private void setNeutralMode(JSONObject json, HyperTalon talon) throws ComponentInitException {
 		if (getNeutralMode(json.get("neutralMode").toString()) == null)
 			throw new ComponentInitException(
 					String.format("[!] INVALID OR EMPTY NEUTRAL MODE CONFIGURATION FOR TALON '%s'.",
@@ -167,7 +171,7 @@ public interface SuperTalon extends MotorUtils {
 	 * @throws ComponentInitException if {@link JSONObject} key is not found, or its
 	 *                                subkeys are invalid or empty.
 	 */
-	default void setClosedloopRamp(JSONObject json, HyperTalon talon) throws ComponentInitException {
+	private void setClosedloopRamp(JSONObject json, HyperTalon talon) throws ComponentInitException {
 		try {
 			JSONObject closed = (JSONObject) ((JSONObject) json.get("loopRamp")).get("closed");
 
@@ -193,7 +197,7 @@ public interface SuperTalon extends MotorUtils {
 	 * @throws ComponentInitException if {@link JSONObject} key is not found, or its
 	 *                                subkeys are invalid or empty.
 	 */
-	default void setOpenloopRamp(JSONObject json, HyperTalon talon) throws ComponentInitException {
+	private void setOpenloopRamp(JSONObject json, HyperTalon talon) throws ComponentInitException {
 		try {
 			JSONObject open = (JSONObject) ((JSONObject) json.get("loopRamp")).get("open");
 
@@ -220,7 +224,7 @@ public interface SuperTalon extends MotorUtils {
 	 * @throws ComponentInitException if {@link JSONObject} key is not found, or its
 	 *                                subkeys are invalid or empty.
 	 */
-	default void setSensors(JSONObject json, HyperTalon talon) throws ComponentInitException {
+	private void setSensors(JSONObject json, HyperTalon talon) throws ComponentInitException {
 		try {
 			JSONObject sensor = (JSONObject) json.get("sensor");
 			JSONObject feedback = (JSONObject) sensor.get("feedback");
@@ -251,7 +255,7 @@ public interface SuperTalon extends MotorUtils {
 	 * @throws ComponentInitException if {@link JSONObject} key is not found, or its
 	 *                                subkeys are invalid or empty.
 	 */
-	default void setPIDValues(JSONObject json, HyperTalon talon) throws ComponentInitException {
+	private void setPIDValues(JSONObject json, HyperTalon talon) throws ComponentInitException {
 		try {
 			JSONObject pid = (JSONObject) json.get("pid");
 

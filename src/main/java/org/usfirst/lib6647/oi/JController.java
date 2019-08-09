@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
+import java.util.Optional;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -101,14 +102,15 @@ public class JController extends Joystick {
 
 	/**
 	 * Method for getting a {@link Button} with a friendly name (declared in the
-	 * JSON configuration) from this {@link JController}. Returns null if no
-	 * {@link Button} is found at that specific key.
+	 * JSON configuration) from this {@link JController}. Returns an empty Optional
+	 * if no {@link Button} is found at that specific key, or if any exception is
+	 * thrown.
 	 * 
 	 * @param joystickName
 	 * @param buttonName
 	 * @return {@link Button}
 	 */
-	public Button get(String buttonName) {
+	public Optional<Button> get(String buttonName) {
 		try {
 			// Create a new JSONParser and JSONObject with the given key.
 			JSONParser parser = new JSONParser();
@@ -124,8 +126,8 @@ public class JController extends Joystick {
 			file.close();
 			parser.reset();
 
-			// Finally, return Button object from the friendly name.
-			return button;
+			// Finally, return Optional of Button object from the friendly name.
+			return Optional.of(button);
 		} catch (IOException e) {
 			System.out.println("[!] OIBUTTON " + buttonName + " IO ERROR: " + e.getMessage());
 		} catch (ParseException e) {
@@ -133,7 +135,7 @@ public class JController extends Joystick {
 		} catch (Exception e) {
 			System.out.println("[!] OIBUTTON " + buttonName + " ERROR: " + e.getMessage());
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/**

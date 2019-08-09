@@ -1,11 +1,11 @@
 package org.usfirst.lib6647.util;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import org.json.simple.JSONObject;
 
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
-
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 /**
  * SuperInterface for converting String values from a {@link JSONObject} to enum

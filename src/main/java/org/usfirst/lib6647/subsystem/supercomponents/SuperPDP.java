@@ -1,7 +1,7 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -37,9 +37,12 @@ public interface SuperPDP {
 		// Create a JSONArray out of the declared objects.
 		JSONArray PDPArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems")).get(subsystemName))
 				.get("PDPs");
-		// Create a stream to cast each entry in the JSONArray into a JSONObject, in
-		// order to configure it using the values declared in the robotMap file.
-		Arrays.stream(PDPArray.toArray()).map(json -> (JSONObject) json).forEach(json -> {
+
+		// Create a parallel stream from the JSONArray.
+		Stream<?> stream = PDPArray.parallelStream();
+		// Cast each entry into a JSONObject, and configure it using the values declared
+		// in the JSON file.
+		stream.map(json -> (JSONObject) json).forEach(json -> {
 			try {
 				if (json.containsKey("name") && json.containsKey("module")) {
 
@@ -68,6 +71,7 @@ public interface SuperPDP {
 				json.clear();
 			}
 		});
+
 		// Clear JSONArray after use, not sure if it does anything, but it might free
 		// some unused memory.
 		PDPArray.clear();

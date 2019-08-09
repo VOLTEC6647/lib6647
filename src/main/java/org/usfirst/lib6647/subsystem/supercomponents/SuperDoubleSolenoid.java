@@ -1,7 +1,7 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -27,7 +27,8 @@ public interface SuperDoubleSolenoid {
 	/**
 	 * Method to initialize {@link HyperDoubleSolenoid HyperDoubleSolenoids}
 	 * declared in the {@link SuperSubsystem#robotMap robotMap} JSON file, and add
-	 * them to the {@link #doubleSolenoids} HashMap using its declared name as its key.
+	 * them to the {@link #doubleSolenoids} HashMap using its declared name as its
+	 * key.
 	 * 
 	 * @param {@link SuperSubsystem#robotMap}
 	 * @param {@link SuperSubsystem#getName}
@@ -36,9 +37,12 @@ public interface SuperDoubleSolenoid {
 		// Create a JSONArray out of the declared objects.
 		JSONArray doubleSolenoidArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems"))
 				.get(subsystemName)).get("doubleSolenoids");
-		// Create a stream to cast each entry in the JSONArray into a JSONObject, in
-		// order to configure it using the values declared in the robotMap file.
-		Arrays.stream(doubleSolenoidArray.toArray()).map(json -> (JSONObject) json).forEach(json -> {
+
+		// Create a parallel stream from the JSONArray.
+		Stream<?> stream = doubleSolenoidArray.parallelStream();
+		// Cast each entry into a JSONObject, and configure it using the values declared
+		// in the JSON file.
+		stream.map(json -> (JSONObject) json).forEach(json -> {
 			try {
 				if (json.containsKey("name") && json.containsKey("forwardChannel")
 						&& json.containsKey("reverseChannel")) {
@@ -46,7 +50,8 @@ public interface SuperDoubleSolenoid {
 					HyperDoubleSolenoid doubleSolenoid;
 					try {
 						// Try to initialize an object from an index in the JSONArray.
-						doubleSolenoid = new HyperDoubleSolenoid(Integer.parseInt(json.get("forwardChannel").toString()),
+						doubleSolenoid = new HyperDoubleSolenoid(
+								Integer.parseInt(json.get("forwardChannel").toString()),
 								Integer.parseInt(json.get("reverseChannel").toString()));
 					} catch (NumberFormatException e) {
 						throw new ComponentInitException(String.format(
@@ -70,6 +75,7 @@ public interface SuperDoubleSolenoid {
 				json.clear();
 			}
 		});
+
 		// Clear JSONArray after use, not sure if it does anything, but it might free
 		// some unused memory.
 		doubleSolenoidArray.clear();

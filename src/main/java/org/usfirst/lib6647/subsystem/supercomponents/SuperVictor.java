@@ -1,7 +1,7 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
@@ -9,6 +9,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
+import org.usfirst.lib6647.subsystem.hypercomponents.HyperTalon;
 import org.usfirst.lib6647.subsystem.hypercomponents.HyperVictor;
 import org.usfirst.lib6647.util.ComponentInitException;
 import org.usfirst.lib6647.util.MotorUtils;
@@ -38,9 +39,12 @@ public interface SuperVictor extends MotorUtils {
 		// Create a JSONArray out of the declared objects.
 		JSONArray victorArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems")).get(subsystemName))
 				.get("victors");
-		// Create a stream to cast each entry in the JSONArray into a JSONObject, in
-		// order to configure it using the values declared in the robotMap file.
-		Arrays.stream(victorArray.toArray()).map(json -> (JSONObject) json).forEach(json -> {
+
+		// Create a parallel stream from the JSONArray.
+		Stream<?> stream = victorArray.parallelStream();
+		// Cast each entry into a JSONObject, and configure it using the values declared
+		// in the JSON file.
+		stream.map(json -> (JSONObject) json).forEach(json -> {
 			try {
 				if (json.containsKey("name") && json.containsKey("port")) {
 
@@ -86,6 +90,7 @@ public interface SuperVictor extends MotorUtils {
 				json.clear();
 			}
 		});
+
 		// Clear JSONArray after use, not sure if it does anything, but it might free
 		// some unused memory.
 		victorArray.clear();
@@ -101,7 +106,7 @@ public interface SuperVictor extends MotorUtils {
 	 * @throws ComponentInitException if {@link JSONObject} key is defined, but
 	 *                                empty or not a number.
 	 */
-	default void setLimiter(JSONObject json, HyperVictor victor) throws ComponentInitException {
+	private void setLimiter(JSONObject json, HyperVictor victor) throws ComponentInitException {
 		try {
 			double limiter = Double.parseDouble(json.get("limiter").toString());
 			victor.setLimiter(limiter < 0.0 ? 0.0 : limiter > 1.0 ? 1.0 : limiter);
@@ -122,7 +127,7 @@ public interface SuperVictor extends MotorUtils {
 	 * @throws ComponentInitException if {@link JSONObject} key is defined, but
 	 *                                empty.
 	 */
-	default void setInverted(JSONObject json, HyperVictor victor) throws ComponentInitException {
+	private void setInverted(JSONObject json, HyperVictor victor) throws ComponentInitException {
 		if (json.get("inverted").toString().isEmpty())
 			throw new ComponentInitException(String.format("[!] EMPTY INVERTED VALUE FOR VICTOR '%s'.",
 					json.get("name").toString().toUpperCase()));
@@ -144,7 +149,7 @@ public interface SuperVictor extends MotorUtils {
 	 *       {@link NeutralMode#EEPROMSetting EEPROMSetting}. All of which must
 	 *       share the same name in the {@link JSONObject}.
 	 */
-	default void setNeutralMode(JSONObject json, HyperVictor victor) throws ComponentInitException {
+	private void setNeutralMode(JSONObject json, HyperVictor victor) throws ComponentInitException {
 		if (getNeutralMode(json.get("neutralMode").toString()) == null)
 			throw new ComponentInitException(
 					String.format("[!] INVALID OR EMPTY NEUTRAL MODE CONFIGURATION FOR VICTOR '%s'.",
@@ -162,7 +167,7 @@ public interface SuperVictor extends MotorUtils {
 	 * @throws ComponentInitException if {@link JSONObject} key is not found, or its
 	 *                                subkeys are invalid or empty.
 	 */
-	default void setClosedloopRamp(JSONObject json, HyperVictor victor) throws ComponentInitException {
+	private void setClosedloopRamp(JSONObject json, HyperVictor victor) throws ComponentInitException {
 		try {
 			JSONObject closed = (JSONObject) ((JSONObject) json.get("loopRamp")).get("closed");
 
@@ -189,7 +194,7 @@ public interface SuperVictor extends MotorUtils {
 	 * @throws ComponentInitException if {@link JSONObject} key is not found, or its
 	 *                                subkeys are invalid or empty.
 	 */
-	default void setOpenloopRamp(JSONObject json, HyperVictor victor) throws ComponentInitException {
+	private void setOpenloopRamp(JSONObject json, HyperVictor victor) throws ComponentInitException {
 		try {
 			JSONObject open = (JSONObject) ((JSONObject) json.get("loopRamp")).get("open");
 
