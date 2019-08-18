@@ -57,8 +57,9 @@ public class HyperTalon extends WPI_TalonSRX {
 	 * 
 	 * @param speed
 	 */
-	public void setTalon(double speed) {
-		setTalon(speed, false);
+	@Override
+	public void set(double speed) {
+		set(speed, false);
 	}
 
 	/**
@@ -68,7 +69,7 @@ public class HyperTalon extends WPI_TalonSRX {
 	 * @param speed
 	 * @param limited
 	 */
-	public void setTalon(double speed, boolean limited) {
+	public void set(double speed, boolean limited) {
 		if (speed >= limiter && limited)
 			super.set(ControlMode.PercentOutput, limiter);
 		else
@@ -81,14 +82,7 @@ public class HyperTalon extends WPI_TalonSRX {
 	 * 
 	 * @param speed
 	 */
-	public void setTalonWithRamp(double speed) {
+	public void setWithRamp(double speed) {
 		super.set(ControlMode.PercentOutput, speed * limiter);
-	}
-
-	/**
-	 * Stops {@link HyperTalon} dead in its tracks.
-	 */
-	public void stopTalon() {
-		setTalon(0, false);
 	}
 }

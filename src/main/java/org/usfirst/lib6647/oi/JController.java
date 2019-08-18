@@ -1,14 +1,10 @@
 package org.usfirst.lib6647.oi;
 
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
-import java.util.Optional;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -32,23 +28,28 @@ public class JController extends Joystick {
 	private int leftAxis = 1, rightAxis = 5;
 
 	/**
-	 * Location of the JSON file for {@link Button} nicknames.
+	 * {@link JSONNode} for usage of friendly button names with JSON.
 	 */
-	private String filePath;
+	private JsonNode profile;
 
 	/**
 	 * Constructor for {@link JController}.
 	 * 
 	 * Initializes each and every {@link Button} from the {@link Joystick} found at
 	 * the given port. Also initializes {@link Button Buttons} for each of the axes
-	 * and POVs.
+	 * and POVs. Also initializes {@link #profile} {@link JsonNode} if possible.
 	 * 
 	 * @param port
 	 */
-	public JController(int port, String filePath) {
+	public JController(int port) {
 		super(port);
 
-		this.filePath = filePath;
+		try (Reader file = new FileReader(ControllerProfiles.getInstance().getFilePath())) {
+			profile = ControllerProfiles.getInstance().getMapper().readTree(file).get(getName());
+		} catch (Exception e) {
+			System.out.println(
+					"[!] COULD NOT INITIALIZE CONTROLLER PROFILE FOR CONTROLLER '" + getName().toUpperCase() + "'.");
+		}
 
 		// Button initialization. Starting at 1.
 		for (int i = 1; i <= this.getButtonCount(); i++) {
@@ -102,40 +103,13 @@ public class JController extends Joystick {
 
 	/**
 	 * Method for getting a {@link Button} with a friendly name (declared in the
-	 * JSON configuration) from this {@link JController}. Returns an empty Optional
-	 * if no {@link Button} is found at that specific key, or if any exception is
-	 * thrown.
+	 * JSON configuration) from this {@link JController}.
 	 * 
-	 * @param joystickName
 	 * @param buttonName
 	 * @return {@link Button}
 	 */
-	public Optional<Button> get(String buttonName) {
-		try {
-			// Create a new JSONParser and JSONObject with the given key.
-			JSONParser parser = new JSONParser();
-			Reader file = new FileReader(filePath);
-			JSONObject jsonJoystick = (JSONObject) ((JSONObject) parser.parse(file)).get(getName());
-
-			// Create Button object and initialize it with values from the JSONObject.
-			Button button = buttons.get(jsonJoystick.get(buttonName).toString());
-
-			// Clear JSONObject and JSONParser after use, and close Reader. Not sure if it
-			// does anything, but it might free some unused memory.
-			jsonJoystick.clear();
-			file.close();
-			parser.reset();
-
-			// Finally, return Optional of Button object from the friendly name.
-			return Optional.of(button);
-		} catch (IOException e) {
-			System.out.println("[!] OIBUTTON " + buttonName + " IO ERROR: " + e.getMessage());
-		} catch (ParseException e) {
-			System.out.println("[!] OIBUTTON " + buttonName + " PARSE ERROR: " + e.getMessage());
-		} catch (Exception e) {
-			System.out.println("[!] OIBUTTON " + buttonName + " ERROR: " + e.getMessage());
-		}
-		return Optional.empty();
+	public Button get(String buttonName) {
+		return buttons.get(profile.get(buttonName).asText());
 	}
 
 	/**

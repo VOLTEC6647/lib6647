@@ -1,10 +1,9 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
 import java.util.HashMap;
-import java.util.stream.Stream;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+
 import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.util.ComponentInitException;
@@ -32,50 +31,40 @@ public interface SuperEncoder extends MotorUtils {
 	 * @param {@link SuperSubsystem#robotMap}
 	 * @param {@link SuperSubsystem#getName}
 	 */
-	default void initEncoders(JSONObject robotMap, String subsystemName) {
-		// Create a JSONArray out of the declared objects.
-		JSONArray encoderArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems")).get(subsystemName))
-				.get("encoders");
+	default void initEncoders(JsonNode robotMap, String subsystemName) {
 
-		// Create a parallel stream from the JSONArray.
-		Stream<?> stream = encoderArray.parallelStream();
-		// Cast each entry into a JSONObject, and configure it using the values declared
-		// in the JSON file.
-		stream.map(json -> (JSONObject) json).forEach(json -> {
+		// Spliterate through each of the elements in the JsonNode.
+		robotMap.get("encoders").spliterator().forEachRemaining(json -> {
 			try {
-				if (json.containsKey("name") && json.containsKey("channelA") && json.containsKey("channelB")
-						&& json.containsKey("reverse") && json.containsKey("encodingType")) {
+				if (json.hasNonNull("name") && json.hasNonNull("channelA") && json.hasNonNull("channelB")
+						&& json.hasNonNull("reverse") && json.hasNonNull("encodingType")) {
+					// Read values from JsonNode.
+					int channelA = json.get("channelA").asInt(-1), channelB = json.get("channelB").asInt(-1);
 
-					Encoder encoder;
-					try {
-						// Try to initialize an object from an index in the JSONArray.
-						encoder = new Encoder(Integer.parseInt(json.get("channelA").toString()),
-								Integer.parseInt(json.get("channelB").toString()),
-								Boolean.parseBoolean(json.get("reverse").toString()),
-								getEncodingType(json.get("encodingType").toString()));
-					} catch (NullPointerException | NumberFormatException e) {
+					// Check if the required JsonNode values to initialize the object are present.
+					if (channelA < 0 || channelB < 0)
 						throw new ComponentInitException(
 								String.format("[!] INVALID OR EMPTY VALUE(S) FOR ENCODER '%1$s' IN SUBSYSTEM '%2$s'",
 										json.get("name").toString(), subsystemName));
-					}
+
+					// Create Encoder object.
+					Encoder encoder = new Encoder(json.get("channelA").asInt(), json.get("channelB").asInt(),
+							json.get("reverse").asBoolean(), getEncodingType(json.get("encodingType").asText()));
+
+					// Additional initialization configuration.
 					encoder.reset();
+					// ...
 
 					// Put object in HashMap with its declared name as key after initialization and
 					// configuration.
-					encoders.put(json.get("name").toString(), encoder);
-				}
+					encoders.put(json.get("name").asText(), encoder);
+				} else
+					throw new ComponentInitException(String.format(
+							"[!] UNDECLARED OR EMPTY ENCODER ENTRY IN SUBSYSTEM '%s'", subsystemName.toUpperCase()));
 			} catch (ComponentInitException e) {
 				System.out.println(e.getMessage());
-			} finally {
-				// Clear JSONObject after use, not sure if it does anything, but it might free
-				// some unused memory.
-				json.clear();
 			}
 		});
-
-		// Clear JSONArray after use, not sure if it does anything, but it might free
-		// some unused memory.
-		encoderArray.clear();
 	}
 
 	/**

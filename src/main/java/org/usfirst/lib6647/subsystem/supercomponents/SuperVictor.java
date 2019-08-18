@@ -1,12 +1,10 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
 import java.util.HashMap;
-import java.util.stream.Stream;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.fasterxml.jackson.databind.JsonNode;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.subsystem.hypercomponents.HyperTalon;
@@ -35,180 +33,167 @@ public interface SuperVictor extends MotorUtils {
 	 * @param {@link SuperSubsystem#robotMap}
 	 * @param {@link SuperSubsystem#getName}
 	 */
-	default void initVictors(JSONObject robotMap, String subsystemName) {
-		// Create a JSONArray out of the declared objects.
-		JSONArray victorArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems")).get(subsystemName))
-				.get("victors");
+	default void initVictors(JsonNode robotMap, String subsystemName) {
 
-		// Create a parallel stream from the JSONArray.
-		Stream<?> stream = victorArray.parallelStream();
-		// Cast each entry into a JSONObject, and configure it using the values declared
-		// in the JSON file.
-		stream.map(json -> (JSONObject) json).forEach(json -> {
+		// Spliterate through each of the elements in the JsonNode.
+		robotMap.get("victors").spliterator().forEachRemaining(json -> {
 			try {
-				if (json.containsKey("name") && json.containsKey("port")) {
+				if (json.hasNonNull("name") && json.hasNonNull("port")) {
+					// Read values from JsonNode.
+					int port = json.get("port").asInt(-1);
 
-					HyperVictor victor;
-					try {
-						// Create an object out of one index in the JSONArray.
-						victor = new HyperVictor(Integer.parseInt(json.get("port").toString()));
-					} catch (NumberFormatException e) {
+					// Check if the required JsonNode values to initialize the object are present.
+					if (port < 0)
 						throw new ComponentInitException(
 								String.format("[!] INVALID OR EMPTY PORT VALUE FOR VICTOR '%1$s' IN SUBSYSTEM '%2$s'",
-										json.get("name").toString(), subsystemName));
-					}
+										json.get("name").asText(), subsystemName));
+
+					// Create HyperVictor object.
+					HyperVictor victor = new HyperVictor(json.get("port").asInt());
+
+					// Additional initialization configuration.
 					victor.setName(json.get("name").toString());
 
-					if (json.containsKey("limiter"))
+					if (json.hasNonNull("limiter"))
 						setLimiter(json, victor);
 
-					if (json.containsKey("neutralMode"))
+					if (json.hasNonNull("neutralMode"))
 						setNeutralMode(json, victor);
 
-					if (json.containsKey("inverted"))
+					if (json.hasNonNull("inverted"))
 						setInverted(json, victor);
 
-					if (json.containsKey("loopRamp")) {
+					if (json.hasNonNull("loopRamp")) {
 						setClosedloopRamp(json, victor);
 						setOpenloopRamp(json, victor);
 					}
 
 					victor.stopMotor();
+					// ...
 
 					// Put object in HashMap with its declared name as key after initialization and
 					// configuration.
-					victors.put(json.get("name").toString(), victor);
-				} else {
-					System.out.println(String.format("[!] UNDECLARED OR EMPTY VICTOR ENTRY IN SUBSYSTEM '%s'",
-							subsystemName.toUpperCase()));
-				}
+					victors.put(json.get("name").asText(), victor);
+				} else
+					throw new ComponentInitException(String.format(
+							"[!] UNDECLARED OR EMPTY VICTOR ENTRY IN SUBSYSTEM '%s'", subsystemName.toUpperCase()));
 			} catch (ComponentInitException e) {
 				System.out.println(e.getMessage());
-			} finally {
-				// Clear JSONObject after use, not sure if it does anything, but it might free
-				// some unused memory.
-				json.clear();
 			}
 		});
-
-		// Clear JSONArray after use, not sure if it does anything, but it might free
-		// some unused memory.
-		victorArray.clear();
 	}
 
 	/**
 	 * Sets a given {@link HyperVictor}'s {@link HyperVictor#limiter limiter} value
-	 * from a {@link JSONObject}. Max value is 1, min value is 0 (which would make
-	 * the {@link HyperVictor} stop).
+	 * from a {@link JsonNode}. Max value is 1, min value is 0 (which would make the
+	 * {@link HyperVictor} stop).
 	 * 
-	 * @param {@link JSONObject}
+	 * @param {@link JsonNode}
 	 * @param {@link HyperVictor}
-	 * @throws ComponentInitException if {@link JSONObject} key is defined, but
-	 *                                empty or not a number.
+	 * @throws ComponentInitException if {@link JsonNode} key is defined, but empty
+	 *                                or not a number.
 	 */
-	private void setLimiter(JSONObject json, HyperVictor victor) throws ComponentInitException {
+	private void setLimiter(JsonNode json, HyperVictor victor) throws ComponentInitException {
 		try {
-			double limiter = Double.parseDouble(json.get("limiter").toString());
+			double limiter = json.get("limiter").asDouble();
 			victor.setLimiter(limiter < 0.0 ? 0.0 : limiter > 1.0 ? 1.0 : limiter);
 		} catch (NullPointerException e) {
-			throw new ComponentInitException(String.format("[!] EMPTY LIMITER VALUE FOR VICTOR '%s'.",
-					json.get("name").toString().toUpperCase()));
+			throw new ComponentInitException(
+					String.format("[!] EMPTY LIMITER VALUE FOR VICTOR '%s'.", json.get("name").asText().toUpperCase()));
 		} catch (NumberFormatException e) {
 			throw new ComponentInitException(String.format("[!] INVALID LIMITER VALUE FOR VICTOR '%s'.",
-					json.get("name").toString().toUpperCase()));
+					json.get("name").asText().toUpperCase()));
 		}
 	}
 
 	/**
-	 * Sets a given {@link HyperVictor}'s inverted value from a {@link JSONObject}.
+	 * Sets a given {@link HyperVictor}'s inverted value from a {@link JsonNode}.
 	 * 
-	 * @param {@link JSONObject}
+	 * @param {@link JsonNode}
 	 * @param {@link HyperVictor}
-	 * @throws ComponentInitException if {@link JSONObject} key is defined, but
-	 *                                empty.
+	 * @throws ComponentInitException if {@link JsonNode} key is defined, but empty.
 	 */
-	private void setInverted(JSONObject json, HyperVictor victor) throws ComponentInitException {
-		if (json.get("inverted").toString().isEmpty())
+	private void setInverted(JsonNode json, HyperVictor victor) throws ComponentInitException {
+		if (json.get("inverted").asText().isEmpty())
 			throw new ComponentInitException(String.format("[!] EMPTY INVERTED VALUE FOR VICTOR '%s'.",
-					json.get("name").toString().toUpperCase()));
+					json.get("name").asText().toUpperCase()));
 
-		victor.setInverted(Boolean.parseBoolean(json.get("inverted").toString()));
+		victor.setInverted(json.get("inverted").asBoolean());
 	}
 
 	/**
 	 * Sets a given {@link HyperVictor}'s {@link NeutralMode} from a
-	 * {@link JSONObject} key.
+	 * {@link JsonNode} key.
 	 * 
-	 * @param {@link JSONObject}
+	 * @param {@link JsonNode}
 	 * @param {@link HyperVictor}
-	 * @throws ComponentInitException if {@link JSONObject} key is defined, but
-	 *                                empty or invalid.
+	 * @throws ComponentInitException if {@link JsonNode} key is defined, but empty
+	 *                                or invalid.
 	 * 
 	 * @note There are three types of {@link NeutralMode NeutralModes}:
 	 *       {@link NeutralMode#Coast Coast}, {@link NeutralMode#Brake Brake}, and
 	 *       {@link NeutralMode#EEPROMSetting EEPROMSetting}. All of which must
-	 *       share the same name in the {@link JSONObject}.
+	 *       share the same name in the {@link JsonNode}.
 	 */
-	private void setNeutralMode(JSONObject json, HyperVictor victor) throws ComponentInitException {
-		if (getNeutralMode(json.get("neutralMode").toString()) == null)
+	private void setNeutralMode(JsonNode json, HyperVictor victor) throws ComponentInitException {
+		if (getNeutralMode(json.get("neutralMode").asText()) == null)
 			throw new ComponentInitException(
 					String.format("[!] INVALID OR EMPTY NEUTRAL MODE CONFIGURATION FOR VICTOR '%s'.",
-							json.get("name").toString().toUpperCase()));
+							json.get("name").asText().toUpperCase()));
 
-		victor.setNeutralMode(getNeutralMode(json.get("neutralMode").toString()));
+		victor.setNeutralMode(getNeutralMode(json.get("neutralMode").asText()));
 	}
 
 	/**
-	 * Sets a given {@link HyperVictor}'s ClosedloopRamp from a {@link JSONObject}
+	 * Sets a given {@link HyperVictor}'s ClosedloopRamp from a {@link JsonNode}
 	 * key.
 	 * 
-	 * @param {@link JSONObject}
+	 * @param {@link JsonNode}
 	 * @param {@link HyperVictor}
-	 * @throws ComponentInitException if {@link JSONObject} key is not found, or its
+	 * @throws ComponentInitException if {@link JsonNode} key is not found, or its
 	 *                                subkeys are invalid or empty.
 	 */
-	private void setClosedloopRamp(JSONObject json, HyperVictor victor) throws ComponentInitException {
+	private void setClosedloopRamp(JsonNode json, HyperVictor victor) throws ComponentInitException {
 		try {
-			JSONObject closed = (JSONObject) ((JSONObject) json.get("loopRamp")).get("closed");
+			JsonNode closed = json.get("loopRamp").get("closed");
 
-			if (closed.containsKey("timeoutMs"))
-				victor.configClosedloopRamp(Double.parseDouble(closed.get("secondsFromNeutralToFull").toString()),
-						Integer.parseInt(closed.get("timeoutMs").toString()));
+			if (closed.hasNonNull("timeoutMs"))
+				victor.configClosedloopRamp(closed.get("secondsFromNeutralToFull").asDouble(),
+						closed.get("timeoutMs").asInt());
 			else
-				victor.configClosedloopRamp(Double.parseDouble(closed.get("secondsFromNeutralToFull").toString()));
+				victor.configClosedloopRamp(closed.get("secondsFromNeutralToFull").asDouble());
 		} catch (NullPointerException e) {
 			throw new ComponentInitException(String.format("[!] EMPTY CLOSEDLOOP RAMP VALUE(S) FOR VICTOR '%s'.",
-					json.get("name").toString().toUpperCase()));
+					json.get("name").asText().toUpperCase()));
 		} catch (NumberFormatException e) {
 			throw new ComponentInitException(String.format("[!] INVALID CLOSEDLOOP RAMP VALUE(S) FOR VICTOR '%s'.",
-					json.get("name").toString().toUpperCase()));
+					json.get("name").asText().toUpperCase()));
 		}
 	}
 
 	/**
-	 * Sets a given {@link HyperVictor}'s OpenloopRamp from a {@link JSONObject}
-	 * key.
+	 * Sets a given {@link HyperVictor}'s OpenloopRamp from a {@link JsonNode} key.
 	 * 
-	 * @param {@link JSONObject}
+	 * @param {@link JsonNode}
 	 * @param {@link HyperVictor}
-	 * @throws ComponentInitException if {@link JSONObject} key is not found, or its
+	 * @throws ComponentInitException if {@link JsonNode} key is not found, or its
 	 *                                subkeys are invalid or empty.
 	 */
-	private void setOpenloopRamp(JSONObject json, HyperVictor victor) throws ComponentInitException {
+	private void setOpenloopRamp(JsonNode json, HyperVictor victor) throws ComponentInitException {
 		try {
-			JSONObject open = (JSONObject) ((JSONObject) json.get("loopRamp")).get("open");
+			JsonNode open = json.get("loopRamp").get("open");
 
-			if (open.containsKey("timeoutMs"))
-				victor.configOpenloopRamp(Double.parseDouble(open.get("secondsFromNeutralToFull").toString()),
-						Integer.parseInt(open.get("timeoutMs").toString()));
+			if (open.hasNonNull("timeoutMs"))
+				victor.configOpenloopRamp(open.get("secondsFromNeutralToFull").asDouble(),
+						open.get("timeoutMs").asInt());
 			else
-				victor.configOpenloopRamp(Double.parseDouble(open.get("secondsFromNeutralToFull").toString()));
+				victor.configOpenloopRamp(open.get("secondsFromNeutralToFull").asDouble());
 		} catch (NullPointerException e) {
 			throw new ComponentInitException(String.format("[!] EMPTY OPENLOOP RAMP VALUE(S) FOR VICTOR '%s'.",
-					json.get("name").toString().toUpperCase()));
+					json.get("name").asText().toUpperCase()));
 		} catch (NumberFormatException e) {
 			throw new ComponentInitException(String.format("[!] INVALID OPENLOOP RAMP VALUE(S) FOR VICTOR '%s'.",
-					json.get("name").toString().toUpperCase()));
+					json.get("name").asText().toUpperCase()));
 		}
 	}
 
