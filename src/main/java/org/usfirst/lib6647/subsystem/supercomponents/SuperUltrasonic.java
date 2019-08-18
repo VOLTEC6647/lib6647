@@ -8,6 +8,7 @@ import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.util.ComponentInitException;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Ultrasonic;
 
 /**
@@ -35,7 +36,8 @@ public interface SuperUltrasonic {
 		// Spliterate through each of the elements in the JsonNode.
 		robotMap.get("ultrasonics").spliterator().forEachRemaining(json -> {
 			try {
-				if (json.hasNonNull("name") && json.hasNonNull("pingChannel") && json.hasNonNull("echoChannel")) {
+				if (json.hasNonNull("name") && !ultrasonics.containsKey(json.get("name").asText())
+						&& json.hasNonNull("pingChannel") && json.hasNonNull("echoChannel")) {
 					// Read values from JsonNode.
 					int pingChannel = json.get("pingChannel").asInt(-1),
 							echoChannel = json.get("echoChannel").asInt(-1);
@@ -56,10 +58,12 @@ public interface SuperUltrasonic {
 					// configuration.
 					ultrasonics.put(json.get("name").asText(), ultrasonic);
 				} else
-					throw new ComponentInitException(String.format(
-							"[!] UNDECLARED OR EMPTY ULTRASONIC ENTRY IN SUBSYSTEM '%s'", subsystemName.toUpperCase()));
+					throw new ComponentInitException(
+							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY ULTRASONIC ENTRY IN SUBSYSTEM '%s'",
+									subsystemName.toUpperCase()));
 			} catch (ComponentInitException e) {
 				System.out.println(e.getMessage());
+				DriverStation.reportError(e.getMessage(), false);
 			}
 		});
 	}

@@ -9,6 +9,7 @@ import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.util.ComponentInitException;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  * Interface to allow {@link DigitalInput} initialization via JSON. Subsystems
@@ -36,7 +37,8 @@ public interface SuperDigitalInput {
 		// Spliterate through each of the elements in the JsonNode.
 		robotMap.get("digitalInputs").spliterator().forEachRemaining(json -> {
 			try {
-				if (json.hasNonNull("name") && json.hasNonNull("channel")) {
+				if (json.hasNonNull("name") && !digitalInputs.containsKey(json.get("name").asText())
+						&& json.hasNonNull("channel")) {
 					// Read values from JsonNode.
 					int channel = json.get("channel").asInt(-1);
 
@@ -44,7 +46,7 @@ public interface SuperDigitalInput {
 					if (channel < 0)
 						throw new ComponentInitException(String.format(
 								"[!] INVALID OR EMPTY CHANNEL VALUE FOR DIGITALINPUT '%1$s' IN SUBSYSTEM '%2$s'",
-								json.get("name").toString(), subsystemName));
+								json.get("name").asText(), subsystemName));
 
 					// Create DigitalInput object.
 					DigitalInput digitalInput = new DigitalInput(json.get("channel").asInt());
@@ -54,13 +56,14 @@ public interface SuperDigitalInput {
 
 					// Put object in HashMap with its declared name as key after initialization and
 					// configuration.
-					digitalInputs.put(json.get("name").toString(), digitalInput);
+					digitalInputs.put(json.get("name").asText(), digitalInput);
 				} else
 					throw new ComponentInitException(
-							String.format("[!] UNDECLARED OR EMPTY DIGITALINPUT ENTRY IN SUBSYSTEM '%s'",
+							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY DIGITALINPUT ENTRY IN SUBSYSTEM '%s'",
 									subsystemName.toUpperCase()));
 			} catch (ComponentInitException e) {
 				System.out.println(e.getMessage());
+				DriverStation.reportError(e.getMessage(), false);
 			}
 		});
 	}

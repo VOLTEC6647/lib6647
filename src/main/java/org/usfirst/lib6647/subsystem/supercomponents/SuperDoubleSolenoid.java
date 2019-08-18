@@ -9,6 +9,8 @@ import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.subsystem.hypercomponents.HyperDoubleSolenoid;
 import org.usfirst.lib6647.util.ComponentInitException;
 
+import edu.wpi.first.wpilibj.DriverStation;
+
 /**
  * Interface to allow {@link HyperDoubleSolenoid} initialization via JSON.
  * Subsystems declared need to extend {@link SuperSubsystem} or
@@ -37,7 +39,8 @@ public interface SuperDoubleSolenoid {
 		// Spliterate through each of the elements in the JsonNode.
 		robotMap.get("doubleSolenoids").spliterator().forEachRemaining(json -> {
 			try {
-				if (json.hasNonNull("name") && json.hasNonNull("forwardChannel") && json.hasNonNull("reverseChannel")) {
+				if (json.hasNonNull("name") && !doubleSolenoids.containsKey(json.get("name").asText())
+						&& json.hasNonNull("forwardChannel") && json.hasNonNull("reverseChannel")) {
 					// Read values from JsonNode.
 					int forwardChannel = json.get("forwardChannel").asInt(-1),
 							reverseChannel = json.get("reverseChannel").asInt(-1);
@@ -46,7 +49,7 @@ public interface SuperDoubleSolenoid {
 					if (forwardChannel < 0 || reverseChannel < 0)
 						throw new ComponentInitException(String.format(
 								"[!] INVALID OR EMPTY CHANNEL VALUE(S) FOR DOUBLESOLENOID '%1$s' IN SUBSYSTEM '%2$s'",
-								json.get("name").toString(), subsystemName));
+								json.get("name").asText(), subsystemName));
 
 					// Create HyperDoubleSolenoid object.
 					HyperDoubleSolenoid doubleSolenoid = new HyperDoubleSolenoid(json.get("forwardChannel").asInt(),
@@ -58,13 +61,14 @@ public interface SuperDoubleSolenoid {
 
 					// Put object in HashMap with its declared name as key after initialization and
 					// configuration.
-					doubleSolenoids.put(json.get("name").toString(), doubleSolenoid);
+					doubleSolenoids.put(json.get("name").asText(), doubleSolenoid);
 				} else
 					throw new ComponentInitException(
-							String.format("[!] UNDECLARED OR EMPTY DOUBLESOLENOID ENTRY IN SUBSYSTEM '%s'",
+							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY DOUBLESOLENOID ENTRY IN SUBSYSTEM '%s'",
 									subsystemName.toUpperCase()));
 			} catch (ComponentInitException e) {
 				System.out.println(e.getMessage());
+				DriverStation.reportError(e.getMessage(), false);
 			}
 		});
 	}

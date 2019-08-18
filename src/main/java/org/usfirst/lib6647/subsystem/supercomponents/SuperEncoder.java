@@ -9,6 +9,7 @@ import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.util.ComponentInitException;
 import org.usfirst.lib6647.util.MotorUtils;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 
 /**
@@ -36,8 +37,9 @@ public interface SuperEncoder extends MotorUtils {
 		// Spliterate through each of the elements in the JsonNode.
 		robotMap.get("encoders").spliterator().forEachRemaining(json -> {
 			try {
-				if (json.hasNonNull("name") && json.hasNonNull("channelA") && json.hasNonNull("channelB")
-						&& json.hasNonNull("reverse") && json.hasNonNull("encodingType")) {
+				if (json.hasNonNull("name") && !encoders.containsKey(json.get("name").asText())
+						&& json.hasNonNull("channelA") && json.hasNonNull("channelB") && json.hasNonNull("reverse")
+						&& json.hasNonNull("encodingType")) {
 					// Read values from JsonNode.
 					int channelA = json.get("channelA").asInt(-1), channelB = json.get("channelB").asInt(-1);
 
@@ -45,7 +47,7 @@ public interface SuperEncoder extends MotorUtils {
 					if (channelA < 0 || channelB < 0)
 						throw new ComponentInitException(
 								String.format("[!] INVALID OR EMPTY VALUE(S) FOR ENCODER '%1$s' IN SUBSYSTEM '%2$s'",
-										json.get("name").toString(), subsystemName));
+										json.get("name").asText(), subsystemName));
 
 					// Create Encoder object.
 					Encoder encoder = new Encoder(json.get("channelA").asInt(), json.get("channelB").asInt(),
@@ -59,10 +61,12 @@ public interface SuperEncoder extends MotorUtils {
 					// configuration.
 					encoders.put(json.get("name").asText(), encoder);
 				} else
-					throw new ComponentInitException(String.format(
-							"[!] UNDECLARED OR EMPTY ENCODER ENTRY IN SUBSYSTEM '%s'", subsystemName.toUpperCase()));
+					throw new ComponentInitException(
+							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY ENCODER ENTRY IN SUBSYSTEM '%s'",
+									subsystemName.toUpperCase()));
 			} catch (ComponentInitException e) {
 				System.out.println(e.getMessage());
+				DriverStation.reportError(e.getMessage(), false);
 			}
 		});
 	}

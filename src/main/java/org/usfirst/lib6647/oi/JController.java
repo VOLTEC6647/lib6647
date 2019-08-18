@@ -183,7 +183,7 @@ public class JController extends Joystick {
 	}
 
 	/**
-	 * Method for getting an axisButton input for any value, with 0.15 as tolerance
+	 * Method for getting an axisButton input for any value, with 0.30 as tolerance
 	 * (so as to avoid accidental input due to improper {@link JController}
 	 * calibration).
 	 * 
@@ -201,7 +201,7 @@ public class JController extends Joystick {
 	}
 
 	/**
-	 * Method for getting a negative axisButton input, with 0.15 as tolerance (to
+	 * Method for getting a negative axisButton input, with -0.30 as tolerance (to
 	 * avoid accidental input due to improper {@link JController} calibration).
 	 * 
 	 * @param controller
@@ -218,7 +218,7 @@ public class JController extends Joystick {
 	}
 
 	/**
-	 * Method for getting a positive axisButton input, with 0.15 as tolerance (to
+	 * Method for getting a positive axisButton input, with 0.30 as tolerance (to
 	 * avoid accidental input due to improper {@link JController} calibration).
 	 * 
 	 * @param controller

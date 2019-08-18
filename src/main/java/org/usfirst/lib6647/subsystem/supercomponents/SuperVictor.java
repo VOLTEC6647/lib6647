@@ -12,6 +12,8 @@ import org.usfirst.lib6647.subsystem.hypercomponents.HyperVictor;
 import org.usfirst.lib6647.util.ComponentInitException;
 import org.usfirst.lib6647.util.MotorUtils;
 
+import edu.wpi.first.wpilibj.DriverStation;
+
 /**
  * Interface to allow {@link HyperVictor} initialization via JSON. Subsystems
  * declared need to extend {@link SuperSubsystem} or {@link PIDSuperSubsystem}
@@ -38,7 +40,8 @@ public interface SuperVictor extends MotorUtils {
 		// Spliterate through each of the elements in the JsonNode.
 		robotMap.get("victors").spliterator().forEachRemaining(json -> {
 			try {
-				if (json.hasNonNull("name") && json.hasNonNull("port")) {
+				if (json.hasNonNull("name") && !victors.containsKey(json.get("name").asText())
+						&& json.hasNonNull("port")) {
 					// Read values from JsonNode.
 					int port = json.get("port").asInt(-1);
 
@@ -52,7 +55,7 @@ public interface SuperVictor extends MotorUtils {
 					HyperVictor victor = new HyperVictor(json.get("port").asInt());
 
 					// Additional initialization configuration.
-					victor.setName(json.get("name").toString());
+					victor.setName(json.get("name").asText());
 
 					if (json.hasNonNull("limiter"))
 						setLimiter(json, victor);
@@ -75,10 +78,12 @@ public interface SuperVictor extends MotorUtils {
 					// configuration.
 					victors.put(json.get("name").asText(), victor);
 				} else
-					throw new ComponentInitException(String.format(
-							"[!] UNDECLARED OR EMPTY VICTOR ENTRY IN SUBSYSTEM '%s'", subsystemName.toUpperCase()));
+					throw new ComponentInitException(
+							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY VICTOR ENTRY IN SUBSYSTEM '%s'",
+									subsystemName.toUpperCase()));
 			} catch (ComponentInitException e) {
 				System.out.println(e.getMessage());
+				DriverStation.reportError(e.getMessage(), false);
 			}
 		});
 	}
@@ -90,20 +95,10 @@ public interface SuperVictor extends MotorUtils {
 	 * 
 	 * @param {@link JsonNode}
 	 * @param {@link HyperVictor}
-	 * @throws ComponentInitException if {@link JsonNode} key is defined, but empty
-	 *                                or not a number.
 	 */
-	private void setLimiter(JsonNode json, HyperVictor victor) throws ComponentInitException {
-		try {
-			double limiter = json.get("limiter").asDouble();
-			victor.setLimiter(limiter < 0.0 ? 0.0 : limiter > 1.0 ? 1.0 : limiter);
-		} catch (NullPointerException e) {
-			throw new ComponentInitException(
-					String.format("[!] EMPTY LIMITER VALUE FOR VICTOR '%s'.", json.get("name").asText().toUpperCase()));
-		} catch (NumberFormatException e) {
-			throw new ComponentInitException(String.format("[!] INVALID LIMITER VALUE FOR VICTOR '%s'.",
-					json.get("name").asText().toUpperCase()));
-		}
+	private void setLimiter(JsonNode json, HyperVictor victor) {
+		double limiter = json.get("limiter").asDouble();
+		victor.setLimiter(limiter < 0.0 ? 0.0 : limiter > 1.0 ? 1.0 : limiter);
 	}
 
 	/**
@@ -111,13 +106,8 @@ public interface SuperVictor extends MotorUtils {
 	 * 
 	 * @param {@link JsonNode}
 	 * @param {@link HyperVictor}
-	 * @throws ComponentInitException if {@link JsonNode} key is defined, but empty.
 	 */
-	private void setInverted(JsonNode json, HyperVictor victor) throws ComponentInitException {
-		if (json.get("inverted").asText().isEmpty())
-			throw new ComponentInitException(String.format("[!] EMPTY INVERTED VALUE FOR VICTOR '%s'.",
-					json.get("name").asText().toUpperCase()));
-
+	private void setInverted(JsonNode json, HyperVictor victor) {
 		victor.setInverted(json.get("inverted").asBoolean());
 	}
 
@@ -150,25 +140,15 @@ public interface SuperVictor extends MotorUtils {
 	 * 
 	 * @param {@link JsonNode}
 	 * @param {@link HyperVictor}
-	 * @throws ComponentInitException if {@link JsonNode} key is not found, or its
-	 *                                subkeys are invalid or empty.
 	 */
-	private void setClosedloopRamp(JsonNode json, HyperVictor victor) throws ComponentInitException {
-		try {
-			JsonNode closed = json.get("loopRamp").get("closed");
+	private void setClosedloopRamp(JsonNode json, HyperVictor victor) {
+		JsonNode closed = json.get("loopRamp").get("closed");
 
-			if (closed.hasNonNull("timeoutMs"))
-				victor.configClosedloopRamp(closed.get("secondsFromNeutralToFull").asDouble(),
-						closed.get("timeoutMs").asInt());
-			else
-				victor.configClosedloopRamp(closed.get("secondsFromNeutralToFull").asDouble());
-		} catch (NullPointerException e) {
-			throw new ComponentInitException(String.format("[!] EMPTY CLOSEDLOOP RAMP VALUE(S) FOR VICTOR '%s'.",
-					json.get("name").asText().toUpperCase()));
-		} catch (NumberFormatException e) {
-			throw new ComponentInitException(String.format("[!] INVALID CLOSEDLOOP RAMP VALUE(S) FOR VICTOR '%s'.",
-					json.get("name").asText().toUpperCase()));
-		}
+		if (closed.hasNonNull("timeoutMs"))
+			victor.configClosedloopRamp(closed.get("secondsFromNeutralToFull").asDouble(),
+					closed.get("timeoutMs").asInt());
+		else
+			victor.configClosedloopRamp(closed.get("secondsFromNeutralToFull").asDouble());
 	}
 
 	/**
@@ -176,25 +156,14 @@ public interface SuperVictor extends MotorUtils {
 	 * 
 	 * @param {@link JsonNode}
 	 * @param {@link HyperVictor}
-	 * @throws ComponentInitException if {@link JsonNode} key is not found, or its
-	 *                                subkeys are invalid or empty.
 	 */
-	private void setOpenloopRamp(JsonNode json, HyperVictor victor) throws ComponentInitException {
-		try {
-			JsonNode open = json.get("loopRamp").get("open");
+	private void setOpenloopRamp(JsonNode json, HyperVictor victor) {
+		JsonNode open = json.get("loopRamp").get("open");
 
-			if (open.hasNonNull("timeoutMs"))
-				victor.configOpenloopRamp(open.get("secondsFromNeutralToFull").asDouble(),
-						open.get("timeoutMs").asInt());
-			else
-				victor.configOpenloopRamp(open.get("secondsFromNeutralToFull").asDouble());
-		} catch (NullPointerException e) {
-			throw new ComponentInitException(String.format("[!] EMPTY OPENLOOP RAMP VALUE(S) FOR VICTOR '%s'.",
-					json.get("name").asText().toUpperCase()));
-		} catch (NumberFormatException e) {
-			throw new ComponentInitException(String.format("[!] INVALID OPENLOOP RAMP VALUE(S) FOR VICTOR '%s'.",
-					json.get("name").asText().toUpperCase()));
-		}
+		if (open.hasNonNull("timeoutMs"))
+			victor.configOpenloopRamp(open.get("secondsFromNeutralToFull").asDouble(), open.get("timeoutMs").asInt());
+		else
+			victor.configOpenloopRamp(open.get("secondsFromNeutralToFull").asDouble());
 	}
 
 	/**

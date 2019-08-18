@@ -9,6 +9,7 @@ import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.util.ComponentInitException;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  * Interface to allow {@link Compressor} initialization via JSON. Subsystems
@@ -35,7 +36,8 @@ public interface SuperCompressor {
 		// Spliterate through each of the elements in the JsonNode.
 		robotMap.get("compressors").spliterator().forEachRemaining(json -> {
 			try {
-				if (json.hasNonNull("name") && json.hasNonNull("module")) {
+				if (json.hasNonNull("name") && !compressors.containsKey(json.get("name").asText())
+						&& json.hasNonNull("module")) {
 					// Read values from JsonNode.
 					int module = json.get("module").asInt(-1);
 
@@ -53,12 +55,14 @@ public interface SuperCompressor {
 
 					// Put object in HashMap with its declared name as key after initialization and
 					// configuration.
-					compressors.put(json.get("name").toString(), compressor);
+					compressors.put(json.get("name").asText(), compressor);
 				} else
-					throw new ComponentInitException(String.format(
-							"[!] UNDECLARED OR EMPTY COMPRESSOR ENTRY IN SUBSYSTEM '%s'", subsystemName.toUpperCase()));
+					throw new ComponentInitException(
+							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY COMPRESSOR ENTRY IN SUBSYSTEM '%s'",
+									subsystemName.toUpperCase()));
 			} catch (ComponentInitException e) {
 				System.out.println(e.getMessage());
+				DriverStation.reportError(e.getMessage(), false);
 			}
 		});
 	}

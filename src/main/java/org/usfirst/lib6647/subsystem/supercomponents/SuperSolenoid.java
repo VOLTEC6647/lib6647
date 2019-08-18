@@ -9,6 +9,8 @@ import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.subsystem.hypercomponents.HyperSolenoid;
 import org.usfirst.lib6647.util.ComponentInitException;
 
+import edu.wpi.first.wpilibj.DriverStation;
+
 /**
  * Interface to allow {@link HyperSolenoid} initialization via JSON. Subsystems
  * declared need to extend {@link SuperSubsystem} or {@link PIDSuperSubsystem}
@@ -35,7 +37,8 @@ public interface SuperSolenoid {
 		// Spliterate through each of the elements in the JsonNode.
 		robotMap.get("solenoids").spliterator().forEachRemaining(json -> {
 			try {
-				if (json.hasNonNull("name") && json.hasNonNull("channel")) {
+				if (json.hasNonNull("name") && !solenoids.containsKey(json.get("name").asText())
+						&& json.hasNonNull("channel")) {
 					// Read values from JsonNode.
 					int channel = json.get("channel").asInt(-1);
 
@@ -57,10 +60,12 @@ public interface SuperSolenoid {
 					// configuration.
 					solenoids.put(json.get("name").asText(), solenoid);
 				} else
-					throw new ComponentInitException(String.format(
-							"[!] UNDECLARED OR EMPTY SOLENOID ENTRY IN SUBSYSTEM '%s'", subsystemName.toUpperCase()));
+					throw new ComponentInitException(
+							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY SOLENOID ENTRY IN SUBSYSTEM '%s'",
+									subsystemName.toUpperCase()));
 			} catch (ComponentInitException e) {
 				System.out.println(e.getMessage());
+				DriverStation.reportError(e.getMessage(), false);
 			}
 		});
 	}
@@ -73,10 +78,6 @@ public interface SuperSolenoid {
 	 * @throws ComponentInitException if {@link JsonNode} key is defined, but empty.
 	 */
 	private void setInitialValue(JsonNode json, HyperSolenoid solenoid) throws ComponentInitException {
-		if (json.get("initialValue").asText().isEmpty())
-			throw new ComponentInitException(String.format("[!] EMPTY INITIAL VALUE FOR SOLENOID '%s'.",
-					json.get("name").asText().toUpperCase()));
-
 		solenoid.set(json.get("initialValue").asBoolean());
 	}
 

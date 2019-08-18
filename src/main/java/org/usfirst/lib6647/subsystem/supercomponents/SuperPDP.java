@@ -8,6 +8,7 @@ import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.util.ComponentInitException;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 /**
@@ -37,7 +38,8 @@ public interface SuperPDP {
 		// Spliterate through each of the elements in the JsonNode.
 		robotMap.get("PDPs").spliterator().forEachRemaining(json -> {
 			try {
-				if (json.hasNonNull("name") && json.hasNonNull("module")) {
+				if (json.hasNonNull("name") && !PDPs.containsKey(json.get("name").asText())
+						&& json.hasNonNull("module")) {
 					// Read values from JsonNode.
 					int module = json.get("module").asInt(-1);
 
@@ -57,10 +59,12 @@ public interface SuperPDP {
 					// configuration.
 					PDPs.put(json.get("name").asText(), pdp);
 				} else
-					throw new ComponentInitException(String.format(
-							"[!] UNDECLARED OR EMPTY PDP ENTRY IN SUBSYSTEM '%s'", subsystemName.toUpperCase()));
+					throw new ComponentInitException(
+							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY PDP ENTRY IN SUBSYSTEM '%s'",
+									subsystemName.toUpperCase()));
 			} catch (ComponentInitException e) {
 				System.out.println(e.getMessage());
+				DriverStation.reportError(e.getMessage(), false);
 			}
 		});
 	}
