@@ -26,11 +26,15 @@ Your _build.gradle_ file should look like this (if no other Maven repositories a
     }
 ```
 
-Then, add **lib6647** and **json-simple** as a dependency in your _build.gradle_'s dependencies like so:
+Then, add **lib6647**, **jackson-core**, **jackson-databind**, and **jackson-annotations** as a dependency in your _build.gradle_'s dependencies like so:
 
 ```
-    // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
-    compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.0.pr1'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.0.pr1'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.0.pr1'
 
     // lib6647
     compile group: 'com.github.pacoito123', name: 'lib6647', version: '-SNAPSHOT'
@@ -47,8 +51,12 @@ Your dependencies in should look like this (again, if none other than WPILib's d
         nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
         testCompile 'junit:junit:4.12'
 
-        // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
-        compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+        // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.0.pr1'
+    	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+    	compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.0.pr1'
+    	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
+    	compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.0.pr1'
 
         // lib6647
         compile group: 'com.github.pacoito123', name: 'lib6647', version: '-SNAPSHOT'
