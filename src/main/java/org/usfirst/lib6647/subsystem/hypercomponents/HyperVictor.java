@@ -57,8 +57,9 @@ public class HyperVictor extends WPI_VictorSPX {
 	 * 
 	 * @param speed
 	 */
-	public void setVictor(double speed) {
-		setVictor(speed, false);
+	@Override
+	public void set(double speed) {
+		set(speed, false);
 	}
 
 	/**
@@ -68,7 +69,7 @@ public class HyperVictor extends WPI_VictorSPX {
 	 * @param speed
 	 * @param limited
 	 */
-	public void setVictor(double speed, boolean limited) {
+	public void set(double speed, boolean limited) {
 		if (speed >= limiter && limited)
 			super.set(ControlMode.PercentOutput, limiter);
 		else
@@ -81,14 +82,7 @@ public class HyperVictor extends WPI_VictorSPX {
 	 * 
 	 * @param speed
 	 */
-	public void setVictorWithRamp(double speed) {
+	public void setWithRamp(double speed) {
 		super.set(ControlMode.PercentOutput, speed * limiter);
-	}
-
-	/**
-	 * Stops {@link HyperVictor} dead in its tracks.
-	 */
-	public void stopVictor() {
-		setVictor(0, false);
 	}
 }

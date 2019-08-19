@@ -3,8 +3,7 @@ package org.usfirst.lib6647.subsystem;
 import java.io.FileReader;
 import java.io.Reader;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,8 +17,8 @@ public abstract class PIDSuperSubsystem extends PIDSubsystem {
 	/**
 	 * Bread and butter of {@link PIDSuperSubsystem}.
 	 */
-	protected JSONObject robotMap;
-	protected float p = 0.0f, i = 0.0f, d = 0.0f;
+	protected JsonNode robotMap;
+	protected double p = 0.0, i = 0.0, d = 0.0;
 	protected double pidOutput;
 
 	/**
@@ -30,29 +29,18 @@ public abstract class PIDSuperSubsystem extends PIDSubsystem {
 	 * @param name     (of the {@link PIDSubsystem})
 	 * @param fileName (to {@link #robotMap JSON file})
 	 */
-	public PIDSuperSubsystem(String name, String fileName) {
-		super(name, 0.0f, 0.0f, 0.0f);
+	public PIDSuperSubsystem(String name) {
+		super(name, 0.0, 0.0, 0.0);
 
-		initJSON(fileName);
-		initPID();
-		outputPIDValues(getName(), p, i, d);
-	}
-
-	/**
-	 * Method to initialize {@link #robotMap} at the given path.
-	 * 
-	 * @param fileName (to {@link #robotMap JSON file})
-	 */
-	private void initJSON(String fileName) {
-		try {
-			JSONParser parser = new JSONParser();
-			Reader file = new FileReader(fileName);
-			robotMap = (JSONObject) parser.parse(file);
-			file.close();
+		try (Reader file = new FileReader(RobotMap.getInstance().getFilePath())) {
+			robotMap = RobotMap.getInstance().getMapper().readTree(file).get(getName());
 		} catch (Exception e) {
 			System.out.println("[!] SUBSYSTEM '" + getName().toUpperCase() + "' JSON INIT ERROR: " + e.getMessage());
 			System.exit(1);
 		}
+
+		initPID();
+		outputPIDValues(getName(), p, i, d);
 	}
 
 	/**
@@ -61,38 +49,24 @@ public abstract class PIDSuperSubsystem extends PIDSubsystem {
 	 */
 	private void initPID() {
 		try {
-			// Create a JSONObject out of the 'pid' key.
-			JSONObject pid = (JSONObject) ((JSONObject) ((JSONObject) robotMap.get("subsystems")).get(getName()))
-					.get("pid");
+			// Get JsonNode out of the 'pid' key.
+			JsonNode pid = robotMap.get("pid");
 
 			// Update current PID values.
-			p = Float.parseFloat(pid.get("p").toString());
-			i = Float.parseFloat(pid.get("i").toString());
-			d = Float.parseFloat(pid.get("d").toString());
+			p = pid.get("p").asDouble();
+			i = pid.get("i").asDouble();
+			d = pid.get("d").asDouble();
 
 			// Update PIDSubsystem PID values and configuration.
 			getPIDController().setPID(p, i, d);
-			setInputRange(Double.parseDouble(pid.get("inputMin").toString()),
-					Double.parseDouble(pid.get("inputMax").toString()));
-			setOutputRange(Double.parseDouble(pid.get("outputMin").toString()),
-					Double.parseDouble(pid.get("outputMax").toString()));
-			setAbsoluteTolerance(Double.parseDouble(pid.get("absoluteTolerance").toString()));
-			getPIDController().setContinuous(Boolean.parseBoolean(pid.get("continuous").toString()));
-
-			// Clear JSONObject after use, not sure if it does anything, but it might free
-			// some unused memory.
-			pid.clear();
+			setInputRange(pid.get("inputMin").asDouble(), pid.get("inputMax").asDouble());
+			setOutputRange(pid.get("outputMin").asDouble(), pid.get("outputMax").asDouble());
+			setAbsoluteTolerance(pid.get("absoluteTolerance").asDouble());
+			getPIDController().setContinuous(pid.get("continuous").asBoolean());
 		} catch (Exception e) {
 			System.out.println("[!] SUBSYSTEM '" + getName().toUpperCase() + "' PID INIT ERROR: " + e.getMessage());
 			System.exit(1);
 		}
-	}
-
-	/**
-	 * Method to clear {@link #robotMap}.
-	 */
-	public void finishedJSONInit() {
-		robotMap.clear();
 	}
 
 	/**
@@ -104,7 +78,7 @@ public abstract class PIDSuperSubsystem extends PIDSubsystem {
 	 * @param {@link        #i}
 	 * @param {@link        #d}
 	 */
-	private void outputPIDValues(String subsystemName, float p, float i, float d) {
+	private void outputPIDValues(String subsystemName, double p, double i, double d) {
 		SmartDashboard.putString(subsystemName + "P", p + "");
 		SmartDashboard.putString(subsystemName + "I", i + "");
 		SmartDashboard.putString(subsystemName + "D", d + "");
@@ -115,9 +89,9 @@ public abstract class PIDSuperSubsystem extends PIDSubsystem {
 	 * the {@link SmartDashboard}.
 	 */
 	public void updatePIDValues() {
-		p = Float.parseFloat(SmartDashboard.getString(getName() + "P", p + ""));
-		i = Float.parseFloat(SmartDashboard.getString(getName() + "I", i + ""));
-		d = Float.parseFloat(SmartDashboard.getString(getName() + "D", d + ""));
+		p = Double.parseDouble(SmartDashboard.getString(getName() + "P", p + ""));
+		i = Double.parseDouble(SmartDashboard.getString(getName() + "I", i + ""));
+		d = Double.parseDouble(SmartDashboard.getString(getName() + "D", d + ""));
 
 		getPIDController().setPID(p, i, d);
 	}

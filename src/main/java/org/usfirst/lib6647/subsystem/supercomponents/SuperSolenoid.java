@@ -1,14 +1,15 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
 import java.util.HashMap;
-import java.util.stream.Stream;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+
 import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.subsystem.hypercomponents.HyperSolenoid;
 import org.usfirst.lib6647.util.ComponentInitException;
+
+import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  * Interface to allow {@link HyperSolenoid} initialization via JSON. Subsystems
@@ -31,68 +32,53 @@ public interface SuperSolenoid {
 	 * @param {@link SuperSubsystem#robotMap}
 	 * @param {@link SuperSubsystem#getName}
 	 */
-	default void initSolenoids(JSONObject robotMap, String subsystemName) {
-		// Create a JSONArray out of the declared objects.
-		JSONArray solenoidArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems"))
-				.get(subsystemName)).get("solenoids");
+	default void initSolenoids(JsonNode robotMap, String subsystemName) {
 
-		// Create a parallel stream from the JSONArray.
-		Stream<?> stream = solenoidArray.parallelStream();
-		// Cast each entry into a JSONObject, and configure it using the values declared
-		// in the JSON file.
-		stream.map(json -> (JSONObject) json).forEach(json -> {
+		// Spliterate through each of the elements in the JsonNode.
+		robotMap.get("solenoids").spliterator().forEachRemaining(json -> {
 			try {
-				if (json.containsKey("name") && json.containsKey("channel")) {
+				if (json.hasNonNull("name") && !solenoids.containsKey(json.get("name").asText())
+						&& json.hasNonNull("channel")) {
+					// Read values from JsonNode.
+					int channel = json.get("channel").asInt(-1);
 
-					HyperSolenoid solenoid;
-					try {
-						// Create an object out of one index in the JSONArray.
-						solenoid = new HyperSolenoid(Integer.parseInt(json.get("channel").toString()));
-					} catch (NumberFormatException e) {
+					// Check if the required JsonNode values to initialize the object are present.
+					if (channel < 0)
 						throw new ComponentInitException(String.format(
 								"[!] INVALID OR EMPTY CHANNEL VALUE(S) FOR SOLENOID '%1$s' IN SUBSYSTEM '%2$s'",
-								json.get("name").toString(), subsystemName));
-					}
+								json.get("name").asText(), subsystemName));
 
-					if (json.containsKey("initialValue"))
+					// Create HyperSolenoid object.
+					HyperSolenoid solenoid = new HyperSolenoid(json.get("channel").asInt());
+
+					// Additional initialization configuration.
+					if (json.hasNonNull("initialValue"))
 						setInitialValue(json, solenoid);
+					// ...
 
 					// Put object in HashMap with its declared name as key after initialization and
 					// configuration.
-					solenoids.put(json.get("name").toString(), solenoid);
-				} else {
-					System.out.println(String.format("[!] UNDECLARED OR EMPTY SOLENOID ENTRY IN SUBSYSTEM '%s'",
-							subsystemName.toUpperCase()));
-				}
+					solenoids.put(json.get("name").asText(), solenoid);
+				} else
+					throw new ComponentInitException(
+							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY SOLENOID ENTRY IN SUBSYSTEM '%s'",
+									subsystemName.toUpperCase()));
 			} catch (ComponentInitException e) {
 				System.out.println(e.getMessage());
-			} finally {
-				// Clear JSONObject after use, not sure if it does anything, but it might free
-				// some unused memory.
-				json.clear();
+				DriverStation.reportError(e.getMessage(), false);
 			}
 		});
-
-		// Clear JSONArray after use, not sure if it does anything, but it might free
-		// some unused memory.
-		solenoidArray.clear();
 	}
 
 	/**
-	 * Sets a given {@link HyperSolenoid}'s inverted value from a
-	 * {@link JSONObject}.
+	 * Sets a given {@link HyperSolenoid}'s inverted value from a {@link JsonNode}.
 	 * 
-	 * @param {@link JSONObject}
+	 * @param {@link JsonNode}
 	 * @param {@link HyperSolenoid}
-	 * @throws ComponentInitException if {@link JSONObject} key is defined, but
-	 *                                empty.
+	 * @throws ComponentInitException if {@link JsonNode} key is defined, but empty.
 	 */
-	private void setInitialValue(JSONObject json, HyperSolenoid solenoid) throws ComponentInitException {
-		if (json.get("initialValue").toString().isEmpty())
-			throw new ComponentInitException(String.format("[!] EMPTY INITIAL VALUE FOR SOLENOID '%s'.",
-					json.get("name").toString().toUpperCase()));
-
-		solenoid.set(Boolean.parseBoolean(json.get("initialValue").toString()));
+	private void setInitialValue(JsonNode json, HyperSolenoid solenoid) throws ComponentInitException {
+		solenoid.set(json.get("initialValue").asBoolean());
 	}
 
 	/**

@@ -1,14 +1,15 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
 import java.util.HashMap;
-import java.util.stream.Stream;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+
 import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.subsystem.hypercomponents.HyperDoubleSolenoid;
 import org.usfirst.lib6647.util.ComponentInitException;
+
+import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  * Interface to allow {@link HyperDoubleSolenoid} initialization via JSON.
@@ -33,52 +34,43 @@ public interface SuperDoubleSolenoid {
 	 * @param {@link SuperSubsystem#robotMap}
 	 * @param {@link SuperSubsystem#getName}
 	 */
-	default void initDoubleSolenoids(JSONObject robotMap, String subsystemName) {
-		// Create a JSONArray out of the declared objects.
-		JSONArray doubleSolenoidArray = (JSONArray) ((JSONObject) ((JSONObject) robotMap.get("subsystems"))
-				.get(subsystemName)).get("doubleSolenoids");
+	default void initDoubleSolenoids(JsonNode robotMap, String subsystemName) {
 
-		// Create a parallel stream from the JSONArray.
-		Stream<?> stream = doubleSolenoidArray.parallelStream();
-		// Cast each entry into a JSONObject, and configure it using the values declared
-		// in the JSON file.
-		stream.map(json -> (JSONObject) json).forEach(json -> {
+		// Spliterate through each of the elements in the JsonNode.
+		robotMap.get("doubleSolenoids").spliterator().forEachRemaining(json -> {
 			try {
-				if (json.containsKey("name") && json.containsKey("forwardChannel")
-						&& json.containsKey("reverseChannel")) {
+				if (json.hasNonNull("name") && !doubleSolenoids.containsKey(json.get("name").asText())
+						&& json.hasNonNull("forwardChannel") && json.hasNonNull("reverseChannel")) {
+					// Read values from JsonNode.
+					int forwardChannel = json.get("forwardChannel").asInt(-1),
+							reverseChannel = json.get("reverseChannel").asInt(-1);
 
-					HyperDoubleSolenoid doubleSolenoid;
-					try {
-						// Try to initialize an object from an index in the JSONArray.
-						doubleSolenoid = new HyperDoubleSolenoid(
-								Integer.parseInt(json.get("forwardChannel").toString()),
-								Integer.parseInt(json.get("reverseChannel").toString()));
-					} catch (NumberFormatException e) {
+					// Check if the required JsonNode values to initialize the object are present.
+					if (forwardChannel < 0 || reverseChannel < 0)
 						throw new ComponentInitException(String.format(
 								"[!] INVALID OR EMPTY CHANNEL VALUE(S) FOR DOUBLESOLENOID '%1$s' IN SUBSYSTEM '%2$s'",
-								json.get("name").toString(), subsystemName));
-					}
+								json.get("name").asText(), subsystemName));
+
+					// Create HyperDoubleSolenoid object.
+					HyperDoubleSolenoid doubleSolenoid = new HyperDoubleSolenoid(json.get("forwardChannel").asInt(),
+							json.get("reverseChannel").asInt());
+
+					// Additional initialization configuration.
 					doubleSolenoid.stop();
+					// ...
 
 					// Put object in HashMap with its declared name as key after initialization and
 					// configuration.
-					doubleSolenoids.put(json.get("name").toString(), doubleSolenoid);
-				} else {
-					System.out.println(String.format("[!] UNDECLARED OR EMPTY DOUBLESOLENOID ENTRY IN SUBSYSTEM '%s'",
-							subsystemName.toUpperCase()));
-				}
+					doubleSolenoids.put(json.get("name").asText(), doubleSolenoid);
+				} else
+					throw new ComponentInitException(
+							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY DOUBLESOLENOID ENTRY IN SUBSYSTEM '%s'",
+									subsystemName.toUpperCase()));
 			} catch (ComponentInitException e) {
 				System.out.println(e.getMessage());
-			} finally {
-				// Clear JSONObject after use, not sure if it does anything, but it might free
-				// some unused memory.
-				json.clear();
+				DriverStation.reportError(e.getMessage(), false);
 			}
 		});
-
-		// Clear JSONArray after use, not sure if it does anything, but it might free
-		// some unused memory.
-		doubleSolenoidArray.clear();
 	}
 
 	/**
