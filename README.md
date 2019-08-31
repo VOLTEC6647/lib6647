@@ -11,7 +11,7 @@ Team 6647 encourages the usage of this library by any team that may find it usef
 
 ### Compiling lib6647 to your Robot
 
-**lib6647** must be added as a dependency in your Robot's _build.gradle_ file, as well as the **json-simple** library that it requires.
+**lib6647** must be added as a dependency in your Robot's _build.gradle_ file, as well as the **jackson** library that it requires.
 
 First, add the following url to your Maven repositories in _build.gradle_: https://jitpack.io. This is to effortlessly compile code from any github project release or commit into your code.
 
