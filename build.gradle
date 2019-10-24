@@ -49,14 +49,13 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.0.pr1'
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.0.pr1'
-
 	
 	//Phoenix dependencies.
 	compile group: 'com.ctre.phoenix', name: 'api-java', version: '5.14.1'
 	compile group: 'com.ctre.phoenix', name: 'wpiapi-java', version: '5.14.1'
 
     //Kauai Labs dependencies.
-    compile group: 'com.kauailabs.navx.frc', name: 'navx-java', version: '3.1.367'
+    compile group: 'com.kauailabs.navx.frc', name: 'navx-java', version: '3.1.377'
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
