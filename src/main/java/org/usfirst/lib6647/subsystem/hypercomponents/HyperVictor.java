@@ -15,6 +15,9 @@ public class HyperVictor extends WPI_VictorSPX {
 	 */
 	private double limiter = 1;
 
+	/** Speed to be added to {@link HyperVictor}. */
+	private double added = 0;
+
 	/**
 	 * Wrapper for {@link WPI_VictorSPX}.
 	 * 
@@ -52,6 +55,15 @@ public class HyperVictor extends WPI_VictorSPX {
 	}
 
 	/**
+	 * Sets added {@link HyperVictor} speed.
+	 * 
+	 * @param speed
+	 */
+	public void add(double speed) {
+		this.added += speed;
+	}
+
+	/**
 	 * Sets {@link HyperVictor} to a given speed, in
 	 * {@link ControlMode#PercentOutput PercentOutput}.
 	 * 
@@ -70,10 +82,7 @@ public class HyperVictor extends WPI_VictorSPX {
 	 * @param limited
 	 */
 	public void set(double speed, boolean limited) {
-		if (speed >= limiter && limited)
-			super.set(ControlMode.PercentOutput, limiter);
-		else
-			super.set(ControlMode.PercentOutput, speed);
+		super.set(ControlMode.PercentOutput, (speed >= limiter && limited ? limiter : speed) + added);
 	}
 
 	/**
@@ -83,6 +92,6 @@ public class HyperVictor extends WPI_VictorSPX {
 	 * @param speed
 	 */
 	public void setWithRamp(double speed) {
-		super.set(ControlMode.PercentOutput, speed * limiter);
+		super.set(ControlMode.PercentOutput, speed * limiter + added);
 	}
 }
