@@ -64,6 +64,23 @@ public class HyperVictor extends WPI_VictorSPX {
 	}
 
 	/**
+	 * Get added value.
+	 * 
+	 * @return added
+	 */
+	public double getAdd() {
+		return added;
+	}
+
+	/**
+	 * Reset added {@link HyperTalon} speed.
+	 * @NOTE: only use on robot init.
+	 */
+	public void resetAdd() {
+		added = 0;
+	}
+
+	/**
 	 * Sets {@link HyperVictor} to a given speed, in
 	 * {@link ControlMode#PercentOutput PercentOutput}.
 	 * 

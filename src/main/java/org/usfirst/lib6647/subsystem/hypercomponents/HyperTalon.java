@@ -64,6 +64,23 @@ public class HyperTalon extends WPI_TalonSRX {
 	}
 
 	/**
+	 * Get added value.
+	 * 
+	 * @return added
+	 */
+	public double getAdd() {
+		return added;
+	}
+
+	/**
+	 * Reset added {@link HyperTalon} speed.
+	 * @NOTE: only use on robot init.
+	 */
+	public void resetAdd() {
+		added = 0;
+	}
+
+	/**
 	 * Sets {@link HyperTalon} to a given speed, in {@link ControlMode#PercentOutput
 	 * PercentOutput}.
 	 * 
