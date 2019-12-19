@@ -39,7 +39,7 @@ public class ControllerProfiles {
 	 * 
 	 * @param filePath
 	 */
-	public ControllerProfiles(String filePath) {
+	private ControllerProfiles(final String filePath) {
 		this.filePath = filePath;
 		mapper = new ObjectMapper();
 	}

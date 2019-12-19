@@ -12,10 +12,10 @@ import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
- * Wrapper for the {@link Joystick} class for easy {@link Button}
- * initialization, and more.
+ * Wrapper for the {@link GenericHID} class for easy {@link Button}
+ * initialization, among other things.
  */
-public class JController extends Joystick {
+public class JController extends GenericHID {
 
 	/**
 	 * HashMap storing the {@link JController}'s {@link Button Buttons}.
@@ -66,9 +66,9 @@ public class JController extends Joystick {
 
 		// axisButton initialization. Starting at 0.
 		for (int i = 0; i < this.getAxisCount(); i++) {
-			buttons.put("Stick" + i, buttonFromAxis(this, i));
-			buttons.put("Stick" + i + "_1", buttonFromAxisPositive(this, i));
-			buttons.put("Stick" + i + "_-1", buttonFromAxisNegative(this, i));
+			buttons.put("Stick" + i, buttonFromAxis(this, i, 0.30, true));
+			buttons.put("Stick" + i + "_1", buttonFromAxis(this, i, 0.30, false));
+			buttons.put("Stick" + i + "_-1", buttonFromAxis(this, i, -0.30, false));
 		}
 	}
 
@@ -183,54 +183,43 @@ public class JController extends Joystick {
 	}
 
 	/**
-	 * Method for getting an axisButton input for any value, with 0.30 as tolerance
-	 * (so as to avoid accidental input due to improper {@link JController}
-	 * calibration).
+	 * Method for getting an axisButton input for any value, with given value as
+	 * tolerance (so as to avoid accidental input due to improper
+	 * {@link JController} calibration).
 	 * 
 	 * @param controller
 	 * @param axis
+	 * @param tolerance
+	 * @param absolute
 	 * @return axisButton
 	 */
-	private Button buttonFromAxis(GenericHID controller, int axis) {
+	private Button buttonFromAxis(GenericHID controller, int axis, double tolerance, boolean absolute) {
 		return new Button() {
 			@Override
 			public boolean get() {
-				return Math.abs(controller.getRawAxis(axis)) < 0.30;
+				return absolute ? Math.abs(controller.getRawAxis(axis)) < tolerance
+						: controller.getRawAxis(axis) < tolerance;
 			}
 		};
 	}
 
 	/**
-	 * Method for getting a negative axisButton input, with -0.30 as tolerance (to
-	 * avoid accidental input due to improper {@link JController} calibration).
-	 * 
-	 * @param controller
-	 * @param axis
-	 * @return axisButton
+	 * @deprecated Use "Stick0" syntax instead.
+	 * @param hand
+	 * @return 0
 	 */
-	private Button buttonFromAxisNegative(GenericHID controller, int axis) {
-		return new Button() {
-			@Override
-			public boolean get() {
-				return controller.getRawAxis(axis) < -0.30;
-			}
-		};
+	@Override
+	public double getX(Hand hand) {
+		return 0;
 	}
 
 	/**
-	 * Method for getting a positive axisButton input, with 0.30 as tolerance (to
-	 * avoid accidental input due to improper {@link JController} calibration).
-	 * 
-	 * @param controller
-	 * @param axis
-	 * @return axisButton
+	 * @deprecated Use "Stick0" syntax instead.
+	 * @param hand
+	 * @return 0
 	 */
-	private Button buttonFromAxisPositive(GenericHID controller, int axis) {
-		return new Button() {
-			@Override
-			public boolean get() {
-				return controller.getRawAxis(axis) > 0.30;
-			}
-		};
+	@Override
+	public double getY(Hand hand) {
+		return 0;
 	}
 }

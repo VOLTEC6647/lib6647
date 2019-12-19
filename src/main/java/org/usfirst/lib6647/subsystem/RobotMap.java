@@ -37,7 +37,7 @@ public class RobotMap {
 	 * 
 	 * @param filePath
 	 */
-	public RobotMap(String filePath) {
+	private RobotMap(final String filePath) {
 		this.filePath = filePath;
 		mapper = new ObjectMapper();
 	}

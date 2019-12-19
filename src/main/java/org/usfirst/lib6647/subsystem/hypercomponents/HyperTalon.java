@@ -4,10 +4,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 /**
- * HyperComponent for {@link WPI_TalonSRX}.
+ * HyperComponent wrapper for {@link WPI_TalonSRX}.
  */
 public class HyperTalon extends WPI_TalonSRX {
-
 	/**
 	 * Limits how fast the Talon can go as a percentage if using
 	 * {@link #setTalonWithRamp(double)} or {@link #setTalon(double, boolean)} if
@@ -15,8 +14,10 @@ public class HyperTalon extends WPI_TalonSRX {
 	 */
 	private double limiter = 1;
 
-	/** Speed to be added to {@link HyperTalon}. */
-	private double added = 0;
+	/** Stores last set speed. */
+	private double lastSpeed = Double.NaN;
+	/** Stores last set {@link ControlMode}. */
+	protected ControlMode lastMode = null;
 
 	/**
 	 * Wrapper for {@link WPI_TalonSRX}.
@@ -32,7 +33,7 @@ public class HyperTalon extends WPI_TalonSRX {
 	/**
 	 * Returns {@link #limiter} value for {@link WPI_TalonSRX} speed.
 	 * 
-	 * @return
+	 * @return limiter
 	 */
 	public double getLimiter() {
 		return limiter;
@@ -40,6 +41,8 @@ public class HyperTalon extends WPI_TalonSRX {
 
 	/**
 	 * Sets {@link #limiter} for {@link WPI_TalonSRX} speed.
+	 * 
+	 * @param limiter
 	 */
 	public void setLimiter(double limiter) {
 		this.limiter = limiter;
@@ -55,32 +58,6 @@ public class HyperTalon extends WPI_TalonSRX {
 	}
 
 	/**
-	 * Sets added {@link HyperTalon} speed.
-	 * 
-	 * @param speed
-	 */
-	public void add(double speed) {
-		this.added += speed;
-	}
-
-	/**
-	 * Get added value.
-	 * 
-	 * @return added
-	 */
-	public double getAdd() {
-		return added;
-	}
-
-	/**
-	 * Reset added {@link HyperTalon} speed.
-	 * @NOTE: only use on robot init.
-	 */
-	public void resetAdd() {
-		added = 0;
-	}
-
-	/**
 	 * Sets {@link HyperTalon} to a given speed, in {@link ControlMode#PercentOutput
 	 * PercentOutput}.
 	 * 
@@ -88,27 +65,56 @@ public class HyperTalon extends WPI_TalonSRX {
 	 */
 	@Override
 	public void set(double speed) {
-		set(speed, false);
+		lazySet(ControlMode.PercentOutput, speed);
 	}
 
 	/**
-	 * Sets {@link HyperTalon} to a given speed, in {@link ControlMode#PercentOutput
-	 * PercentOutput}.
+	 * Sets {@link HyperTalon} to a given speed, with the given {@link ControlMode}.
 	 * 
+	 * @param mode
+	 * @param speed
+	 */
+	@Override
+	public void set(ControlMode mode, double speed) {
+		lazySet(mode, speed);
+	}
+
+	/**
+	 * Sets {@link HyperTalon} to a given speed, in the given {@link ControlMode}.
+	 * Also sets whether to limit the set value or not.
+	 * 
+	 * @param mode
 	 * @param speed
 	 * @param limited
 	 */
-	public void set(double speed, boolean limited) {
-		super.set(ControlMode.PercentOutput, (speed >= limiter && limited ? limiter : speed) + added);
+	public void set(ControlMode mode, double speed, boolean limited) {
+		lazySet(mode, speed >= limiter && limited ? limiter : speed);
 	}
 
 	/**
-	 * Sets {@link HyperTalon} to a given amount multiplied by {@link #limiter}, in
-	 * {@link ControlMode#PercentOutput PercentOutput}.
+	 * Sets {@link HyperTalon} to a given amount multiplied by {@link #limiter}, for
+	 * the given {@link ControlMode}.
 	 * 
+	 * @param mode
 	 * @param speed
 	 */
-	public void setWithRamp(double speed) {
-		super.set(ControlMode.PercentOutput, speed * limiter + added);
+	public void setWithRamp(ControlMode mode, double speed) {
+		lazySet(mode, speed * limiter);
+	}
+
+	/**
+	 * Sets {@link HyperTalon} to a given speed, with the given {@link ControlMode}.
+	 * Copied over from:
+	 * https://github.com/Team254/FRC-2019-Public/blob/master/src/main/java/com/team254/lib/drivers/LazyTalonSRX.java
+	 * 
+	 * @param mode
+	 * @param speed
+	 */
+	private void lazySet(ControlMode mode, double speed) {
+		if (speed != lastSpeed || mode != lastMode) {
+			lastSpeed = speed;
+			lastMode = mode;
+			super.set(mode, speed);
+		}
 	}
 }
