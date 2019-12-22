@@ -1,10 +1,11 @@
 package org.usfirst.lib6647.subsystem;
 
-import java.io.FileReader;
-import java.io.Reader;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
+import org.usfirst.lib6647.loops.ILooper;
+import org.usfirst.lib6647.util.JSONReader;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -26,11 +27,32 @@ public abstract class SuperSubsystem extends Subsystem {
 	public SuperSubsystem(String name) {
 		super(name);
 
-		try (Reader file = new FileReader(RobotMap.getInstance().getFilePath())) {
-			robotMap = RobotMap.getInstance().getMapper().readTree(file).get(getName());
+		try {
+			robotMap = JSONReader.getInstance().getNode("RobotMap", name);
 		} catch (Exception e) {
-			System.out.println("[!] SUBSYSTEM '" + getName().toUpperCase() + "' JSON INIT ERROR: " + e.getMessage());
+			String error = String.format("[!] SUBSYSTEM '%s' JSON INIT ERROR:\n\t%s", name.toUpperCase(),
+					e.getLocalizedMessage());
+
+			System.out.println(error);
+			DriverStation.reportError(error, false);
+
 			System.exit(1);
 		}
+	}
+
+	// Optional design pattern for caching periodic reads to avoid hammering the
+	// HAL/CAN.
+	public void readPeriodicInputs() {
+	}
+
+	// Optional design pattern for caching periodic writes to avoid hammering the
+	// HAL/CAN.
+	public void writePeriodicOutputs() {
+	}
+
+	public void registerEnabledLoops(ILooper mEnabledLooper) {
+	}
+
+	public void zeroSensors() {
 	}
 }

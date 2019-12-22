@@ -1,11 +1,12 @@
 package org.usfirst.lib6647.oi;
 
-import java.io.FileReader;
-import java.io.Reader;
 import java.util.HashMap;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import org.usfirst.lib6647.util.JSONReader;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
@@ -44,11 +45,15 @@ public class JController extends GenericHID {
 	public JController(int port) {
 		super(port);
 
-		try (Reader file = new FileReader(ControllerProfiles.getInstance().getFilePath())) {
-			profile = ControllerProfiles.getInstance().getMapper().readTree(file).get(getName());
+		try {
+			profile = JSONReader.getInstance().getNode("Profiles", getName());
 		} catch (Exception e) {
-			System.out.println(
-					"[!] COULD NOT INITIALIZE CONTROLLER PROFILE FOR CONTROLLER '" + getName().toUpperCase() + "'.");
+			String error = String.format(
+					"[!] COULD NOT INITIALIZE CONTROLLER PROFILE FOR CONTROLLER '%s', USER-FRIENDLY NAMES WON'T WORK:\n\t%s",
+					getName().toUpperCase(), e.getLocalizedMessage());
+
+			System.out.println(error);
+			DriverStation.reportError(error, false);
 		}
 
 		// Button initialization. Starting at 1.
