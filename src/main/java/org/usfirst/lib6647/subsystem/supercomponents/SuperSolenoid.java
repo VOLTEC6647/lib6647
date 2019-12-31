@@ -22,7 +22,7 @@ public interface SuperSolenoid {
 	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperSolenoid
 	 * HyperSolenoids}.
 	 */
-	public HashMap<String, HyperSolenoid> solenoids = new HashMap<String, HyperSolenoid>();
+	public HashMap<String, HyperSolenoid> solenoids = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link HyperSolenoid HyperSolenoids} declared in the

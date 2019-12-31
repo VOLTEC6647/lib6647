@@ -74,7 +74,7 @@ public class RobotMap implements ILooper {
 	 */
 	@SafeVarargs
 	public final <T extends SuperSubsystem> void setSubsystems(Supplier<T>... subsystems) {
-		Arrays.asList(subsystems).forEach(s -> this.subsystems.put(s.get().getName(), (SuperSubsystem) s.get()));
+		Arrays.asList(subsystems).forEach(s -> this.subsystems.put(s.get().getName(), s.get()));
 	}
 
 	/**

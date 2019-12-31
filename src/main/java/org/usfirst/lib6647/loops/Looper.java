@@ -1,11 +1,11 @@
 package org.usfirst.lib6647.loops;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This code runs all of the robot's loops. Loop objects are stored in a List
@@ -25,7 +25,7 @@ public class Looper implements ILooper {
 
 	public Looper(double period) {
 		this.period = period;
-		
+
 		running = false;
 		loops = new ArrayList<>();
 		notifier = new Notifier(() -> {
@@ -54,6 +54,9 @@ public class Looper implements ILooper {
 		}
 	}
 
+	/**
+	 * Start registered {@link Loop Loops} in {@link Looper#loops}.
+	 */
 	public synchronized void start() {
 		if (!running) {
 			System.out.println("Starting loops...");
@@ -71,6 +74,9 @@ public class Looper implements ILooper {
 		}
 	}
 
+	/**
+	 * Stop registered {@link Loop Loops} in {@link Looper#loops}.
+	 */
 	public synchronized void stop() {
 		if (running) {
 			System.out.println("Stopping loops...");
@@ -87,6 +93,9 @@ public class Looper implements ILooper {
 		}
 	}
 
+	/**
+	 * Output {@link Looper#dt DT} to SmartDashboard.
+	 */
 	public void outputToSmartDashboard() {
 		SmartDashboard.putNumber("looper_dt", dt);
 	}

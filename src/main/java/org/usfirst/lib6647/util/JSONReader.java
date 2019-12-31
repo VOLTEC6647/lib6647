@@ -1,9 +1,9 @@
 package org.usfirst.lib6647.util;
 
-import java.io.Reader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +43,7 @@ public class JSONReader {
 	 * a file path such as '/home/lvuser/deploy/Profiles.json' has a key of
 	 * 'Profiles'.
 	 */
-	private static final Map<String, String> filePaths = new HashMap<String, String>();
+	private static final Map<String, String> filePaths = new HashMap<>();
 
 	/**
 	 * Must be instantiated with each name of every JSON file that goes into the
