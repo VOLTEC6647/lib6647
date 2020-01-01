@@ -1,11 +1,9 @@
 package org.usfirst.lib6647.subsystem;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.usfirst.lib6647.loops.ILooper;
@@ -18,34 +16,20 @@ import org.usfirst.lib6647.loops.Looper;
  * the {@link SuperSubsystem subsystems}.
  */
 public class RobotMap implements ILooper {
-
-	/** Static instance of {@link RobotMap}. */
-	private static RobotMap instance = null;
-
-	/**
-	 * Gets static {@link RobotMap} instance. If there is none, creates one.
-	 * 
-	 * @return static {@link RobotMap} instance
-	 */
-	public static RobotMap getInstance() {
-		if (instance == null)
-			instance = new RobotMap();
-
-		return instance;
-	}
-
 	/** Map holding every {@link SuperSubsystem}, with its name as its key. */
 	private Map<String, SuperSubsystem> subsystems;
-	/** List holding every {@link Loop}. */
-	private List<Loop> loops;
+	/** Lists holding every {@link Loop}. */
+	private List<Loop> enabledLoops, disabledLoops, periodicLoops;
 
 	/**
 	 * Constructor for {@link RobotMap}, initializes {@link #subsystems} and
 	 * {@link #loops}.
 	 */
-	private RobotMap() {
-		subsystems = new HashMap<String, SuperSubsystem>();
-		loops = new ArrayList<Loop>();
+	public RobotMap() {
+		subsystems = new HashMap<>();
+		enabledLoops = new ArrayList<>();
+		disabledLoops = new ArrayList<>();
+		periodicLoops = new ArrayList<>();
 	}
 
 	/**
@@ -68,13 +52,14 @@ public class RobotMap implements ILooper {
 	}
 
 	/**
-	 * Set every subsystem managed by this class.
+	 * Adds a {@link SuperSubsystem} to the map of {@link RobotMap#subsystems
+	 * subsystems}.
 	 * 
-	 * @param <T> subsystems
+	 * @param SuperSubsystem
+	 * @param subsystem
 	 */
-	@SafeVarargs
-	public final <T extends SuperSubsystem> void setSubsystems(Supplier<T>... subsystems) {
-		Arrays.asList(subsystems).forEach(s -> this.subsystems.put(s.get().getName(), s.get()));
+	public void registerSubsystem(SuperSubsystem subsystem) {
+		subsystems.put(subsystem.getName(), subsystem);
 	}
 
 	/**
@@ -84,19 +69,19 @@ public class RobotMap implements ILooper {
 	private class EnabledLoop implements Loop {
 		@Override
 		public void onStart(double timestamp) {
-			loops.forEach(loop -> loop.onStart(timestamp));
+			enabledLoops.forEach(loop -> loop.onStart(timestamp));
 		}
 
 		@Override
 		public void onLoop(double timestamp) {
 			subsystems.values().forEach(SuperSubsystem::readPeriodicInputs);
-			loops.forEach(loop -> loop.onLoop(timestamp));
+			enabledLoops.forEach(loop -> loop.onLoop(timestamp));
 			subsystems.values().forEach(SuperSubsystem::writePeriodicOutputs);
 		}
 
 		@Override
 		public void onStop(double timestamp) {
-			loops.forEach(loop -> loop.onStop(timestamp));
+			enabledLoops.forEach(loop -> loop.onStop(timestamp));
 		}
 	}
 
@@ -107,15 +92,41 @@ public class RobotMap implements ILooper {
 	private class DisabledLoop implements Loop {
 		@Override
 		public void onStart(double timestamp) {
+			disabledLoops.forEach(loop -> loop.onStart(timestamp));
 		}
 
 		@Override
 		public void onLoop(double timestamp) {
 			subsystems.values().forEach(SuperSubsystem::readPeriodicInputs);
+			disabledLoops.forEach(loop -> loop.onLoop(timestamp));
+			subsystems.values().forEach(SuperSubsystem::writePeriodicOutputs);
 		}
 
 		@Override
 		public void onStop(double timestamp) {
+			disabledLoops.forEach(loop -> loop.onStop(timestamp));
+		}
+	}
+
+	/**
+	 * {@link Loop} implementation for running subroutines.
+	 */
+	private class PeriodicLoop implements Loop {
+		@Override
+		public void onStart(double timestamp) {
+			periodicLoops.forEach(loop -> loop.onStart(timestamp));
+		}
+
+		@Override
+		public void onLoop(double timestamp) {
+			subsystems.values().forEach(SuperSubsystem::readPeriodicInputs);
+			periodicLoops.forEach(loop -> loop.onLoop(timestamp));
+			subsystems.values().forEach(SuperSubsystem::writePeriodicOutputs);
+		}
+
+		@Override
+		public void onStop(double timestamp) {
+			// Should never reach here, as periodic loops will always be running.
 		}
 	}
 
@@ -135,16 +146,21 @@ public class RobotMap implements ILooper {
 	 * @param disabledLooper
 	 */
 	public void registerDisabledLoops(Looper disabledLooper) {
+		subsystems.values().forEach(s -> s.registerDisabledLoops(this));
 		disabledLooper.register(new DisabledLoop());
 	}
 
 	/**
-	 * Adds a loop into the {@link #loops} {@link ArrayList}.
+	 * Registers periodic {@link Loop loops} for every {@link SuperSubsystem}.
 	 * 
-	 * @param loop
+	 * @param periodicLooper
 	 */
+	public void registerPeriodicLoops(Looper periodicLooper) {
+		subsystems.values().forEach(s -> s.registerPeriodicLoops(this));
+		periodicLooper.register(new PeriodicLoop());
+	}
+
 	@Override
 	public void register(Loop loop) {
-		loops.add(loop);
 	}
 }

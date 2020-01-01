@@ -3,12 +3,9 @@ package org.usfirst.lib6647.subsystem;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.PIDOutput;
-import edu.wpi.first.wpilibj.PIDSource;
-import edu.wpi.first.wpilibj.PIDSourceType;
-import edu.wpi.first.wpilibj.command.PIDSubsystem;
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -21,26 +18,10 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 	private JsonNode robotMap;
 	/** Proportional, integral, and derivative constants. */
 	private double p = 0.0, i = 0.0, d = 0.0;
-	/** PID loop period time. Default: 0.05s (50ms). */
-	private double period = 0.05;
+	/** PID loop period time. Default: 0.02s (20ms). */
+	private double period = 0.02;
 
 	private PIDController controller;
-	private final PIDOutput output = this::usePIDOutput;
-	private final PIDSource source = new PIDSource() {
-		@Override
-		public void setPIDSourceType(final PIDSourceType pidSource) {
-		}
-
-		@Override
-		public PIDSourceType getPIDSourceType() {
-			return PIDSourceType.kDisplacement;
-		}
-
-		@Override
-		public double pidGet() {
-			return returnPIDInput();
-		}
-	};
 
 	/**
 	 * Constructor for {@link PIDSuperSubsystem}. Initializes the
@@ -55,7 +36,6 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 
 		initPID();
 		outputPIDValues(name, p, i, d);
-		addChild("PIDController", controller);
 	}
 
 	/**
@@ -74,13 +54,15 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 			period = pid.get("period").asDouble();
 
 			// Initialize PIDController with set values.
-			controller = new PIDController(p, i, d, source, output, period);
+			controller = new PIDController(p, i, d, period);
 
 			// Read and apply PIDSuperSubsystem configuration from JSON file.
-			setInputRange(pid.get("inputMin").asDouble(), pid.get("inputMax").asDouble());
-			setOutputRange(pid.get("outputMin").asDouble(), pid.get("outputMax").asDouble());
-			setAbsoluteTolerance(pid.get("absoluteTolerance").asDouble());
-			controller.setContinuous(pid.get("continuous").asBoolean());
+			if (pid.get("continuous").asBoolean())
+				enableContinuousInput(pid.get("inputMin").asDouble(), pid.get("inputMax").asDouble());
+			else
+				disableContinuousInput();
+
+			setTolerance(pid.get("tolerance").asDouble());
 		} catch (Exception e) {
 			String error = String.format("[!] PIDSUBSYSTEM '%S' INIT ERROR:\n\t%s", getName().toUpperCase(),
 					e.getMessage());
@@ -161,52 +143,30 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 	}
 
 	/**
-	 * Returns the current position.
-	 *
-	 * @return the current position
-	 */
-	public double getPosition() {
-		return returnPIDInput();
-	}
-
-	/**
-	 * Sets the maximum and minimum values expected from the input.
+	 * Enables continuous input, and sets its minimum and maximum values.
 	 *
 	 * @param minimumInput the minimum value expected from the input
 	 * @param maximumInput the maximum value expected from the output
 	 */
-	public void setInputRange(double minimumInput, double maximumInput) {
-		controller.setInputRange(minimumInput, maximumInput);
+	public void enableContinuousInput(double minimumInput, double maximumInput) {
+		controller.enableContinuousInput(minimumInput, maximumInput);
 	}
 
 	/**
-	 * Sets the maximum and minimum values to write.
-	 *
-	 * @param minimumOutput the minimum value to write to the output
-	 * @param maximumOutput the maximum value to write to the output
+	 * Disables continuous input.
 	 */
-	public void setOutputRange(double minimumOutput, double maximumOutput) {
-		controller.setOutputRange(minimumOutput, maximumOutput);
+	public void disableContinuousInput() {
+		controller.disableContinuousInput();
 	}
 
 	/**
-	 * Set the absolute error which is considered tolerable for use with OnTarget.
-	 * The value is in the same range as the PIDInput values.
+	 * Set the absolute error which is considered tolerable for use with
+	 * {@link PIDSuperSubsystem#onTarget onTarget()}.
 	 *
-	 * @param tolerance the absolute tolerance
+	 * @param tolerance
 	 */
-	public void setAbsoluteTolerance(double tolerance) {
-		controller.setAbsoluteTolerance(tolerance);
-	}
-
-	/**
-	 * Set the percentage error which is considered tolerable for use with OnTarget.
-	 * (Value of 15.0 == 15 percent).
-	 *
-	 * @param percentage the percent tolerance
-	 */
-	public void setPercentTolerance(double percentage) {
-		controller.setPercentTolerance(percentage);
+	public void setTolerance(double tolerance) {
+		controller.setTolerance(tolerance);
 	}
 
 	/**
@@ -214,50 +174,16 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 	 * determined by setTolerance. This assumes that the maximum and minimum input
 	 * were set using setInput.
 	 *
-	 * @return true if the error is less than the tolerance
+	 * @return atSetpoint
 	 */
 	public boolean onTarget() {
-		return controller.onTarget();
+		return controller.atSetpoint();
 	}
 
 	/**
-	 * Returns the input for the pid loop.
+	 * Returns the current sensor position.
 	 *
-	 * <p>
-	 * It returns the input for the pid loop, so if this Subsystem was based off of
-	 * a gyro, then it should return the angle of the gyro.
-	 *
-	 * <p>
-	 * All subclasses of {@link PIDSuperSubsystem} must override this method.
-	 *
-	 * @return the value the pid loop should use as input
+	 * @return position
 	 */
-	protected abstract double returnPIDInput();
-
-	/**
-	 * Uses the value that the pid loop calculated. The calculated value is the
-	 * "output" parameter. This method is a good time to set motor values, maybe
-	 * something along the lines of
-	 * <code>driveline.tankDrive(output, -output)</code>.
-	 *
-	 * <p>
-	 * All subclasses of {@link PIDSuperSubsystem} must override this method.
-	 *
-	 * @param output the value the pid loop calculated
-	 */
-	protected abstract void usePIDOutput(double output);
-
-	/**
-	 * Enables the internal {@link PIDController}.
-	 */
-	public void enable() {
-		controller.enable();
-	}
-
-	/**
-	 * Disables the internal {@link PIDController}.
-	 */
-	public void disable() {
-		controller.disable();
-	}
+	public abstract double getPosition();
 }

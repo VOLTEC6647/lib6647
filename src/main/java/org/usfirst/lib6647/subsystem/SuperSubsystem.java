@@ -6,18 +6,18 @@ import org.usfirst.lib6647.loops.ILooper;
 import org.usfirst.lib6647.util.JSONReader;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /**
  * Abstract class to allow usage of {@link #robotMap JSON files} for
  * {@link Subsystem} creation.
  */
-public abstract class SuperSubsystem extends Subsystem {
+public abstract class SuperSubsystem implements Subsystem {
 
-	/**
-	 * Bread and butter of {@link SuperSubsystem}.
-	 */
+	/** Bread and butter of {@link SuperSubsystem}. */
 	protected JsonNode robotMap;
+	/** Name of the {@link SuperSubsystem}. */
+	private String name;
 
 	/**
 	 * Constructor for {@link SuperSubsystem}.
@@ -25,7 +25,7 @@ public abstract class SuperSubsystem extends Subsystem {
 	 * @param name (of the {@link Subsystem})
 	 */
 	public SuperSubsystem(String name) {
-		super(name);
+		this.name = name;
 
 		try {
 			robotMap = JSONReader.getInstance().getNode("RobotMap", name);
@@ -40,6 +40,15 @@ public abstract class SuperSubsystem extends Subsystem {
 		}
 	}
 
+	/**
+	 * Gets {@link SuperSubsystem}'s {@link SuperSubsystem#name name}.
+	 * 
+	 * @return name
+	 */
+	public String getName() {
+		return name;
+	}
+
 	// Optional design pattern for caching periodic reads to avoid hammering the
 	// HAL/CAN.
 	public void readPeriodicInputs() {
@@ -50,7 +59,13 @@ public abstract class SuperSubsystem extends Subsystem {
 	public void writePeriodicOutputs() {
 	}
 
-	public void registerEnabledLoops(ILooper mEnabledLooper) {
+	public void registerEnabledLoops(ILooper enabledLooper) {
+	}
+
+	public void registerDisabledLoops(ILooper disabledLooper) {
+	}
+
+	public void registerPeriodicLoops(ILooper periodicLooper) {
 	}
 
 	public void zeroSensors() {

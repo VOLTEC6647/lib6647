@@ -9,8 +9,8 @@ import org.usfirst.lib6647.util.JSONReader;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.Button;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Button;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * Wrapper for the {@link GenericHID} class for easy {@link Button}
@@ -21,7 +21,7 @@ public class JController extends GenericHID {
 	/**
 	 * HashMap storing the {@link JController}'s {@link Button Buttons}.
 	 */
-	public HashMap<String, Button> buttons = new HashMap<String, Button>();
+	public HashMap<String, Button> buttons = new HashMap<>();
 
 	/**
 	 * Left or right axis of the {@link JController} (assuming it's a gamepad).
