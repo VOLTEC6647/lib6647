@@ -1,8 +1,10 @@
 package org.usfirst.lib6647.loops;
 
+import java.util.HashMap;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import org.usfirst.lib6647.oi.JController;
 import org.usfirst.lib6647.subsystem.RobotMap;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.util.JSONReader;
@@ -20,6 +22,8 @@ public abstract class LooperRobot extends TimedRobot {
 	private final Looper enabledLooper = new Looper(), disabledLooper = new Looper(), periodicLooper = new Looper();
 	/** Final instance of {@link RobotMap}. */
 	private final RobotMap robotMap = new RobotMap();
+	/** HashMap holding initialized {@link JController joysticks}. */
+	private HashMap<String, JController> joysticks = new HashMap<>();
 
 	/**
 	 * Constructor for {@link LooperRobot} with default period. Every subsystem
@@ -111,5 +115,9 @@ public abstract class LooperRobot extends TimedRobot {
 
 	public Stream<SuperSubsystem> getSubsystems() {
 		return robotMap.getSubsystems();
+	}
+
+	public JController getJoystick(String name) {
+		return joysticks.get(name);
 	}
 }

@@ -82,8 +82,9 @@ Now you're ready to begin instantiating and initializing objects through JSON!
 	- [ ] HyperUltrasonic
 	- [x] HyperVictor
 - [ ] Implement SuperComponents.
-	- [ ] SuperAHRS
+	- [x] SuperAHRS
 	- [ ] SuperAnalogPotentiometer
+	- [x] SuperComponent
 	- [x] SuperCompressor
 	- [x] SuperDigitalInput
 	- [x] SuperDoubleSolenoid
@@ -96,6 +97,9 @@ Now you're ready to begin instantiating and initializing objects through JSON!
 - [x] Improve Controller initialization.
 	- [x] Create JController class, for initializing Buttons along with a Controller.
 	- [x] Add Buttons for each POV and axis found for the Controller.
+- [x] Implement Team 254's Looper subroutines.
+	- [x] Create LooperRobot.
+	- [ ] Come up with a way to run Loops in the same Looper with different period times.
 - [ ] Add more flexibility and configuration options.
 - [x] Document everything properly.
 - [x] Do proper Exception handling.
