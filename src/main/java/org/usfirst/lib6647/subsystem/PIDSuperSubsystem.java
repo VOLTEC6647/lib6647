@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public abstract class PIDSuperSubsystem extends SuperSubsystem {
 
 	/** Bread and butter of {@link PIDSuperSubsystem}. */
-	private JsonNode robotMap;
+	protected JsonNode robotMap;
 	/** Proportional, integral, and derivative constants. */
 	private double p = 0.0, i = 0.0, d = 0.0;
 	/** PID loop period time. Default: 0.02s (20ms). */
@@ -33,6 +33,9 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 	 */
 	public PIDSuperSubsystem(final String name) {
 		super(name);
+
+		// Pass robotMap on to the class extending this.
+		robotMap = super.robotMap;
 
 		initPID();
 		outputPIDValues(name, p, i, d);
