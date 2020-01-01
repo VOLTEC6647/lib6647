@@ -14,12 +14,12 @@ import edu.wpi.first.wpilibj.DriverStation;
  * and implement this interface in order to initialize custom Components
  * declared in {@link SuperSubsystem#robotMap robotMap}.
  */
-public interface SuperComponent<T> {
+public interface SuperComponent {
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s custom Components. Components
 	 * obtained must be cast to be used properly.
 	 */
-	public HashMap<String, SuperComponent<?>> customComponents = new HashMap<>();
+	public HashMap<String, Object> customComponents = new HashMap<>();
 
 	/**
 	 * Method to initialize custom Components declared in the
@@ -56,16 +56,4 @@ public interface SuperComponent<T> {
 	 * @throws ComponentInitException
 	 */
 	public void customInit(JsonNode node, String subsystemName) throws ComponentInitException;
-
-	/**
-	 * This method gets a custom Component from {@link #customComponents}, without
-	 * needing to cast it.
-	 * 
-	 * @param name
-	 * @return T
-	 */
-	@SuppressWarnings("unchecked")
-	default T getComponent(String name) {
-		return (T) customComponents.get(name);
-	}
 }
