@@ -23,7 +23,7 @@ public abstract class LooperRobot extends TimedRobot {
 	/** Final instance of {@link RobotMap}. */
 	private final RobotMap robotMap = new RobotMap();
 	/** HashMap holding initialized {@link JController joysticks}. */
-	private HashMap<String, JController> joysticks = new HashMap<>();
+	protected HashMap<String, JController> joysticks = new HashMap<>();
 
 	/**
 	 * Constructor for {@link LooperRobot} with default period. Every subsystem
