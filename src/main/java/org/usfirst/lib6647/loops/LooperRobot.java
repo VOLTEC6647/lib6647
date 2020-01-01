@@ -1,12 +1,14 @@
 package org.usfirst.lib6647.loops;
 
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import org.usfirst.lib6647.subsystem.RobotMap;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.util.JSONReader;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
  * Implementation of Team 254's {@link Looper Loopers} within a
@@ -67,6 +69,11 @@ public abstract class LooperRobot extends TimedRobot {
 	}
 
 	@Override
+	public void robotPeriodic() {
+		CommandScheduler.getInstance().run();
+	}
+
+	@Override
 	public void disabledInit() {
 		enabledLooper.stop();
 		disabledLooper.start();
@@ -96,5 +103,13 @@ public abstract class LooperRobot extends TimedRobot {
 		enabledLooper.stop();
 
 		System.out.println("Default LooperRobot testInit() method... Override me!");
+	}
+
+	public SuperSubsystem getSubsystem(String name) {
+		return robotMap.getSubsystem(name);
+	}
+
+	public Stream<SuperSubsystem> getSubsystems() {
+		return robotMap.getSubsystems();
 	}
 }
