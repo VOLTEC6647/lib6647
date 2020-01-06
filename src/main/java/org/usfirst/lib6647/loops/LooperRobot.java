@@ -35,7 +35,7 @@ public abstract class LooperRobot extends TimedRobot {
 	 * @param subsystems
 	 */
 	@SafeVarargs
-	public <T extends SuperSubsystem> LooperRobot(Supplier<T>... subsystems) {
+	protected <T extends SuperSubsystem> LooperRobot(Supplier<T>... subsystems) {
 		this(0.02, subsystems);
 	}
 
@@ -49,7 +49,7 @@ public abstract class LooperRobot extends TimedRobot {
 	 * @param subsystems
 	 */
 	@SafeVarargs
-	public <T extends SuperSubsystem> LooperRobot(double period, Supplier<T>... subsystems) {
+	protected <T extends SuperSubsystem> LooperRobot(double period, Supplier<T>... subsystems) {
 		super(period);
 
 		// Make sure ~/lvuser/deploy/Profiles.json and ~/lvuser/deploy/RobotMap.json
