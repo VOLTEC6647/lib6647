@@ -213,6 +213,7 @@ public class JController extends GenericHID {
 	 * @param hand
 	 * @return 0
 	 */
+	@Deprecated
 	@Override
 	public double getX(Hand hand) {
 		return 0;
@@ -223,6 +224,7 @@ public class JController extends GenericHID {
 	 * @param hand
 	 * @return 0
 	 */
+	@Deprecated
 	@Override
 	public double getY(Hand hand) {
 		return 0;
