@@ -19,11 +19,12 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public abstract class LooperRobot extends TimedRobot {
 	/** The {@link LooperRobot}'s main {@link Looper Loopers}. */
-	private Looper enabledLooper = new Looper(), disabledLooper = new Looper(), periodicLooper = new Looper();
+	private final Looper enabledLooper = new Looper("enabled"), disabledLooper = new Looper("disabled"),
+			periodicLooper = new Looper("periodic");
 	/** Instance of {@link RobotMap}. */
-	private RobotMap robotMap = new RobotMap();
+	private final RobotMap robotMap = new RobotMap();
 	/** HashMap holding initialized {@link JController joysticks}. */
-	protected HashMap<String, JController> joysticks = new HashMap<>();
+	protected final HashMap<String, JController> joysticks = new HashMap<>();
 
 	/**
 	 * Constructor for {@link LooperRobot} with default period. Every subsystem
@@ -63,10 +64,9 @@ public abstract class LooperRobot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		// Registers each Loop in every declared subsystem.
-		robotMap.registerEnabledLoops(enabledLooper);
-		robotMap.registerDisabledLoops(disabledLooper);
-		robotMap.registerPeriodicLoops(periodicLooper);
+		robotMap.registerLoops(enabledLooper, disabledLooper, periodicLooper);
 
+		// Start periodic Loops.
 		periodicLooper.start();
 
 		System.out.println("Default LooperRobot robotInit() method... Override me!");
@@ -79,6 +79,7 @@ public abstract class LooperRobot extends TimedRobot {
 
 	@Override
 	public void disabledInit() {
+		// Start enabled Loops, stop disabled.
 		enabledLooper.stop();
 		disabledLooper.start();
 
@@ -87,6 +88,7 @@ public abstract class LooperRobot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
+		// Stop disabled Loops, start enabled.
 		disabledLooper.stop();
 		enabledLooper.start();
 
@@ -95,6 +97,7 @@ public abstract class LooperRobot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
+		// Stop disabled Loops, start enabled.
 		disabledLooper.stop();
 		enabledLooper.start();
 
@@ -103,6 +106,7 @@ public abstract class LooperRobot extends TimedRobot {
 
 	@Override
 	public void testInit() {
+		// Stop disabled Loops, stop enabled.
 		disabledLooper.stop();
 		enabledLooper.stop();
 

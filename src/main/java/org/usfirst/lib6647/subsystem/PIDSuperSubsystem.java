@@ -14,13 +14,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public abstract class PIDSuperSubsystem extends SuperSubsystem {
 
-	/** Bread and butter of {@link PIDSuperSubsystem}. */
-	protected JsonNode robotMap;
 	/** Proportional, integral, and derivative constants. */
 	private double p = 0.0, i = 0.0, d = 0.0;
 	/** PID loop period time. Default: 0.02s (20ms). */
 	private double period = 0.02;
-
+	/** {@link PIDController} instance, used by this {@link PIDSuperSubsystem}. */
 	private PIDController controller;
 
 	/**
@@ -33,9 +31,6 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 	 */
 	public PIDSuperSubsystem(final String name) {
 		super(name);
-
-		// Pass robotMap on to the class extending this.
-		robotMap = super.robotMap;
 
 		initPID();
 		outputPIDValues(name, p, i, d);
@@ -54,13 +49,13 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 			p = pid.get("p").asDouble();
 			i = pid.get("i").asDouble();
 			d = pid.get("d").asDouble();
-			period = pid.get("period").asDouble();
+			period = pid.get("period").asDouble(0.02);
 
 			// Initialize PIDController with set values.
 			controller = new PIDController(p, i, d, period);
 
 			// Read and apply PIDSuperSubsystem configuration from JSON file.
-			if (pid.get("continuous").asBoolean())
+			if (pid.get("continuous").asBoolean(false))
 				enableContinuousInput(pid.get("inputMin").asDouble(), pid.get("inputMax").asDouble());
 			else
 				disableContinuousInput();

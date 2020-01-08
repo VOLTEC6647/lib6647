@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 import org.usfirst.lib6647.loops.ILooper;
 import org.usfirst.lib6647.loops.Loop;
-import org.usfirst.lib6647.loops.Looper;
+import org.usfirst.lib6647.loops.LoopType;
 
 /**
  * Class holding instances of objects required to read values from a JSON file,
@@ -17,20 +17,10 @@ import org.usfirst.lib6647.loops.Looper;
  */
 public class RobotMap implements ILooper {
 	/** Map holding every {@link SuperSubsystem}, with its name as its key. */
-	private Map<String, SuperSubsystem> subsystems;
+	private final Map<String, SuperSubsystem> subsystems = new HashMap<>();
 	/** Lists holding every {@link Loop}. */
-	private List<Loop> enabledLoops, disabledLoops, periodicLoops;
-
-	/**
-	 * Constructor for {@link RobotMap}, initializes {@link #subsystems} and
-	 * {@link #loops}.
-	 */
-	public RobotMap() {
-		subsystems = new HashMap<>();
-		enabledLoops = new ArrayList<>();
-		disabledLoops = new ArrayList<>();
-		periodicLoops = new ArrayList<>();
-	}
+	private final List<Loop> enabledLoops = new ArrayList<>(), disabledLoops = new ArrayList<>(),
+			periodicLoops = new ArrayList<>();
 
 	/**
 	 * Return a {@link Stream} of every declared {@link SuperSubsystem}.
@@ -83,6 +73,11 @@ public class RobotMap implements ILooper {
 		public void onStop(double timestamp) {
 			enabledLoops.forEach(loop -> loop.onStop(timestamp));
 		}
+
+		@Override
+		public LoopType getType() {
+			return LoopType.ENABLED;
+		}
 	}
 
 	/**
@@ -106,6 +101,11 @@ public class RobotMap implements ILooper {
 		public void onStop(double timestamp) {
 			disabledLoops.forEach(loop -> loop.onStop(timestamp));
 		}
+
+		@Override
+		public LoopType getType() {
+			return LoopType.DISABLED;
+		}
 	}
 
 	/**
@@ -128,39 +128,41 @@ public class RobotMap implements ILooper {
 		public void onStop(double timestamp) {
 			// Should never reach here, as periodic loops will always be running.
 		}
+
+		@Override
+		public LoopType getType() {
+			return LoopType.PERIODIC;
+		}
 	}
 
 	/**
-	 * Registers enabled {@link Loop loops} for every {@link SuperSubsystem}.
+	 * Registers {@link Loop loops} for every {@link SuperSubsystem}.
 	 * 
 	 * @param enabledLooper
-	 */
-	public void registerEnabledLoops(Looper enabledLooper) {
-		subsystems.values().forEach(s -> s.registerEnabledLoops(this));
-		enabledLooper.register(new EnabledLoop());
-	}
-
-	/**
-	 * Registers disabled {@link Loop loops} for every {@link SuperSubsystem}.
-	 * 
 	 * @param disabledLooper
-	 */
-	public void registerDisabledLoops(Looper disabledLooper) {
-		subsystems.values().forEach(s -> s.registerDisabledLoops(this));
-		disabledLooper.register(new DisabledLoop());
-	}
-
-	/**
-	 * Registers periodic {@link Loop loops} for every {@link SuperSubsystem}.
-	 * 
 	 * @param periodicLooper
 	 */
-	public void registerPeriodicLoops(Looper periodicLooper) {
-		subsystems.values().forEach(s -> s.registerPeriodicLoops(this));
+	public void registerLoops(ILooper enabledLooper, ILooper disabledLooper, ILooper periodicLooper) {
+		subsystems.values().forEach(s -> s.registerLoops(this));
+
+		enabledLooper.register(new EnabledLoop());
+		disabledLooper.register(new DisabledLoop());
 		periodicLooper.register(new PeriodicLoop());
 	}
 
 	@Override
 	public void register(Loop loop) {
+		switch (loop.getType()) {
+		case ENABLED:
+			enabledLoops.add(loop);
+			break;
+		case DISABLED:
+			disabledLoops.add(loop);
+			break;
+		case PERIODIC:
+			periodicLoops.add(loop);
+			break;
+		default:
+		}
 	}
 }

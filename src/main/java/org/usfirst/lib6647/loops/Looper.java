@@ -14,17 +14,33 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * https://github.com/Team254/FRC-2019-Public/blob/master/src/main/java/com/team254/frc2019/loops/Looper.java
  */
 public class Looper implements ILooper {
-	public final double period;
+	/** Period at which to run each {@link Loop}. */
+	private final double period;
+	/** Name of {@link Notifier}/{@link Looper} instance. */
+	private final String name;
+
+	/** Check to see if the {@link Looper} is currently running. */
 	private boolean running;
 
+	/** Handles running {@link Loops} in a different Thread. */
 	private final Notifier notifier;
+	/** List holding each of this {@link Looper} instance's {@link Loop Loops}. */
 	private final List<Loop> loops;
 
+	/** Object to ensure asynchronicity from every method. */
 	private final Object lock = new Object();
 	private double timestamp = 0, dt = 0;
 
-	public Looper(double period) {
+	/**
+	 * Constructor for {@link Looper}. Runs each declared {@link Loop} at the
+	 * provided rate.
+	 * 
+	 * @param period
+	 * @param name
+	 */
+	public Looper(double period, String name) {
 		this.period = period;
+		this.name = name;
 
 		loops = new ArrayList<>();
 		notifier = new Notifier(() -> {
@@ -39,13 +55,26 @@ public class Looper implements ILooper {
 				}
 			}
 		});
+
+		notifier.setName(name);
 		running = false;
 	}
 
-	public Looper() {
-		this(0.01);
+	/**
+	 * Constructor for {@link Looper}. Runs each declared {@link Loop} at the
+	 * default {@link Looper#period rate} of 0.01 (10ms).
+	 * 
+	 * @param name
+	 */
+	public Looper(String name) {
+		this(0.01, name);
 	}
 
+	/**
+	 * Adds a given {@link Loop} to the {@link Looper#loops list}.
+	 * 
+	 * @param loop
+	 */
 	@Override
 	public synchronized void register(Loop loop) {
 		synchronized (lock) {
@@ -58,7 +87,7 @@ public class Looper implements ILooper {
 	 */
 	public synchronized void start() {
 		if (!running) {
-			System.out.println("Starting loops...");
+			System.out.println("Starting " + name + " loops...");
 
 			synchronized (lock) {
 				timestamp = Timer.getFPGATimestamp();
@@ -75,7 +104,7 @@ public class Looper implements ILooper {
 	 */
 	public synchronized void stop() {
 		if (running) {
-			System.out.println("Stopping loops...");
+			System.out.println("Stopping " + name + " loops...");
 			notifier.stop();
 
 			synchronized (lock) {
@@ -90,6 +119,6 @@ public class Looper implements ILooper {
 	 * Output {@link Looper#dt DT} to SmartDashboard.
 	 */
 	public void outputToSmartDashboard() {
-		SmartDashboard.putNumber("looper_dt", dt);
+		SmartDashboard.putNumber(name + "_looper_dt", dt);
 	}
 }

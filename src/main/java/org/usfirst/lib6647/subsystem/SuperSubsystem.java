@@ -17,7 +17,7 @@ public abstract class SuperSubsystem implements Subsystem {
 	/** Bread and butter of {@link SuperSubsystem}. */
 	protected JsonNode robotMap;
 	/** Name of the {@link SuperSubsystem}. */
-	private String name;
+	private final String name;
 
 	/**
 	 * Constructor for {@link SuperSubsystem}.
@@ -59,13 +59,7 @@ public abstract class SuperSubsystem implements Subsystem {
 	public void writePeriodicOutputs() {
 	}
 
-	public void registerEnabledLoops(ILooper enabledLooper) {
-	}
-
-	public void registerDisabledLoops(ILooper disabledLooper) {
-	}
-
-	public void registerPeriodicLoops(ILooper periodicLooper) {
+	public void registerLoops(ILooper looper) {
 	}
 
 	public void zeroSensors() {

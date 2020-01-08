@@ -84,7 +84,7 @@ Now you're ready to begin instantiating and initializing objects through JSON!
 - [ ] Implement SuperComponents.
 	- [x] SuperAHRS
 	- [ ] SuperAnalogPotentiometer
-	- [x] SuperComponent
+	- [x] SuperComponent (Custom Component with custom initialization)
 	- [x] SuperCompressor
 	- [x] SuperDigitalInput
 	- [x] SuperDoubleSolenoid
@@ -97,11 +97,16 @@ Now you're ready to begin instantiating and initializing objects through JSON!
 - [x] Improve Controller initialization.
 	- [x] Create JController class, for initializing Buttons along with a Controller.
 	- [x] Add Buttons for each POV and axis found for the Controller.
+	- [x] Integrate Controller initialization with a Robot template.
 - [x] Implement Team 254's Looper subroutines.
-	- [x] Create LooperRobot.
-	- [ ] Come up with a way to run Loops in the same Looper with different period times.
+	- [x] Create LooperRobot template.
+	- [ ] Create LoopInitException, to be thrown when a Loop cannot be initialized properly.
+	- [ ] Allow for different period times across Looper instances.
+- [ ] Improve PID subsystems and calibration.
+	- [x] Facilitate updating PID values from Shuffleboard/SmartDashboard without having to reload everything.
+	- [ ] Allow for different PID loops within the same PIDSuperSubsystem.
 - [ ] Add more flexibility and configuration options.
-- [x] Document everything properly.
+- [x] Comment everything.
 - [x] Do proper Exception handling.
 - [ ] Write proper documentation for this library.
 - [x] Blame mechanical.
