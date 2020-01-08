@@ -30,7 +30,7 @@ public abstract class SuperSubsystem implements Subsystem {
 		try {
 			robotMap = JSONReader.getInstance().getNode("RobotMap", name);
 		} catch (Exception e) {
-			String error = String.format("[!] SUBSYSTEM '%s' JSON INIT ERROR:\n\t%s", name.toUpperCase(),
+			String error = String.format("[!] SUBSYSTEM '%1$s' JSON INIT ERROR:\n\t%2$s", name.toUpperCase(),
 					e.getLocalizedMessage());
 
 			System.out.println(error);

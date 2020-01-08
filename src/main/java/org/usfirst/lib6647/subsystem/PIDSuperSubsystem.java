@@ -67,8 +67,8 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 
 			setTolerance(pid.get("tolerance").asDouble());
 		} catch (Exception e) {
-			String error = String.format("[!] PIDSUBSYSTEM '%S' INIT ERROR:\n\t%s", getName().toUpperCase(),
-					e.getMessage());
+			String error = String.format("[!] PIDSUBSYSTEM '%1$s' INIT ERROR:\n\t%2$s", getName().toUpperCase(),
+					e.getLocalizedMessage());
 
 			System.out.println(error);
 			DriverStation.reportError(error, false);
