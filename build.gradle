@@ -32,7 +32,7 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
-    compile group: 'edu.wpi.first.wpilibNewCommands', name: 'wpilibNewCommands-java', version: '2020.1.1'
+    compile group: 'edu.wpi.first.wpilibNewCommands', name: 'wpilibNewCommands-java', version: '2020.1.2'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
