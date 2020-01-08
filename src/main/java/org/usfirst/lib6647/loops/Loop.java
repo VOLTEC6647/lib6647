@@ -6,9 +6,9 @@ package org.usfirst.lib6647.loops;
  * https://github.com/Team254/FRC-2019-Public/blob/master/src/main/java/com/team254/frc2019/loops/Loop.java
  */
 public interface Loop {
-	void onStart(double timestamp);
+	public void onStart(double timestamp);
 
-	void onLoop(double timestamp);
+	public void onLoop(double timestamp);
 
-	void onStop(double timestamp);
+	public void onStop(double timestamp);
 }

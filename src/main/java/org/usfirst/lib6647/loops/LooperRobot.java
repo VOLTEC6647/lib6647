@@ -19,9 +19,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public abstract class LooperRobot extends TimedRobot {
 	/** The {@link LooperRobot}'s main {@link Looper Loopers}. */
-	private final Looper enabledLooper = new Looper(), disabledLooper = new Looper(), periodicLooper = new Looper();
-	/** Final instance of {@link RobotMap}. */
-	private final RobotMap robotMap = new RobotMap();
+	private Looper enabledLooper = new Looper(), disabledLooper = new Looper(), periodicLooper = new Looper();
+	/** Instance of {@link RobotMap}. */
+	private RobotMap robotMap = new RobotMap();
 	/** HashMap holding initialized {@link JController joysticks}. */
 	protected HashMap<String, JController> joysticks = new HashMap<>();
 

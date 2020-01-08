@@ -26,21 +26,20 @@ public class Looper implements ILooper {
 	public Looper(double period) {
 		this.period = period;
 
-		running = false;
 		loops = new ArrayList<>();
 		notifier = new Notifier(() -> {
 			synchronized (lock) {
 				if (running) {
 					double now = Timer.getFPGATimestamp();
 
-					for (Loop loop : loops)
-						loop.onLoop(now);
+					loops.forEach(l -> l.onLoop(now));
 
 					dt = now - timestamp;
 					timestamp = now;
 				}
 			}
 		});
+		running = false;
 	}
 
 	public Looper() {
@@ -63,10 +62,7 @@ public class Looper implements ILooper {
 
 			synchronized (lock) {
 				timestamp = Timer.getFPGATimestamp();
-				for (Loop loop : loops) {
-					System.out.printf("Starting %s...", loop);
-					loop.onStart(timestamp);
-				}
+				loops.forEach(l -> l.onStart(timestamp));
 				running = true;
 			}
 
@@ -83,12 +79,9 @@ public class Looper implements ILooper {
 			notifier.stop();
 
 			synchronized (lock) {
-				running = false;
 				timestamp = Timer.getFPGATimestamp();
-				for (Loop loop : loops) {
-					System.out.printf("Stopping %s...", loop);
-					loop.onStop(timestamp);
-				}
+				loops.forEach(l -> l.onStop(timestamp));
+				running = false;
 			}
 		}
 	}
