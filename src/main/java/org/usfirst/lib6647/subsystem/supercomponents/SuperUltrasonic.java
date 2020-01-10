@@ -21,7 +21,7 @@ public interface SuperUltrasonic {
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s {@link Ultrasonic Ultrasonics}.
 	 */
-	public HashMap<String, Ultrasonic> ultrasonics = new HashMap<String, Ultrasonic>();
+	public HashMap<String, Ultrasonic> ultrasonics = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link Ultrasonic Ultrasonics} declared in the

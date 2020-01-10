@@ -5,9 +5,7 @@ package org.usfirst.lib6647.util;
  */
 public class ComponentInitException extends Exception {
 
-	/**
-	 * Serial Version UID.
-	 */
+	/** Serial version UID, required by compiler. */
 	private static final long serialVersionUID = 7668209987656891489L;
 
 	/**
