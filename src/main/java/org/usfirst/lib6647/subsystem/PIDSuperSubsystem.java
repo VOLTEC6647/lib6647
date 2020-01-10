@@ -1,187 +1,142 @@
 package org.usfirst.lib6647.subsystem;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import java.util.HashMap;
+
+import org.usfirst.lib6647.util.ComponentInitException;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.PIDSubsystem;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * Abstract class to allow usage of {@link #robotMap JSON files} for
- * {@link Subsystem} creation, with added {@link PIDController} functionality.
+ * Abstract class to allow usage of {@link SuperSubsystem#robotMap JSON files}
+ * for {@link SuperSubsystem} creation, with added {@link PIDController}
+ * functionality.
  */
 public abstract class PIDSuperSubsystem extends SuperSubsystem {
-
-	/** Proportional, integral, and derivative constants. */
-	private double p = 0.0, i = 0.0, d = 0.0;
-	/** PID loop period time. Default: 0.02s (20ms). */
-	private double period = 0.02;
-	/** {@link PIDController} instance, used by this {@link PIDSuperSubsystem}. */
-	private PIDController controller;
+	/**
+	 * HashMap storing the {@link PIDSuperSubsystem}'s {@link PIDController
+	 * PIDControllers}.
+	 */
+	private HashMap<String, PIDController> pidControllers = new HashMap<>();
 
 	/**
-	 * Constructor for {@link PIDSuperSubsystem}. Initializes the
-	 * {@link PIDSubsystem} with 0.0f, 0.0f, and 0.0f as PID values, then replaces
-	 * them with the values declared in {@link #robotMap}
+	 * Constructor for {@link PIDSuperSubsystem}. Initializes {@link PIDController
+	 * PIDControllers} declared in the {@link SuperSubsystem#robotMap JSON file}.
 	 * 
-	 * @param name     (of the {@link PIDSuperSubsystem})
-	 * @param fileName (to {@link #robotMap JSON file})
+	 * @param name
 	 */
 	public PIDSuperSubsystem(final String name) {
 		super(name);
 
-		initPID();
-		outputPIDValues(name, p, i, d);
+		// Spliterate through each of the elements in the JsonNode.
+		robotMap.get("pid").spliterator().forEachRemaining(json -> {
+			try {
+				if (json.hasNonNull("name") && !pidControllers.containsKey(json.get("name").asText())) {
+					double p = json.get("p").asDouble(0.0), i = json.get("i").asDouble(0.0),
+							d = json.get("d").asDouble(0.0), period = json.get("period").asDouble(0.02);
+
+					// Build PIDController object.
+					PIDController controller = new PIDController(p, i, d, period);
+
+					// Read and apply PIDSuperSubsystem configuration from JSON file.
+					if (json.get("continuous").asBoolean(false))
+						controller.enableContinuousInput(json.get("inputMin").asDouble(),
+								json.get("inputMax").asDouble());
+					else
+						controller.disableContinuousInput();
+
+					controller.setTolerance(json.get("tolerance").asDouble());
+					// ...
+
+					// Put object in HashMap with its declared name as key after initialization and
+					// configuration.
+					pidControllers.put(json.get("name").asText(), controller);
+				} else
+					throw new ComponentInitException(
+							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY PID ENTRY IN SUBSYSTEM '%s'",
+									getName().toUpperCase()));
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				DriverStation.reportError(e.getMessage(), false);
+			}
+		});
+
+		// Output every PIDController's starting P, I, and D values.
+		pidControllers.entrySet().forEach(entry -> {
+			SmartDashboard.putString(name + "_" + entry.getKey() + "P", entry.getValue().getP() + "");
+			SmartDashboard.putString(name + "_" + entry.getKey() + "I", entry.getValue().getI() + "");
+			SmartDashboard.putString(name + "_" + entry.getKey() + "D", entry.getValue().getD() + "");
+		});
+	}
+
+	// This method can be overwritten in the case that constantly checking for PID
+	// updates in the Shuffleboard proves to be inconvenient.
+	@Override
+	public void periodic() {
+		pidControllers.entrySet().forEach(entry -> {
+			// Look for a change in P, then change its value in the PIDController.
+			if (entry.getValue().getP() != Double.parseDouble(
+					SmartDashboard.getString(getName() + "_" + entry.getKey() + "P", entry.getValue().getP() + "")))
+				entry.getValue()
+						.setP(Double.parseDouble(SmartDashboard.getString(getName() + "_" + entry.getKey() + "P",
+								entry.getValue().getP() + "")));
+
+			// Look for a change in I, then change its value in the PIDController.
+			if (entry.getValue().getI() != Double.parseDouble(
+					SmartDashboard.getString(getName() + "_" + entry.getKey() + "I", entry.getValue().getI() + "")))
+				entry.getValue()
+						.setI(Double.parseDouble(SmartDashboard.getString(getName() + "_" + entry.getKey() + "I",
+								entry.getValue().getI() + "")));
+
+			// Look for a change in D, then change its value in the PIDController.
+			if (entry.getValue().getD() != Double.parseDouble(
+					SmartDashboard.getString(getName() + "_" + entry.getKey() + "D", entry.getValue().getD() + "")))
+				entry.getValue()
+						.setD(Double.parseDouble(SmartDashboard.getString(getName() + "_" + entry.getKey() + "D",
+								entry.getValue().getD() + "")));
+		});
 	}
 
 	/**
-	 * Method to initialize and set {@link PIDSuperSubsystem}'s PID values and
-	 * configuration.
-	 */
-	private void initPID() {
-		try {
-			// Get JsonNode out of the 'pid' key.
-			JsonNode pid = robotMap.get("pid");
-
-			// Set PID values and period from JSON file.
-			p = pid.get("p").asDouble();
-			i = pid.get("i").asDouble();
-			d = pid.get("d").asDouble();
-			period = pid.get("period").asDouble(0.02);
-
-			// Initialize PIDController with set values.
-			controller = new PIDController(p, i, d, period);
-
-			// Read and apply PIDSuperSubsystem configuration from JSON file.
-			if (pid.get("continuous").asBoolean(false))
-				enableContinuousInput(pid.get("inputMin").asDouble(), pid.get("inputMax").asDouble());
-			else
-				disableContinuousInput();
-
-			setTolerance(pid.get("tolerance").asDouble());
-		} catch (Exception e) {
-			String error = String.format("[!] PIDSUBSYSTEM '%1$s' INIT ERROR:\n\t%2$s", getName().toUpperCase(),
-					e.getLocalizedMessage());
-
-			System.out.println(error);
-			DriverStation.reportError(error, false);
-
-			System.exit(1);
-		}
-	}
-
-	/**
-	 * Method to output {@link #p}, {@link #i}, and {@link #d} values from the
-	 * {@link PIDSuperSubsystem} to the {@link SmartDashboard}.
+	 * Gets specified {@link PIDController}.
 	 * 
-	 * @param subsystemName
-	 * @param {@link        #p}
-	 * @param {@link        #i}
-	 * @param {@link        #d}
+	 * @param name
+	 * @return pidController
 	 */
-	private void outputPIDValues(final String subsystemName, final double p, final double i, final double d) {
-		SmartDashboard.putString(subsystemName + "P", p + "");
-		SmartDashboard.putString(subsystemName + "I", i + "");
-		SmartDashboard.putString(subsystemName + "D", d + "");
+	public PIDController getPIDController(String name) {
+		return pidControllers.get(name);
 	}
 
 	/**
-	 * Method to update {@link #p}, {@link #i}, and {@link #d} values as float from
-	 * the {@link SmartDashboard}.
-	 */
-	public void updatePIDValues() {
-		p = Double.parseDouble(SmartDashboard.getString(getName() + "P", p + ""));
-		i = Double.parseDouble(SmartDashboard.getString(getName() + "I", i + ""));
-		d = Double.parseDouble(SmartDashboard.getString(getName() + "D", d + ""));
-
-		getPIDController().setPID(p, i, d);
-	}
-
-	/**
-	 * Returns the {@link PIDController} used by this {@link PIDSuperSubsystem}. Use
-	 * this if you would like to fine tune the pid loop.
+	 * Sets the specified {@link PIDController PIDController's} setpoint to the
+	 * given value.
 	 *
-	 * @return the {@link PIDController} used by this {@link PIDSuperSubsystem}
+	 * @param name
+	 * @param setpoint
 	 */
-	public PIDController getPIDController() {
-		return controller;
+	public void setSetpoint(String name, double setpoint) {
+		pidControllers.get(name).setSetpoint(setpoint);
 	}
 
 	/**
-	 * Adds the given value to the setpoint. If
-	 * {@link PIDSuperSubsystem#setInputRange(double, double) setInputRange(...)}
-	 * was used, then the bounds will still be honored by this method.
+	 * Returns the current setpoint of the specified {@link PIDController}.
 	 *
-	 * @param deltaSetpoint the change in the setpoint
+	 * @param name
+	 * @return setpoint
 	 */
-	public void setSetpointRelative(double deltaSetpoint) {
-		setSetpoint(getPosition() + deltaSetpoint);
+	public double getSetpoint(String name) {
+		return pidControllers.get(name).getSetpoint();
 	}
 
 	/**
-	 * Sets the setpoint to the given value. If
-	 * {@link PIDSuperSubsystem#setInputRange(double, double) setInputRange(...)}
-	 * was called, then the given setpoint will be trimmed to fit within the range.
+	 * Return true if the specified {@link PIDController} error is within the
+	 * percentage of the total input range, determined by setTolerance.
 	 *
-	 * @param setpoint the new setpoint
-	 */
-	public void setSetpoint(double setpoint) {
-		controller.setSetpoint(setpoint);
-	}
-
-	/**
-	 * Returns the setpoint.
-	 *
-	 * @return the setpoint
-	 */
-	public double getSetpoint() {
-		return controller.getSetpoint();
-	}
-
-	/**
-	 * Enables continuous input, and sets its minimum and maximum values.
-	 *
-	 * @param minimumInput the minimum value expected from the input
-	 * @param maximumInput the maximum value expected from the output
-	 */
-	public void enableContinuousInput(double minimumInput, double maximumInput) {
-		controller.enableContinuousInput(minimumInput, maximumInput);
-	}
-
-	/**
-	 * Disables continuous input.
-	 */
-	public void disableContinuousInput() {
-		controller.disableContinuousInput();
-	}
-
-	/**
-	 * Set the absolute error which is considered tolerable for use with
-	 * {@link PIDSuperSubsystem#onTarget onTarget()}.
-	 *
-	 * @param tolerance
-	 */
-	public void setTolerance(double tolerance) {
-		controller.setTolerance(tolerance);
-	}
-
-	/**
-	 * Return true if the error is within the percentage of the total input range,
-	 * determined by setTolerance. This assumes that the maximum and minimum input
-	 * were set using setInput.
-	 *
+	 * @param name
 	 * @return atSetpoint
 	 */
-	public boolean onTarget() {
-		return controller.atSetpoint();
+	public boolean onTarget(String name) {
+		return pidControllers.get(name).atSetpoint();
 	}
-
-	/**
-	 * Returns the current sensor position.
-	 *
-	 * @return position
-	 */
-	public abstract double getPosition();
 }
