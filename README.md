@@ -77,7 +77,7 @@ Now you're ready to begin instantiating and initializing objects through JSON!
 	- [ ] HyperDoubleSolenoid
 	- [ ] HyperEncoder
 	- [ ] HyperPDP
-	- [ ] HyperPIDController
+	- [x] HyperPIDController
 	- [x] HyperSolenoid
 	- [x] HyperTalon
 	- [ ] HyperUltrasonic
@@ -103,10 +103,10 @@ Now you're ready to begin instantiating and initializing objects through JSON!
 	- [x] Create LooperRobot template.
 	- [ ] Create LoopInitException, to be thrown when a Loop cannot be initialized properly.
 	- [ ] Allow for different period times across Looper instances.
-- [ ] Improve PID subsystems and calibration.
+- [x] Improve PID subsystems and calibration.
 	- [x] Facilitate updating PID values from Shuffleboard/SmartDashboard without having to reload everything.
 	- [x] Allow for different PID loops within the same PIDSuperSubsystem.
-	- [ ] Re-implement max output functionality into PIDControllers.
+	- [x] Re-implement max output functionality into PIDControllers.
 - [ ] Add more flexibility and configuration options.
 - [x] Comment everything.
 - [x] Do proper Exception handling.

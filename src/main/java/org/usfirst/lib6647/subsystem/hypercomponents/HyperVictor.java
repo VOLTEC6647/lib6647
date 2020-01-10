@@ -4,10 +4,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 /**
- * HyperComponent wrapper for {@link WPI_VictorSPX}.
+ * Simple Wrapper for a {@link WPI_VictorSPX}, adds a couple of useful features.
  */
 public class HyperVictor extends WPI_VictorSPX {
-
 	/**
 	 * Limits how fast the Victor can go as a percentage if using
 	 * {@link #setVictorWithRamp(double)} or {@link #setVictor(double, boolean)} if
@@ -21,7 +20,7 @@ public class HyperVictor extends WPI_VictorSPX {
 	protected ControlMode lastMode = null;
 
 	/**
-	 * Wrapper for {@link WPI_VictorSPX}.
+	 * HyperComponent Wrapper for {@link WPI_VictorSPX}.
 	 * 
 	 * @param port
 	 */

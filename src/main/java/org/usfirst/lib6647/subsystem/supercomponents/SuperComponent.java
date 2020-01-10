@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
+import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.util.ComponentInitException;
 
 import edu.wpi.first.wpilibj.DriverStation;

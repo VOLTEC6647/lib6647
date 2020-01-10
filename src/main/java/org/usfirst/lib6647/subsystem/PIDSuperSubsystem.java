@@ -2,27 +2,27 @@ package org.usfirst.lib6647.subsystem;
 
 import java.util.HashMap;
 
+import org.usfirst.lib6647.subsystem.hypercomponents.HyperPIDController;
 import org.usfirst.lib6647.util.ComponentInitException;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Abstract class to allow usage of {@link SuperSubsystem#robotMap JSON files}
- * for {@link SuperSubsystem} creation, with added {@link PIDController}
+ * for {@link SuperSubsystem} creation, with added {@link HyperPIDController}
  * functionality.
  */
 public abstract class PIDSuperSubsystem extends SuperSubsystem {
 	/**
-	 * HashMap storing the {@link PIDSuperSubsystem}'s {@link PIDController
-	 * PIDControllers}.
+	 * HashMap storing the {@link PIDSuperSubsystem}'s {@link HyperPIDController
+	 * HyperPIDControllers}.
 	 */
-	private HashMap<String, PIDController> pidControllers = new HashMap<>();
+	private HashMap<String, HyperPIDController> pidControllers = new HashMap<>();
 
 	/**
-	 * Constructor for {@link PIDSuperSubsystem}. Initializes {@link PIDController
-	 * PIDControllers} declared in the {@link SuperSubsystem#robotMap JSON file}.
+	 * Constructor for {@link PIDSuperSubsystem}. Initializes
+	 * {@link HyperPIDController HyperPIDControllers} declared in the
+	 * {@link SuperSubsystem#robotMap JSON file}.
 	 * 
 	 * @param name
 	 */
@@ -33,25 +33,29 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 		robotMap.get("pid").spliterator().forEachRemaining(json -> {
 			try {
 				if (json.hasNonNull("name") && !pidControllers.containsKey(json.get("name").asText())) {
-					double p = json.get("p").asDouble(0.0), i = json.get("i").asDouble(0.0),
-							d = json.get("d").asDouble(0.0), period = json.get("period").asDouble(0.02);
+					String pidName = json.get("name").asText();
+					double p = json.get("p").asDouble(), i = json.get("i").asDouble(), d = json.get("d").asDouble(),
+							period = json.get("period").asDouble(0.02);
 
-					// Build PIDController object.
-					PIDController controller = new PIDController(p, i, d, period);
+					// Build HyperPIDController object.
+					HyperPIDController controller = new HyperPIDController(pidName, getName(), p, i, d, period);
 
 					// Read and apply PIDSuperSubsystem configuration from JSON file.
 					if (json.get("continuous").asBoolean(false))
-						controller.enableContinuousInput(json.get("inputMin").asDouble(),
-								json.get("inputMax").asDouble());
+						controller.setInputRange(json.get("inputMin").asDouble(), json.get("inputMax").asDouble());
 					else
 						controller.disableContinuousInput();
 
+					controller.setOutputRange(json.get("outputMin").asDouble(), json.get("outputMax").asDouble());
 					controller.setTolerance(json.get("tolerance").asDouble());
+
+					if (!json.get("fixedValues").asBoolean(true))
+						controller.outputPIDValues();
 					// ...
 
 					// Put object in HashMap with its declared name as key after initialization and
 					// configuration.
-					pidControllers.put(json.get("name").asText(), controller);
+					pidControllers.put(pidName, controller);
 				} else
 					throw new ComponentInitException(
 							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY PID ENTRY IN SUBSYSTEM '%s'",
@@ -61,56 +65,28 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 				DriverStation.reportError(e.getMessage(), false);
 			}
 		});
-
-		// Output every PIDController's starting P, I, and D values.
-		pidControllers.entrySet().forEach(entry -> {
-			SmartDashboard.putString(name + "_" + entry.getKey() + "P", entry.getValue().getP() + "");
-			SmartDashboard.putString(name + "_" + entry.getKey() + "I", entry.getValue().getI() + "");
-			SmartDashboard.putString(name + "_" + entry.getKey() + "D", entry.getValue().getD() + "");
-		});
 	}
 
 	// This method can be overwritten in the case that constantly checking for PID
 	// updates in the Shuffleboard proves to be inconvenient.
 	@Override
 	public void periodic() {
-		pidControllers.entrySet().forEach(entry -> {
-			// Look for a change in P, then change its value in the PIDController.
-			if (entry.getValue().getP() != Double.parseDouble(
-					SmartDashboard.getString(getName() + "_" + entry.getKey() + "P", entry.getValue().getP() + "")))
-				entry.getValue()
-						.setP(Double.parseDouble(SmartDashboard.getString(getName() + "_" + entry.getKey() + "P",
-								entry.getValue().getP() + "")));
-
-			// Look for a change in I, then change its value in the PIDController.
-			if (entry.getValue().getI() != Double.parseDouble(
-					SmartDashboard.getString(getName() + "_" + entry.getKey() + "I", entry.getValue().getI() + "")))
-				entry.getValue()
-						.setI(Double.parseDouble(SmartDashboard.getString(getName() + "_" + entry.getKey() + "I",
-								entry.getValue().getI() + "")));
-
-			// Look for a change in D, then change its value in the PIDController.
-			if (entry.getValue().getD() != Double.parseDouble(
-					SmartDashboard.getString(getName() + "_" + entry.getKey() + "D", entry.getValue().getD() + "")))
-				entry.getValue()
-						.setD(Double.parseDouble(SmartDashboard.getString(getName() + "_" + entry.getKey() + "D",
-								entry.getValue().getD() + "")));
-		});
+		pidControllers.values().forEach(HyperPIDController::updatePIDValues);
 	}
 
 	/**
-	 * Gets specified {@link PIDController}.
+	 * Gets specified {@link HyperPIDController}.
 	 * 
 	 * @param name
-	 * @return pidController
+	 * @return HyperPIDController
 	 */
-	public PIDController getPIDController(String name) {
+	public HyperPIDController getHyperPIDController(String name) {
 		return pidControllers.get(name);
 	}
 
 	/**
-	 * Sets the specified {@link PIDController PIDController's} setpoint to the
-	 * given value.
+	 * Sets the specified {@link HyperPIDController HyperPIDController's} setpoint
+	 * to the given value.
 	 *
 	 * @param name
 	 * @param setpoint
@@ -120,7 +96,7 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 	}
 
 	/**
-	 * Returns the current setpoint of the specified {@link PIDController}.
+	 * Returns the current setpoint of the specified {@link HyperPIDController}.
 	 *
 	 * @param name
 	 * @return setpoint
@@ -130,7 +106,7 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 	}
 
 	/**
-	 * Return true if the specified {@link PIDController} error is within the
+	 * Return true if the specified {@link HyperPIDController} error is within the
 	 * percentage of the total input range, determined by setTolerance.
 	 *
 	 * @param name

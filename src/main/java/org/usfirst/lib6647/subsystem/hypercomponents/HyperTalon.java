@@ -4,7 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 /**
- * HyperComponent wrapper for {@link WPI_TalonSRX}.
+ * Simple Wrapper for a {@link WPI_TalonSRX}, adds a couple of useful features.
  */
 public class HyperTalon extends WPI_TalonSRX {
 	/**
@@ -20,7 +20,7 @@ public class HyperTalon extends WPI_TalonSRX {
 	protected ControlMode lastMode = null;
 
 	/**
-	 * Wrapper for {@link WPI_TalonSRX}.
+	 * HyperComponent Wrapper for {@link WPI_TalonSRX}.
 	 * 
 	 * @param port
 	 */

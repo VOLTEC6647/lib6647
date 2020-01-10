@@ -3,17 +3,15 @@ package org.usfirst.lib6647.subsystem.hypercomponents;
 import edu.wpi.first.wpilibj.Solenoid;
 
 /**
- * HyperComponent for a {@link Solenoid DoubleSolenoid}.
+ * Simple Wrapper for a {@link Solenoid DoubleSolenoid}, currently only adds a
+ * {@link HyperDoubleSolenoid#toggle()} method.
  */
 public class HyperDoubleSolenoid {
-
-	/**
-	 * {@link Solenoid Solenoids} for .
-	 */
+	/** {@link Solenoid Solenoids} used by this HyperComponent. */
 	private Solenoid forward, reverse;
 
 	/**
-	 * Wrapper for a {@link Solenoid DoubleSolenoid}.
+	 * HyperComponent Wrapper for a {@link Solenoid DoubleSolenoid}.
 	 * 
 	 * @param forwardChannel
 	 * @param reverseChannel
