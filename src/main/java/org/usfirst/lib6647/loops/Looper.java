@@ -31,6 +31,9 @@ public class Looper implements ILooper {
 	private final Object lock = new Object();
 	private double timestamp = 0, dt = 0;
 
+	/** Check for whether it's the first time the {@link Loop} runs. */
+	private boolean firstStart = true, firstRun = true;
+
 	/**
 	 * Constructor for {@link Looper}. Runs each declared {@link Loop} at the
 	 * provided rate.
@@ -46,9 +49,15 @@ public class Looper implements ILooper {
 		notifier = new Notifier(() -> {
 			synchronized (lock) {
 				if (running) {
+					if (firstRun) {
+						Thread.currentThread().setName(name);
+						Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+						firstRun = false;
+					}
+
 					double now = Timer.getFPGATimestamp();
 
-					loops.forEach(l -> l.onLoop(now));
+					loops.forEach(loop -> loop.onLoop(now));
 
 					dt = now - timestamp;
 					timestamp = now;
@@ -90,9 +99,16 @@ public class Looper implements ILooper {
 			System.out.println("Starting " + name + " loops...");
 
 			synchronized (lock) {
+				if (firstStart) {
+					timestamp = Timer.getFPGATimestamp();
+					loops.forEach(loop -> loop.onFirstStart(timestamp));
+				}
+
 				timestamp = Timer.getFPGATimestamp();
-				loops.forEach(l -> l.onStart(timestamp));
+				loops.forEach(loop -> loop.onStart(timestamp));
+
 				running = true;
+				firstStart = false;
 			}
 
 			notifier.startPeriodic(period);
@@ -109,7 +125,7 @@ public class Looper implements ILooper {
 
 			synchronized (lock) {
 				timestamp = Timer.getFPGATimestamp();
-				loops.forEach(l -> l.onStop(timestamp));
+				loops.forEach(loop -> loop.onStop(timestamp));
 				running = false;
 			}
 		}

@@ -19,8 +19,8 @@ public class RobotMap implements ILooper {
 	/** Map holding every {@link SuperSubsystem}, with its name as its key. */
 	private final Map<String, SuperSubsystem> subsystems = new HashMap<>();
 	/** Lists holding every {@link Loop}. */
-	private final List<Loop> enabledLoops = new ArrayList<>(), disabledLoops = new ArrayList<>(),
-			periodicLoops = new ArrayList<>();
+	private final List<Loop> enabledLoops = new ArrayList<>(), teleopLoops = new ArrayList<>(),
+			autoLoops = new ArrayList<>(), disabledLoops = new ArrayList<>();
 
 	/**
 	 * Return a {@link Stream} of every declared {@link SuperSubsystem}.
@@ -58,6 +58,11 @@ public class RobotMap implements ILooper {
 	 */
 	private class EnabledLoop implements Loop {
 		@Override
+		public void onFirstStart(double timestamp) {
+			enabledLoops.forEach(loop -> loop.onFirstStart(timestamp));
+		}
+
+		@Override
 		public void onStart(double timestamp) {
 			enabledLoops.forEach(loop -> loop.onStart(timestamp));
 		}
@@ -82,9 +87,76 @@ public class RobotMap implements ILooper {
 
 	/**
 	 * {@link Loop} implementation for running subroutines while the robot is
+	 * enabled and in teleop mode.
+	 */
+	private class TeleopLoop implements Loop {
+		@Override
+		public void onFirstStart(double timestamp) {
+			teleopLoops.forEach(loop -> loop.onFirstStart(timestamp));
+		}
+
+		@Override
+		public void onStart(double timestamp) {
+			teleopLoops.forEach(loop -> loop.onStart(timestamp));
+		}
+
+		@Override
+		public void onLoop(double timestamp) {
+			teleopLoops.forEach(loop -> loop.onLoop(timestamp));
+		}
+
+		@Override
+		public void onStop(double timestamp) {
+			teleopLoops.forEach(loop -> loop.onStop(timestamp));
+		}
+
+		@Override
+		public LoopType getType() {
+			return LoopType.TELEOP;
+		}
+	}
+
+	/**
+	 * {@link Loop} implementation for running subroutines while the robot is
+	 * enabled and in auto mode.
+	 */
+	private class AutoLoop implements Loop {
+		@Override
+		public void onFirstStart(double timestamp) {
+			autoLoops.forEach(loop -> loop.onFirstStart(timestamp));
+		}
+
+		@Override
+		public void onStart(double timestamp) {
+			autoLoops.forEach(loop -> loop.onStart(timestamp));
+		}
+
+		@Override
+		public void onLoop(double timestamp) {
+			autoLoops.forEach(loop -> loop.onLoop(timestamp));
+		}
+
+		@Override
+		public void onStop(double timestamp) {
+			autoLoops.forEach(loop -> loop.onStop(timestamp));
+		}
+
+		@Override
+		public LoopType getType() {
+			return LoopType.AUTO;
+		}
+	}
+
+	/**
+	 * {@link Loop} implementation for running subroutines while the robot is
 	 * disabled.
 	 */
 	private class DisabledLoop implements Loop {
+		@Override
+		public void onFirstStart(double timestamp) {
+			disabledLoops.forEach(loop -> loop.onFirstStart(timestamp));
+		}
+
 		@Override
 		public void onStart(double timestamp) {
 			disabledLoops.forEach(loop -> loop.onStart(timestamp));
@@ -109,45 +181,20 @@ public class RobotMap implements ILooper {
 	}
 
 	/**
-	 * {@link Loop} implementation for running subroutines.
-	 */
-	private class PeriodicLoop implements Loop {
-		@Override
-		public void onStart(double timestamp) {
-			periodicLoops.forEach(loop -> loop.onStart(timestamp));
-		}
-
-		@Override
-		public void onLoop(double timestamp) {
-			subsystems.values().forEach(SuperSubsystem::readPeriodicInputs);
-			periodicLoops.forEach(loop -> loop.onLoop(timestamp));
-			subsystems.values().forEach(SuperSubsystem::writePeriodicOutputs);
-		}
-
-		@Override
-		public void onStop(double timestamp) {
-			// Should never reach here, as periodic loops will always be running.
-		}
-
-		@Override
-		public LoopType getType() {
-			return LoopType.PERIODIC;
-		}
-	}
-
-	/**
 	 * Registers {@link Loop loops} for every {@link SuperSubsystem}.
 	 * 
 	 * @param enabledLooper
+	 * @param teleopLooper
+	 * @param autoLooper
 	 * @param disabledLooper
-	 * @param periodicLooper
 	 */
-	public void registerLoops(ILooper enabledLooper, ILooper disabledLooper, ILooper periodicLooper) {
+	public void registerLoops(ILooper enabledLooper, ILooper teleopLooper, ILooper autoLooper, ILooper disabledLooper) {
 		subsystems.values().forEach(s -> s.registerLoops(this));
 
 		enabledLooper.register(new EnabledLoop());
+		teleopLooper.register(new TeleopLoop());
+		autoLooper.register(new AutoLoop());
 		disabledLooper.register(new DisabledLoop());
-		periodicLooper.register(new PeriodicLoop());
 	}
 
 	@Override
@@ -156,11 +203,14 @@ public class RobotMap implements ILooper {
 		case ENABLED:
 			enabledLoops.add(loop);
 			break;
+		case TELEOP:
+			teleopLoops.add(loop);
+			break;
+		case AUTO:
+			autoLoops.add(loop);
+			break;
 		case DISABLED:
 			disabledLoops.add(loop);
-			break;
-		case PERIODIC:
-			periodicLoops.add(loop);
 			break;
 		default:
 		}

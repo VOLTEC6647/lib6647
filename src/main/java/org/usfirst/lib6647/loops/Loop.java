@@ -7,7 +7,14 @@ package org.usfirst.lib6647.loops;
  */
 public interface Loop {
 	/**
-	 * Initialization code to run at the start of the {@link Loop}.
+	 * Initialization code to run at the FIRST start of the {@link Loop}.
+	 * 
+	 * @param timestamp
+	 */
+	public void onFirstStart(double timestamp);
+
+	/**
+	 * Initialization code to run at every start of the {@link Loop}.
 	 * 
 	 * @param timestamp
 	 */

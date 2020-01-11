@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public abstract class LooperRobot extends TimedRobot {
 	/** The {@link LooperRobot}'s main {@link Looper Loopers}. */
-	private final Looper enabledLooper = new Looper("enabled"), disabledLooper = new Looper("disabled"),
-			periodicLooper = new Looper("periodic");
+	private final Looper enabledLooper = new Looper("enabled"), teleopLooper = new Looper("teleop"),
+			autoLooper = new Looper("auto"), disabledLooper = new Looper("disabled");
 	/** Instance of {@link RobotMap}. */
 	private final RobotMap robotMap = new RobotMap();
 	/** HashMap holding initialized {@link JController joysticks}. */
@@ -64,14 +64,13 @@ public abstract class LooperRobot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		// Registers each Loop in every declared subsystem.
-		robotMap.registerLoops(enabledLooper, disabledLooper, periodicLooper);
-
-		// Start periodic Loops.
-		periodicLooper.start();
+		robotMap.registerLoops(enabledLooper, teleopLooper, autoLooper, disabledLooper);
 
 		System.out.println("Default LooperRobot robotInit() method... Override me!");
 	}
 
+	// Can be overwritten if it is not necessary to call the CommandScheduler
+	// periodically.
 	@Override
 	public void robotPeriodic() {
 		CommandScheduler.getInstance().run();
@@ -79,8 +78,10 @@ public abstract class LooperRobot extends TimedRobot {
 
 	@Override
 	public void disabledInit() {
-		// Start enabled Loops, stop disabled.
+		// Start disabled loops, stop enabled, teleop, and auto.
 		enabledLooper.stop();
+		teleopLooper.stop();
+		autoLooper.stop();
 		disabledLooper.start();
 
 		System.out.println("Default LooperRobot disabledInit() method... Override me!");
@@ -88,31 +89,43 @@ public abstract class LooperRobot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
-		// Stop disabled Loops, start enabled.
-		disabledLooper.stop();
+		// Start enabled & auto loops, stop teleop & disabled.
 		enabledLooper.start();
+		teleopLooper.stop();
+		autoLooper.start();
+		disabledLooper.stop();
 
 		System.out.println("Default LooperRobot autonomousInit() method... Override me!");
 	}
 
 	@Override
 	public void teleopInit() {
-		// Stop disabled Loops, start enabled.
-		disabledLooper.stop();
+		// Start enabled & teleop loops, stop auto & disabled.
 		enabledLooper.start();
+		teleopLooper.start();
+		autoLooper.stop();
+		disabledLooper.stop();
 
 		System.out.println("Default LooperRobot teleopInit() method... Override me!");
 	}
 
 	@Override
 	public void testInit() {
-		// Stop disabled Loops, stop enabled.
-		disabledLooper.stop();
+		// Stop every loop.
 		enabledLooper.stop();
+		teleopLooper.stop();
+		autoLooper.stop();
+		disabledLooper.stop();
 
 		System.out.println("Default LooperRobot testInit() method... Override me!");
 	}
 
+	/**
+	 * Get {@link SuperSubsystem Subsystem} from {@link LooperRobot#robotMap}.
+	 * 
+	 * @param name
+	 * @return subsystem
+	 */
 	public SuperSubsystem getSubsystem(String name) {
 		return robotMap.getSubsystem(name);
 	}
@@ -121,6 +134,12 @@ public abstract class LooperRobot extends TimedRobot {
 		return robotMap.getSubsystems();
 	}
 
+	/**
+	 * Get {@link JController Joystick} from
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public JController getJoystick(String name) {
 		return joysticks.get(name);
 	}
