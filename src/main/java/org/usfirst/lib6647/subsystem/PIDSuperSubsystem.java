@@ -80,7 +80,7 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 	 * @param name
 	 * @return HyperPIDController
 	 */
-	public HyperPIDController getHyperPIDController(String name) {
+	public HyperPIDController getPIDController(String name) {
 		return pidControllers.get(name);
 	}
 
