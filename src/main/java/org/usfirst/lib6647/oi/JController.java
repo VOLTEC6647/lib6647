@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import org.usfirst.lib6647.util.JSONInitException;
 import org.usfirst.lib6647.util.JSONReader;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -17,19 +18,14 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  * initialization, among other things.
  */
 public class JController extends GenericHID {
-
-	/**
-	 * HashMap storing the {@link JController}'s {@link Button Buttons}.
-	 */
+	/** HashMap storing the {@link JController}'s {@link Button Buttons}. */
 	public HashMap<String, Button> buttons = new HashMap<>();
-
-	/**
-	 * Left or right axis of the {@link JController} (assuming it's a gamepad).
-	 */
+	/** Left or right axis of the {@link JController} (assuming it's a gamepad). */
 	private int leftAxis = 1, rightAxis = 5;
 
 	/**
-	 * {@link JSONNode} for usage of friendly button names with JSON.
+	 * {@link JsonNode} holding the {@link JController}'s profile (friendly
+	 * {@link Button} names).
 	 */
 	private JsonNode profile;
 
@@ -38,7 +34,7 @@ public class JController extends GenericHID {
 	 * 
 	 * Initializes each and every {@link Button} from the {@link Joystick} found at
 	 * the given port. Also initializes {@link Button Buttons} for each of the axes
-	 * and POVs. Also initializes {@link #profile} {@link JsonNode} if possible.
+	 * and POVs. Also initializes its {@link #profile} if possible.
 	 * 
 	 * @param port
 	 */
@@ -47,9 +43,9 @@ public class JController extends GenericHID {
 
 		try {
 			profile = JSONReader.getInstance().getNode("Profiles", getName());
-		} catch (Exception e) {
+		} catch (JSONInitException e) {
 			String error = String.format(
-					"[!] COULD NOT INITIALIZE CONTROLLER PROFILE FOR CONTROLLER '%s', USER-FRIENDLY NAMES WON'T WORK:\n\t%s",
+					"[!] COULD NOT INITIALIZE CONTROLLER PROFILE FOR CONTROLLER '%1$s', USER-FRIENDLY NAMES WON'T WORK!\n\t%2$s",
 					getName().toUpperCase(), e.getLocalizedMessage());
 
 			System.out.println(error);
@@ -57,19 +53,17 @@ public class JController extends GenericHID {
 		}
 
 		// Button initialization. Starting at 1.
-		for (int i = 1; i <= this.getButtonCount(); i++) {
+		for (int i = 1; i <= this.getButtonCount(); i++)
 			buttons.put("Button" + i, new JoystickButton(this, i));
-		}
 
 		// dPadButton initialization. Starting at 0.
 		for (int i = 0; i < this.getPOVCount(); i++) {
 			buttons.put("dPad" + i, buttonFromPOV(this, i));
-			for (int j = 0; j <= 315; j += 45) {
+			for (int j = 0; j <= 315; j += 45)
 				buttons.put("dPad" + i + "_" + j, buttonFromPOV(this, i, j));
-			}
 		}
 
-		// axisButton initialization. Starting at 0.
+		// axisButton (Stick) initialization. Starting at 0.
 		for (int i = 0; i < this.getAxisCount(); i++) {
 			buttons.put("Stick" + i, buttonFromAxis(this, i, 0.30, true));
 			buttons.put("Stick" + i + "_1", buttonFromAxis(this, i, 0.30, false));
@@ -121,7 +115,8 @@ public class JController extends GenericHID {
 	 * Method for getting a {@link Button} from the {@link JController}.
 	 * 
 	 * @param button
-	 * @return button from the given {@link JController#joysticks joystick}
+	 * @return {@link Button} from the specified {@link JController#joysticks
+	 *         joystick}
 	 */
 	public Button get(int button) {
 		return buttons.get("Button" + button);
@@ -133,8 +128,8 @@ public class JController extends GenericHID {
 	 * 
 	 * @param type
 	 * @param axis
-	 * @return {@link Button} from the {@link JController}, for the given Stick or
-	 *         dPad
+	 * @return {@link Button} from the {@link JController}, for the specified Stick
+	 *         or dPad
 	 */
 	public Button get(String type, int axis) {
 		return buttons.get(type + axis);
@@ -147,8 +142,8 @@ public class JController extends GenericHID {
 	 * @param type
 	 * @param axis
 	 * @param angle
-	 * @return {@link Button} from the {@link JController}, for the given Stick or
-	 *         dPad, for the given angle or value
+	 * @return {@link Button} from the {@link JController}, for the specified Stick
+	 *         or dPad, for the specified angle or value
 	 */
 	public Button get(String type, int axis, int angle) {
 		return buttons.get(type + axis + "_" + angle);

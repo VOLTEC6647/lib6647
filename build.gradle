@@ -45,8 +45,8 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.1'
 	
 	//Phoenix dependencies.
-	compile group: 'com.ctre.phoenix', name: 'api-java', version: '5.17.3'
-	compile group: 'com.ctre.phoenix', name: 'wpiapi-java', version: '5.17.3'
+	compile group: 'com.ctre.phoenix', name: 'api-java', version: '5.17.4'
+	compile group: 'com.ctre.phoenix', name: 'wpiapi-java', version: '5.17.4'
 
     //Kauai Labs dependencies.
     compile group: 'com.kauailabs.navx.frc', name: 'navx-java', version: '3.1.400'

@@ -1,5 +1,7 @@
 package org.usfirst.lib6647.loops;
 
+import org.usfirst.lib6647.wpilib.LooperRobot;
+
 /**
  * Enum holding possible {@link Loop} types. Currently we only use four
  * different types of loops: ENABLED, which runs while the {@link LooperRobot

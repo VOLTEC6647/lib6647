@@ -17,7 +17,7 @@ First, add the following url to your Maven repositories in _build.gradle_: https
 
 Your _build.gradle_ file should look like this (if no other Maven repositories are present):
 
-```
+``` 
     repositories {
         mavenCentral()
         maven {
@@ -28,13 +28,13 @@ Your _build.gradle_ file should look like this (if no other Maven repositories a
 
 Then, add **lib6647**, **jackson-core**, **jackson-databind**, and **jackson-annotations** as a dependency in your _build.gradle_'s dependencies like so:
 
-```
+``` 
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.0.pr1'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.1'
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.0.pr1'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.1'
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.0.pr1'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.1'
 
     // lib6647
     compile group: 'com.github.pacoito123', name: 'lib6647', version: '-SNAPSHOT'
@@ -42,24 +42,32 @@ Then, add **lib6647**, **jackson-core**, **jackson-databind**, and **jackson-ann
 
 Your dependencies in should look like this (again, if none other than WPILib's dependencies are present):
 
-```
+``` 
     dependencies {
         // WPILib dependencies.
-        compile wpi.deps.wpilib()
-        compile wpi.deps.vendor.java()
+        implementation wpi.deps.wpilib()
+        nativeZip wpi.deps.wpilibJni(wpi.platforms.roborio)
+        nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
+
+        implementation wpi.deps.vendor.java()
         nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
         nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
-        testCompile 'junit:junit:4.12'
+
+        testImplementation 'junit:junit:4.12'
 
         // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-    	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.0.pr1'
+    	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.1'
     	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-    	compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.0.pr1'
+    	compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.1'
     	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
-    	compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.0.pr1'
+    	compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.1'
 
         // lib6647
         compile group: 'com.github.pacoito123', name: 'lib6647', version: '-SNAPSHOT'
+
+        // Enable simulation gui support. Must check the box in vscode to enable support
+        // upon debugging
+        simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
     }
 ```
 
@@ -69,49 +77,49 @@ Now you're ready to begin instantiating and initializing objects through JSON!
 
 ## To do (for now)
 
-- [ ] Implement every HyperComponent Wrapper (if needed).
-	- [ ] HyperAHRS
-	- [ ] HyperAnalogPotentiometer
-	- [ ] HyperCompressor
-	- [ ] HyperDigitalInput
-	- [ ] HyperDoubleSolenoid
-	- [ ] HyperEncoder
-	- [ ] HyperPDP
-	- [x] HyperPIDController
-	- [x] HyperSolenoid
-	- [x] HyperTalon
-	- [ ] HyperUltrasonic
-	- [x] HyperVictor
-- [ ] Implement SuperComponents.
-	- [x] SuperAHRS
-	- [ ] SuperAnalogPotentiometer
-	- [x] SuperComponent (Custom Component with custom initialization)
-	- [x] SuperCompressor
-	- [x] SuperDigitalInput
-	- [x] SuperDoubleSolenoid
-	- [x] SuperEncoder
-	- [x] SuperPDP
-	- [x] SuperSolenoid
-	- [x] SuperTalon
-	- [x] SuperUltrasonic
-	- [x] SuperVictor
-- [x] Improve Controller initialization.
-	- [x] Create JController class, for initializing Buttons along with a Controller.
-	- [x] Add Buttons for each POV and axis found for the Controller.
-	- [x] Integrate Controller initialization with a Robot template.
-- [x] Implement Team 254's Looper subroutines.
-	- [x] Create LooperRobot template.
-	- [ ] Create LoopInitException, to be thrown when a Loop cannot be initialized properly.
-	- [ ] Allow for different period times across Looper instances.
-- [x] Improve PID subsystems and calibration.
-	- [x] Facilitate updating PID values from Shuffleboard/SmartDashboard without having to reload everything.
-	- [x] Allow for different PID loops within the same PIDSuperSubsystem.
-	- [x] Re-implement max output functionality into PIDControllers.
-- [ ] Add more flexibility and configuration options.
-- [x] Comment everything.
-- [x] Do proper Exception handling.
-- [ ] Write proper documentation for this library.
-- [x] Blame mechanical.
+* [ ] Implement every HyperComponent Wrapper (if needed).
+  + [ ] HyperAHRS
+  + [ ] HyperAnalogPotentiometer
+  + [ ] HyperCompressor
+  + [ ] HyperDigitalInput
+  + [ ] HyperDoubleSolenoid
+  + [ ] HyperEncoder
+  + [ ] HyperPDP
+  + [x] HyperPIDController
+  + [x] HyperSolenoid
+  + [x] HyperTalon
+  + [ ] HyperUltrasonic
+  + [x] HyperVictor
+* [ ] Implement SuperComponents.
+  + [x] SuperAHRS
+  + [ ] SuperAnalogPotentiometer
+  + [x] SuperComponent (Custom Component with custom initialization)
+  + [x] SuperCompressor
+  + [x] SuperDigitalInput
+  + [x] SuperDoubleSolenoid
+  + [x] SuperEncoder
+  + [x] SuperPDP
+  + [x] SuperSolenoid
+  + [x] SuperTalon
+  + [x] SuperUltrasonic
+  + [x] SuperVictor
+* [x] Improve Controller initialization.
+  + [x] Create JController class, for initializing Buttons along with a Controller.
+  + [x] Add Buttons for each POV and axis found for the Controller.
+  + [x] Integrate Controller initialization with a Robot template.
+* [x] Implement Team 254's Looper subroutines.
+  + [x] Create LooperRobot template.
+  + [ ] Create LoopRegisterException, to be thrown when a Loop cannot be registered properly.
+  + [ ] Allow for different period times across Looper instances.
+* [x] Improve PID subsystems and calibration.
+  + [x] Facilitate updating PID values from Shuffleboard/SmartDashboard without having to reload everything.
+  + [x] Allow for different PID loops within the same PIDSuperSubsystem.
+  + [x] Re-implement max output functionality into PIDControllers.
+* [ ] Add more flexibility and configuration options.
+* [x] Comment everything.
+* [x] Do proper Exception handling.
+* [ ] Write proper documentation for this library.
+* [x] Blame mechanical.
 
 ## Authors
 
@@ -120,3 +128,4 @@ Now you're ready to begin instantiating and initializing objects through JSON!
 ## License
 
 This project is under the BSD License for WPILib code, see: [BSD_License_for_WPILib_code.txt](BSD_License_for_WPILib_code.txt).
+

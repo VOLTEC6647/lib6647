@@ -3,6 +3,7 @@ package org.usfirst.lib6647.subsystem;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.usfirst.lib6647.loops.ILooper;
+import org.usfirst.lib6647.util.JSONInitException;
 import org.usfirst.lib6647.util.JSONReader;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -13,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
  * {@link Subsystem} creation.
  */
 public abstract class SuperSubsystem implements Subsystem {
-
 	/** Bread and butter of {@link SuperSubsystem}. */
 	protected JsonNode robotMap;
 	/** Name of the {@link SuperSubsystem}. */
@@ -29,7 +29,7 @@ public abstract class SuperSubsystem implements Subsystem {
 
 		try {
 			robotMap = JSONReader.getInstance().getNode("RobotMap", name);
-		} catch (Exception e) {
+		} catch (JSONInitException e) {
 			String error = String.format("[!] SUBSYSTEM '%1$s' JSON INIT ERROR:\n\t%2$s", name.toUpperCase(),
 					e.getLocalizedMessage());
 

@@ -3,7 +3,6 @@ package org.usfirst.lib6647.subsystem;
 import java.util.HashMap;
 
 import org.usfirst.lib6647.subsystem.hypercomponents.HyperPIDController;
-import org.usfirst.lib6647.util.ComponentInitException;
 
 import edu.wpi.first.wpilibj.DriverStation;
 

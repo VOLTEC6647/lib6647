@@ -13,7 +13,8 @@ import org.usfirst.lib6647.loops.LoopType;
 /**
  * Class holding instances of objects required to read values from a JSON file,
  * for {@link SuperSubsystem} usage. Also contains an ArrayList holding each of
- * the {@link SuperSubsystem subsystems}.
+ * the {@link SuperSubsystem subsystems}. Think of this class as a
+ * {@link SuperSubsystem} manager.
  */
 public class RobotMap implements ILooper {
 	/** Map holding every {@link SuperSubsystem}, with its name as its key. */
@@ -49,7 +50,7 @@ public class RobotMap implements ILooper {
 	 * @param subsystem
 	 */
 	public void registerSubsystem(SuperSubsystem subsystem) {
-		subsystems.put(subsystem.getName(), subsystem);
+		subsystems.putIfAbsent(subsystem.getName(), subsystem);
 	}
 
 	/**
@@ -198,21 +199,23 @@ public class RobotMap implements ILooper {
 	}
 
 	@Override
-	public void register(Loop loop) {
-		switch (loop.getType()) {
-		case ENABLED:
-			enabledLoops.add(loop);
-			break;
-		case TELEOP:
-			teleopLoops.add(loop);
-			break;
-		case AUTO:
-			autoLoops.add(loop);
-			break;
-		case DISABLED:
-			disabledLoops.add(loop);
-			break;
-		default:
+	public void register(Loop... loops) {
+		for (Loop loop : loops) {
+			switch (loop.getType()) {
+			case ENABLED:
+				enabledLoops.add(loop);
+				break;
+			case TELEOP:
+				teleopLoops.add(loop);
+				break;
+			case AUTO:
+				autoLoops.add(loop);
+				break;
+			case DISABLED:
+				disabledLoops.add(loop);
+				break;
+			default:
+			}
 		}
 	}
 }

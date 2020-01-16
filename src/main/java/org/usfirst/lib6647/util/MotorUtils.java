@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.CounterBase.EncodingType;
  * types.
  */
 public interface MotorUtils {
-
 	/**
 	 * Method to convert a String value to its respective {@link NeutralMode}.
 	 * 

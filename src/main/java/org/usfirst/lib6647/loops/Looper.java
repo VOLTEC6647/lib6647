@@ -8,10 +8,10 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * This code runs all of the robot's loops. Loop objects are stored in a List
- * object. They are started when the robot powers up and stopped after the
- * match. Copied over from:
- * https://github.com/Team254/FRC-2019-Public/blob/master/src/main/java/com/team254/frc2019/loops/Looper.java
+ * This code runs all of the robot's loops. {@link Loop} objects are stored in a
+ * {@link #loops list}. They are started when the robot powers up and stopped
+ * after the match. Copied over from:
+ * https://github.com/Team254/FRC-2019-Public/blob/master/src/main/java/com/team254/frc2019/loops/Looper.java.
  */
 public class Looper implements ILooper {
 	/** Period at which to run each {@link Loop}. */
@@ -80,14 +80,16 @@ public class Looper implements ILooper {
 	}
 
 	/**
-	 * Adds a given {@link Loop} to the {@link Looper#loops list}.
+	 * Adds each given {@link Loop} to the {@link Looper#loops list}.
 	 * 
-	 * @param loop
+	 * @param loops
 	 */
 	@Override
-	public synchronized void register(Loop loop) {
+	public synchronized void register(Loop... loops) {
 		synchronized (lock) {
-			loops.add(loop);
+			for (Loop loop : loops) {
+				this.loops.add(loop);
+			}
 		}
 	}
 

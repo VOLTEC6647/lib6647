@@ -1,15 +1,15 @@
-package org.usfirst.lib6647.loops;
+package org.usfirst.lib6647.wpilib;
 
 import java.util.HashMap;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import org.usfirst.lib6647.loops.Looper;
 import org.usfirst.lib6647.oi.JController;
 import org.usfirst.lib6647.subsystem.RobotMap;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.util.JSONReader;
 
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
@@ -57,6 +57,10 @@ public abstract class LooperRobot extends TimedRobot {
 		// both exist.
 		JSONReader.createInstance("Profiles", "RobotMap");
 
+		// Run JController initialization.
+		initJoysticks();
+
+		// Register each given subsystem.
 		for (Supplier<T> s : subsystems)
 			robotMap.registerSubsystem(s.get());
 	}
@@ -143,4 +147,11 @@ public abstract class LooperRobot extends TimedRobot {
 	public JController getJoystick(String name) {
 		return joysticks.get(name);
 	}
+
+	/**
+	 * Method to run {@link JController JControllers} intialization code before
+	 * {@link SuperSubsystem Subsystems}. Make sure to add each declared
+	 * {@link JController} to the {@link LooperRobot#joysticks joysticks} List.
+	 */
+	public abstract void initJoysticks();
 }

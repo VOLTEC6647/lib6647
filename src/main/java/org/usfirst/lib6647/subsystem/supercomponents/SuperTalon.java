@@ -5,10 +5,10 @@ import java.util.HashMap;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import org.usfirst.lib6647.subsystem.ComponentInitException;
 import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.subsystem.hypercomponents.HyperTalon;
-import org.usfirst.lib6647.util.ComponentInitException;
 import org.usfirst.lib6647.util.MotorUtils;
 
 import edu.wpi.first.wpilibj.DriverStation;

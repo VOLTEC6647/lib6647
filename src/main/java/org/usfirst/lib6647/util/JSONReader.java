@@ -16,6 +16,14 @@ import edu.wpi.first.wpilibj.Filesystem;
  * Class for handling the reading of specified JSON files.
  */
 public class JSONReader {
+	/** Jackson's {@link ObjectMapper}, only one instance required. */
+	private static final ObjectMapper mapper = new ObjectMapper();
+	/**
+	 * Map holding each of the JSON files to be read, with its name as its key. E.g.
+	 * a file path such as '/home/lvuser/deploy/Profiles.json' has a key of
+	 * 'Profiles'.
+	 */
+	private static final Map<String, String> filePaths = new HashMap<>();
 
 	/** Static instance for the {@link JSONReader} */
 	private static JSONReader instance = null;
@@ -36,15 +44,6 @@ public class JSONReader {
 		return instance;
 	}
 
-	/** Jackson's {@link ObjectMapper}, only one instance required. */
-	private static final ObjectMapper mapper = new ObjectMapper();
-	/**
-	 * Map holding each of the JSON files to be read, with its name as its key. e.g.
-	 * a file path such as '/home/lvuser/deploy/Profiles.json' has a key of
-	 * 'Profiles'.
-	 */
-	private static final Map<String, String> filePaths = new HashMap<>();
-
 	/**
 	 * Must be instantiated with each name of every JSON file that goes into the
 	 * roboRIO's /home/lvuser/deploy directory.
@@ -62,18 +61,19 @@ public class JSONReader {
 	 * @param fileName
 	 * @param nodeName
 	 * @return JsonNode
-	 * @throws FileNotFoundException
-	 * @throws IOException
+	 * @throws JSONInitException
 	 */
-	public JsonNode getNode(String fileName, String nodeName) throws FileNotFoundException, IOException {
+	public JsonNode getNode(String fileName, String nodeName) throws JSONInitException {
 		try (Reader file = new FileReader(filePaths.get(fileName))) {
-			return mapper.readTree(file).get(nodeName);
+			JsonNode node = mapper.readTree(file).get(nodeName);
+			return node;
 		} catch (FileNotFoundException e) {
-			System.out.printf("\n[!] FILE '%s' NOT FOUND.");
-			throw e;
+			String message = String.format(
+					"\n[!] FILE '%s' NOT FOUND, PLEASE MAKE SURE IT EXISTS AND IS NAMED ACCORDINGLY.", fileName);
+			throw new JSONInitException(message);
 		} catch (IOException e) {
-			System.out.printf("\n[!] FILE '%s' CAN NOT BE READ/MODIFIED.");
-			throw e;
+			String message = String.format("\n[!] FILE '%s' CAN NOT BE READ/MODIFIED.", fileName);
+			throw new JSONInitException(message);
 		}
 	}
 
@@ -83,6 +83,6 @@ public class JSONReader {
 	 * @param fileName
 	 */
 	public void putFile(final String fileName) {
-		filePaths.putIfAbsent(fileName, String.format("%s/%s.json", Filesystem.getDeployDirectory(), fileName));
+		filePaths.putIfAbsent(fileName, String.format("%1$s/%2$s.json", Filesystem.getDeployDirectory(), fileName));
 	}
 }
