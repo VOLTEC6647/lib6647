@@ -156,5 +156,8 @@ gradle-app.setting
 .settings/
 bin/
 
+# Documentation
+/docs/build/
+/docs/source/_build
 
 # End of https://www.gitignore.io/api/c++,java,linux,macos,gradle,windows,visualstudiocode

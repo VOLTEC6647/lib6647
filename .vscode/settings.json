@@ -5,5 +5,10 @@
 		"**/.project": true,
 		"**/.settings": true,
 		"**/.factorypath": true
-	}
+	},
+	"restructuredtext.confPath": "${workspaceFolder}\\docs\\source",
+	"restructuredtext.linter.extraArgs": [
+		"--ignore D002",
+		"--ignore D004"
+	]
 }
