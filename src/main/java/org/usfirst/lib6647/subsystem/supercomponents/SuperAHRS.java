@@ -8,23 +8,24 @@ import com.kauailabs.navx.frc.AHRS;
 import org.usfirst.lib6647.subsystem.ComponentInitException;
 import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
+import org.usfirst.lib6647.subsystem.hypercomponents.HyperAHRS;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 
 /**
- * Interface to allow {@link AHRS} initialization via JSON. Subsystems declared
- * need to extend {@link SuperSubsystem} or {@link PIDSuperSubsystem} and
- * implement this interface in order to initialize any {@link AHRS} declared in
- * {@link SuperSubsystem#robotMap robotMap}.
+ * Interface to allow {@link HyperAHRS} initialization via JSON. Subsystems
+ * declared need to extend {@link SuperSubsystem} or {@link PIDSuperSubsystem}
+ * and implement this interface in order to initialize any {@link HyperAHRS}
+ * declared in {@link SuperSubsystem#robotMap robotMap}.
  */
 public interface SuperAHRS {
-	/** HashMap storing the {@link SuperSubsystem}'s {@link AHRS} devices. */
-	public HashMap<String, AHRS> ahrsDevices = new HashMap<>();
+	/** HashMap storing the {@link SuperSubsystem}'s {@link HyperAHRS} devices. */
+	public HashMap<String, HyperAHRS> ahrsDevices = new HashMap<>();
 
 	/**
-	 * Method to initialize {@link AHRS} devices declared in the
+	 * Method to initialize {@link HyperAHRS} devices declared in the
 	 * {@link SuperSubsystem#robotMap robotMap} JSON file, and add them to the
 	 * {@link #ahrsDevices} HashMap using its declared name as its key.
 	 * 
@@ -48,7 +49,7 @@ public interface SuperAHRS {
 										json.get("name").asText(), subsystemName));
 
 					// Create AHRS object.
-					AHRS ahrs = new AHRS(port);
+					HyperAHRS ahrs = new HyperAHRS(port, json.get("inverted").asBoolean());
 
 					// Additional initialization configuration.
 					if (json.hasNonNull("resetOnStart") && json.get("resetOnStart").asBoolean())

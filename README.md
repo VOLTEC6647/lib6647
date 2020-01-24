@@ -63,7 +63,7 @@ Your dependencies in should look like this (again, if none other than WPILib's d
     	compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.1'
 
         // lib6647
-        compile group: 'com.github.pacoito123', name: 'lib6647', version: '-SNAPSHOT'
+        compile group: 'com.github.VOLTEC6647', name: 'lib6647', version: '-SNAPSHOT'
 
         // Enable simulation gui support. Must check the box in vscode to enable support
         // upon debugging
@@ -78,7 +78,7 @@ Now you're ready to begin instantiating and initializing objects through JSON!
 ## To do (for now)
 
 * [ ] Implement every HyperComponent Wrapper (if needed).
-  + [ ] HyperAHRS
+  + [x] HyperAHRS
   + [ ] HyperAnalogPotentiometer
   + [ ] HyperCompressor
   + [ ] HyperDigitalInput
