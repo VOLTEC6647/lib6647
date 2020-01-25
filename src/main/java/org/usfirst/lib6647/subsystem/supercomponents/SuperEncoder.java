@@ -22,7 +22,7 @@ public interface SuperEncoder extends MotorUtils {
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s {@link Encoder Encoders}.
 	 */
-	public HashMap<String, Encoder> encoders = new HashMap<>();
+	final HashMap<String, Encoder> encoders = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link Encoder Encoders} declared in the

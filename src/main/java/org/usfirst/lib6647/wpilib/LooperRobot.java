@@ -125,26 +125,32 @@ public abstract class LooperRobot extends TimedRobot {
 	}
 
 	/**
-	 * Get {@link SuperSubsystem Subsystem} from {@link LooperRobot#robotMap}.
+	 * Get {@link SuperSubsystem Subsystem} from {@link #robotMap}.
 	 * 
 	 * @param name
 	 * @return subsystem
 	 */
-	public SuperSubsystem getSubsystem(String name) {
+	public synchronized SuperSubsystem getSubsystem(String name) {
 		return robotMap.getSubsystem(name);
 	}
 
-	public Stream<SuperSubsystem> getSubsystems() {
+	/**
+	 * Returns a Stream of every {@link SuperSubsystem Subsystem} from
+	 * {@link #robotMap}.
+	 * 
+	 * @return subsystems
+	 */
+	public synchronized Stream<SuperSubsystem> getSubsystems() {
 		return robotMap.getSubsystems();
 	}
 
 	/**
-	 * Get {@link JController Joystick} from
+	 * Get specified {@link JController Joystick} from {@link #joysticks}.
 	 * 
 	 * @param name
-	 * @return
+	 * @return joystick
 	 */
-	public JController getJoystick(String name) {
+	public synchronized JController getJoystick(String name) {
 		return joysticks.get(name);
 	}
 

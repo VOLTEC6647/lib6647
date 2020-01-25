@@ -28,7 +28,7 @@ public class RobotMap implements ILooper {
 	 * 
 	 * @return stream
 	 */
-	public Stream<SuperSubsystem> getSubsystems() {
+	public synchronized Stream<SuperSubsystem> getSubsystems() {
 		return subsystems.values().stream();
 	}
 
@@ -38,7 +38,7 @@ public class RobotMap implements ILooper {
 	 * @param name
 	 * @return subsystem
 	 */
-	public SuperSubsystem getSubsystem(String name) {
+	public synchronized SuperSubsystem getSubsystem(String name) {
 		return subsystems.get(name);
 	}
 
@@ -49,7 +49,7 @@ public class RobotMap implements ILooper {
 	 * @param SuperSubsystem
 	 * @param subsystem
 	 */
-	public void registerSubsystem(SuperSubsystem subsystem) {
+	public synchronized void registerSubsystem(SuperSubsystem subsystem) {
 		subsystems.putIfAbsent(subsystem.getName(), subsystem);
 	}
 

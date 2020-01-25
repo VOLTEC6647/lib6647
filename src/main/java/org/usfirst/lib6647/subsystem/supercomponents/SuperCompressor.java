@@ -21,7 +21,7 @@ public interface SuperCompressor {
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s {@link Compressor Compressors}.
 	 */
-	public HashMap<String, Compressor> compressors = new HashMap<>();
+	final HashMap<String, Compressor> compressors = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link Compressor Compressors} declared in the

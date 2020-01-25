@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class JController extends GenericHID {
 	/** HashMap storing the {@link JController}'s {@link Button Buttons}. */
-	public HashMap<String, Button> buttons = new HashMap<>();
+	private final HashMap<String, Button> buttons = new HashMap<>();
 	/** Left or right axis of the {@link JController} (assuming it's a gamepad). */
 	private int leftAxis = 1, rightAxis = 5;
 

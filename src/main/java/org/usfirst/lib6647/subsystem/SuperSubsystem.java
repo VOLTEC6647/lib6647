@@ -51,12 +51,12 @@ public abstract class SuperSubsystem implements Subsystem {
 
 	// Optional design pattern for caching periodic reads to avoid hammering the
 	// HAL/CAN.
-	public void readPeriodicInputs() {
+	public synchronized void readPeriodicInputs() {
 	}
 
 	// Optional design pattern for caching periodic writes to avoid hammering the
 	// HAL/CAN.
-	public void writePeriodicOutputs() {
+	public synchronized void writePeriodicOutputs() {
 	}
 
 	public void registerLoops(ILooper looper) {

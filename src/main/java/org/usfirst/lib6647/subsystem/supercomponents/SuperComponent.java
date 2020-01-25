@@ -21,7 +21,7 @@ public interface SuperComponent {
 	 * HashMap storing the {@link SuperSubsystem}'s custom Components. Components
 	 * obtained must be cast to be used properly.
 	 */
-	public HashMap<String, Object> customComponents = new HashMap<>();
+	final HashMap<String, Object> customComponents = new HashMap<>();
 
 	/**
 	 * Method to initialize custom Components declared in the
@@ -58,4 +58,14 @@ public interface SuperComponent {
 	 * @throws ComponentInitException
 	 */
 	public void customInit(JsonNode node, String subsystemName) throws ComponentInitException;
+
+	/**
+	 * Gets specified {@link SuperComponent}. Must be cast to be properly used.
+	 * 
+	 * @return Component
+	 * @param componentName
+	 */
+	default Object getComponent(String componentName) {
+		return customComponents.get(componentName);
+	}
 }

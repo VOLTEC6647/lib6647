@@ -23,7 +23,7 @@ public interface SuperTalon extends MotorUtils {
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperTalon HyperTalons}.
 	 */
-	public HashMap<String, HyperTalon> talons = new HashMap<>();
+	final HashMap<String, HyperTalon> talons = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link HyperTalon HyperTalons} declared in the

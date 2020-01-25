@@ -23,7 +23,7 @@ public interface SuperPDP {
 	 * HashMap storing the {@link SuperSubsystem}'s {@link PowerDistributionPanel
 	 * PDPs}.
 	 */
-	public HashMap<String, PowerDistributionPanel> PDPs = new HashMap<>();
+	final HashMap<String, PowerDistributionPanel> PDPs = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link PowerDistributionPanel PDPs} declared in the

@@ -25,7 +25,7 @@ public interface SuperVictor extends MotorUtils {
 	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperVictor
 	 * HyperVictors}.
 	 */
-	public HashMap<String, HyperVictor> victors = new HashMap<>();
+	final HashMap<String, HyperVictor> victors = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link HyperVictor HyperVictors} declared in the

@@ -16,7 +16,7 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 	 * HashMap storing the {@link PIDSuperSubsystem}'s {@link HyperPIDController
 	 * HyperPIDControllers}.
 	 */
-	private HashMap<String, HyperPIDController> pidControllers = new HashMap<>();
+	private final HashMap<String, HyperPIDController> pidControllers = new HashMap<>();
 
 	/**
 	 * Constructor for {@link PIDSuperSubsystem}. Initializes
@@ -79,7 +79,7 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 	 * @param name
 	 * @return HyperPIDController
 	 */
-	public HyperPIDController getPIDController(String name) {
+	public synchronized HyperPIDController getPIDController(String name) {
 		return pidControllers.get(name);
 	}
 
@@ -90,7 +90,7 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 	 * @param name
 	 * @param setpoint
 	 */
-	public void setSetpoint(String name, double setpoint) {
+	public synchronized void setSetpoint(String name, double setpoint) {
 		pidControllers.get(name).setSetpoint(setpoint);
 	}
 
@@ -100,7 +100,7 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 	 * @param name
 	 * @return setpoint
 	 */
-	public double getSetpoint(String name) {
+	public synchronized double getSetpoint(String name) {
 		return pidControllers.get(name).getSetpoint();
 	}
 
@@ -111,7 +111,7 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 	 * @param name
 	 * @return atSetpoint
 	 */
-	public boolean onTarget(String name) {
+	public synchronized boolean onTarget(String name) {
 		return pidControllers.get(name).atSetpoint();
 	}
 }

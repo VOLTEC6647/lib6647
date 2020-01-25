@@ -40,7 +40,7 @@ public class JSONReader {
 	 * 
 	 * @return static {@link JSONReader} instance
 	 */
-	public static JSONReader getInstance() {
+	public synchronized static JSONReader getInstance() {
 		return instance;
 	}
 
@@ -63,7 +63,7 @@ public class JSONReader {
 	 * @return JsonNode
 	 * @throws JSONInitException
 	 */
-	public JsonNode getNode(String fileName, String nodeName) throws JSONInitException {
+	public synchronized JsonNode getNode(String fileName, String nodeName) throws JSONInitException {
 		try (Reader file = new FileReader(filePaths.get(fileName))) {
 			JsonNode node = mapper.readTree(file).get(nodeName);
 			return node;
@@ -82,7 +82,7 @@ public class JSONReader {
 	 * 
 	 * @param fileName
 	 */
-	public void putFile(final String fileName) {
+	private void putFile(final String fileName) {
 		filePaths.putIfAbsent(fileName, String.format("%1$s/%2$s.json", Filesystem.getDeployDirectory(), fileName));
 	}
 }

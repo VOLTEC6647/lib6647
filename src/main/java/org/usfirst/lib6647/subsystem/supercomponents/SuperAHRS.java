@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.SerialPort.Port;
  */
 public interface SuperAHRS {
 	/** HashMap storing the {@link SuperSubsystem}'s {@link HyperAHRS} devices. */
-	public HashMap<String, HyperAHRS> ahrsDevices = new HashMap<>();
+	final HashMap<String, HyperAHRS> ahrsDevices = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link HyperAHRS} devices declared in the
@@ -74,10 +74,10 @@ public interface SuperAHRS {
 	 * Gets specified {@link AHRS}.
 	 * 
 	 * @return {@link AHRS}
-	 * @param name
+	 * @param ahrsName
 	 */
-	default AHRS getAHRS(String name) {
-		return ahrsDevices.get(name);
+	default AHRS getAHRS(String ahrsName) {
+		return ahrsDevices.get(ahrsName);
 	}
 
 	/**

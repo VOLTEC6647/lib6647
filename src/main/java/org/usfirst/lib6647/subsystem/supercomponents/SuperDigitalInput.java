@@ -22,7 +22,7 @@ public interface SuperDigitalInput {
 	 * HashMap storing the {@link SuperSubsystem}'s {@link DigitalInput
 	 * DigitalInputs}.
 	 */
-	public HashMap<String, DigitalInput> digitalInputs = new HashMap<>();
+	final HashMap<String, DigitalInput> digitalInputs = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link DigitalInput DigitalInputs} declared in the

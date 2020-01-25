@@ -22,7 +22,7 @@ public class Looper implements ILooper {
 	/** Check to see if the {@link Looper} is currently running. */
 	private boolean running;
 
-	/** Handles running {@link Loops} in a different Thread. */
+	/** Handles running {@link Loops} in a separate Thread. */
 	private final Notifier notifier;
 	/** List holding each of this {@link Looper} instance's {@link Loop Loops}. */
 	private final List<Loop> loops;
@@ -71,7 +71,7 @@ public class Looper implements ILooper {
 
 	/**
 	 * Constructor for {@link Looper}. Runs each declared {@link Loop} at the
-	 * default {@link Looper#period rate} of 0.01 (10ms).
+	 * default {@link #period rate} of 0.01 (10ms).
 	 * 
 	 * @param name
 	 */
@@ -80,7 +80,7 @@ public class Looper implements ILooper {
 	}
 
 	/**
-	 * Adds each given {@link Loop} to the {@link Looper#loops list}.
+	 * Adds each given {@link Loop} to the {@link #loops list}.
 	 * 
 	 * @param loops
 	 */
@@ -94,7 +94,7 @@ public class Looper implements ILooper {
 	}
 
 	/**
-	 * Start registered {@link Loop Loops} in {@link Looper#loops}.
+	 * Start registered {@link Loop Loops} in {@link #loops}.
 	 */
 	public synchronized void start() {
 		if (!running) {
@@ -118,7 +118,7 @@ public class Looper implements ILooper {
 	}
 
 	/**
-	 * Stop registered {@link Loop Loops} in {@link Looper#loops}.
+	 * Stop registered {@link Loop Loops} in {@link #loops}.
 	 */
 	public synchronized void stop() {
 		if (running) {
@@ -134,7 +134,7 @@ public class Looper implements ILooper {
 	}
 
 	/**
-	 * Output {@link Looper#dt DT} to SmartDashboard.
+	 * Output {@link #dt DT} to SmartDashboard.
 	 */
 	public void outputToSmartDashboard() {
 		SmartDashboard.putNumber(name + "_looper_dt", dt);
