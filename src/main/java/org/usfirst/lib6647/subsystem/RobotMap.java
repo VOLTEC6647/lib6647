@@ -1,10 +1,10 @@
 package org.usfirst.lib6647.subsystem;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import org.usfirst.lib6647.loops.ILooper;
 import org.usfirst.lib6647.loops.Loop;
@@ -24,12 +24,12 @@ public class RobotMap implements ILooper {
 			autoLoops = new ArrayList<>(), disabledLoops = new ArrayList<>();
 
 	/**
-	 * Return a {@link Stream} of every declared {@link SuperSubsystem}.
+	 * Return a {@link Collection} of every declared {@link SuperSubsystem}.
 	 * 
-	 * @return stream
+	 * @return subsystems
 	 */
-	public synchronized Stream<SuperSubsystem> getSubsystems() {
-		return subsystems.values().stream();
+	public synchronized Collection<SuperSubsystem> getSubsystems() {
+		return subsystems.values();
 	}
 
 	/**
@@ -43,14 +43,15 @@ public class RobotMap implements ILooper {
 	}
 
 	/**
-	 * Adds a {@link SuperSubsystem} to the map of {@link RobotMap#subsystems
-	 * subsystems}.
+	 * Adds one or many {@link SuperSubsystem Subsystems} to the {@link #subsystems}
+	 * map.
 	 * 
 	 * @param SuperSubsystem
 	 * @param subsystem
 	 */
-	public synchronized void registerSubsystem(SuperSubsystem subsystem) {
-		subsystems.putIfAbsent(subsystem.getName(), subsystem);
+	public synchronized void registerSubsystem(SuperSubsystem... subsystem) {
+		for (SuperSubsystem s : subsystem)
+			subsystems.putIfAbsent(s.getName(), s);
 	}
 
 	/**

@@ -28,42 +28,29 @@ public abstract class LooperRobot extends TimedRobot {
 	protected final HashMap<String, JController> joysticks = new HashMap<>();
 
 	/**
-	 * Constructor for {@link LooperRobot} with default period. Every subsystem
-	 * provided via lambda syntax (Chassis::new, for instance) will be registered in
-	 * {@link RobotMap}.
-	 * 
-	 * @param <T>
-	 * @param period
-	 * @param subsystems
+	 * Constructor for {@link LooperRobot} with default period. Every subsystem must
+	 * be registered via lambda syntax (e.g. Chassis::new), using the
+	 * {@link #registerSubsystems} method.
 	 */
-	@SafeVarargs
-	protected <T extends SuperSubsystem> LooperRobot(Supplier<T>... subsystems) {
-		this(0.02, subsystems);
+	protected LooperRobot() {
+		this(0.02);
 	}
 
 	/**
-	 * Constructor for {@link LooperRobot} with specified period. Every subsystem
-	 * provided via lambda syntax (Chassis::new, for instance) will be registered in
-	 * {@link RobotMap}.
+	 * Constructor for {@link LooperRobot} with a specific period time. Every
+	 * subsystem must be registered via lambda syntax (e.g. Chassis::new), using the
+	 * {@link #registerSubsystems} method.
 	 * 
-	 * @param <T>
 	 * @param period
-	 * @param subsystems
 	 */
-	@SafeVarargs
-	protected <T extends SuperSubsystem> LooperRobot(double period, Supplier<T>... subsystems) {
+	protected <T extends SuperSubsystem> LooperRobot(double period) {
 		super(period);
 
 		// Make sure ~/lvuser/deploy/Profiles.json and ~/lvuser/deploy/RobotMap.json
 		// both exist.
 		JSONReader.createInstance("Profiles", "RobotMap");
 
-		// Run JController initialization.
-		initJoysticks();
-
 		// Register each given subsystem.
-		for (Supplier<T> s : subsystems)
-			robotMap.registerSubsystem(s.get());
 	}
 
 	@Override
@@ -145,7 +132,7 @@ public abstract class LooperRobot extends TimedRobot {
 	 * @return subsystems
 	 */
 	public synchronized Stream<SuperSubsystem> getSubsystems() {
-		return robotMap.getSubsystems();
+		return robotMap.getSubsystems().stream();
 	}
 
 	/**
@@ -158,10 +145,10 @@ public abstract class LooperRobot extends TimedRobot {
 		return joysticks.get(name);
 	}
 
-	/**
-	 * Method to run {@link JController JControllers} intialization code before
-	 * {@link SuperSubsystem Subsystems}. Make sure to add each declared
-	 * {@link JController} to the {@link LooperRobot#joysticks joysticks} List.
-	 */
-	public abstract void initJoysticks();
+	@SafeVarargs
+	public synchronized final <T extends SuperSubsystem> void registerSubsystems(Supplier<T>... subsystems) {
+		if (robotMap.getSubsystems().isEmpty())
+			for (Supplier<T> s : subsystems)
+				robotMap.registerSubsystem(s.get());
+	}
 }
