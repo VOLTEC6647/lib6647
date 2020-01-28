@@ -7,7 +7,6 @@
 package org.usfirst.lib6647.wpilib;
 
 import edu.wpi.first.hal.HAL;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -279,14 +278,8 @@ public abstract class IterativeRobotBase extends RobotBase {
 		Shuffleboard.update();
 		m_watchdog.addEpoch("Shuffleboard.update()");
 		m_watchdog.disable();
-
-		// Warn on loop time overruns
-		if (m_watchdog.isExpired()) {
-			m_watchdog.printEpochs();
-		}
 	}
 
 	private void printLoopOverrunMessage() {
-		DriverStation.reportWarning("Loop time of " + m_period + "s overrun\n", false);
 	}
 }

@@ -10,6 +10,7 @@ import org.usfirst.lib6647.subsystem.RobotMap;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.util.JSONReader;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
@@ -67,6 +68,9 @@ public abstract class LooperRobot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
+		if (!isReal())
+			SmartDashboard.putData(new SimEnabler());
+
 		// Registers each Loop in every declared subsystem.
 		robotMap.registerLoops(enabledLooper, teleopLooper, autoLooper, disabledLooper);
 

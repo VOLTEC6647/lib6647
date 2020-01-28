@@ -9,71 +9,9 @@ Team 6647's library for JSON-oriented object initialization, among other things.
 
 Team 6647 encourages the usage of this library by any team that may find it useful, period. Giving us credit is optional, but greatly appreciated. Please feel free to request anything your team might need that could be added to this library.
 
-### Compiling lib6647 to your Robot
+### Documentation
 
-**lib6647** must be added as a dependency in your Robot's _build.gradle_ file, as well as the **jackson** library that it requires.
-
-First, add the following url to your Maven repositories in _build.gradle_: https://jitpack.io. This is to effortlessly compile code from any github project release or commit into your code.
-
-Your _build.gradle_ file should look like this (if no other Maven repositories are present):
-
-``` 
-    repositories {
-        mavenCentral()
-        maven {
-            url 'https://jitpack.io'
-        }
-    }
-```
-
-Then, add **lib6647**, **jackson-core**, **jackson-databind**, and **jackson-annotations** as a dependency in your _build.gradle_'s dependencies like so:
-
-``` 
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.1'
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.1'
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.1'
-
-    // lib6647
-    compile group: 'com.github.pacoito123', name: 'lib6647', version: '-SNAPSHOT'
-```
-
-Your dependencies in should look like this (again, if none other than WPILib's dependencies are present):
-
-``` 
-    dependencies {
-        // WPILib dependencies.
-        implementation wpi.deps.wpilib()
-        nativeZip wpi.deps.wpilibJni(wpi.platforms.roborio)
-        nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
-
-        implementation wpi.deps.vendor.java()
-        nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
-        nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
-
-        testImplementation 'junit:junit:4.12'
-
-        // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-    	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.1'
-    	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-    	compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.1'
-    	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
-    	compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.1'
-
-        // lib6647
-        compile group: 'com.github.VOLTEC6647', name: 'lib6647', version: '-SNAPSHOT'
-
-        // Enable simulation gui support. Must check the box in vscode to enable support
-        // upon debugging
-        simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
-    }
-```
-
-Of course, you can change the version of the library to any specific commit in any branch, just make sure that your code is compatible with it.
-
-Now you're ready to begin instantiating and initializing objects through JSON!
+Currently written documentation can be found at https://lib6647.readthedocs.io/, though it's still a HUGE work in progress.
 
 ## To do (for now)
 
@@ -115,6 +53,9 @@ Now you're ready to begin instantiating and initializing objects through JSON!
   + [x] Facilitate updating PID values from Shuffleboard/SmartDashboard without having to reload everything.
   + [x] Allow for different PID loops within the same PIDSuperSubsystem.
   + [x] Re-implement max output functionality into PIDControllers.
+* [ ] Implement characterization routines into library.
+  + [x] Copy SimEnabler class from frc-characterization, to enable characterization of simulations.
+  + [ ] Create CharLoop classes, with templates to run characterization routines across different robots.
 * [ ] Add more flexibility and configuration options.
 * [x] Comment everything.
 * [x] Do proper Exception handling.
