@@ -52,9 +52,7 @@ dependencies {
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
     implementation group: 'edu.wpi.first.wpilibNewCommands', name: 'wpilibNewCommands-java', version: '2020.2.2'
-
-    // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
+    implementation group: 'edu.wpi.first.wpilibOldCommands', name: 'wpilibOldCommands-java', version: '2020.2.2'
 
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.1'
@@ -67,8 +65,16 @@ dependencies {
 	implementation group: 'com.ctre.phoenix', name: 'api-java', version: '5.18.0'
 	implementation group: 'com.ctre.phoenix', name: 'wpiapi-java', version: '5.18.0'
 
+	testImplementation group: 'com.ctre.phoenix', name: 'cci', version: '5.18.0'
+	testImplementation group: 'com.ctre.phoenix', name: 'diagnostics', version: '5.18.0'
+	testImplementation group: 'com.ctre.phoenix', name: 'platform-stub', version: '5.18.0'
+	testImplementation group: 'com.ctre.phoenix', name: 'core', version: '5.18.0'
+
     // Kauai Labs dependencies.
     implementation group: 'com.kauailabs.navx.frc', name: 'navx-java', version: '3.1.400'
+
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.12'
 
     // Enable simulation gui support. Must check the box in vscode to enable support
     // upon debugging
