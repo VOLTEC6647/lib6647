@@ -7,6 +7,7 @@ import org.usfirst.lib6647.util.JSONInitException;
 import org.usfirst.lib6647.util.JSONReader;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /**
@@ -38,6 +39,8 @@ public abstract class SuperSubsystem implements Subsystem {
 
 			System.exit(1);
 		}
+
+		CommandScheduler.getInstance().registerSubsystem(this);
 	}
 
 	/**
