@@ -50,18 +50,8 @@ public abstract class LooperRobot extends TimedRobot {
 		// both exist.
 		JSONReader.createInstance("Profiles", "RobotMap");
 
-		// Register each given subsystem.
-	}
-
-	@Override
-	public void robotInit() {
 		if (!isReal())
 			SmartDashboard.putData(new SimEnabler());
-
-		// Registers each Loop in every declared subsystem.
-		robotMap.registerLoops(enabledLooper, teleopLooper, autoLooper, disabledLooper);
-
-		System.out.println("Default LooperRobot robotInit() method... Override me!");
 	}
 
 	// Can be overwritten if it is not necessary to call the CommandScheduler
@@ -150,5 +140,8 @@ public abstract class LooperRobot extends TimedRobot {
 		if (robotMap.getSubsystems().isEmpty())
 			for (Supplier<T> s : subsystems)
 				robotMap.registerSubsystem(s.get());
+
+		// Registers each Loop in every declared subsystem.
+		robotMap.registerLoops(enabledLooper, teleopLooper, autoLooper, disabledLooper);
 	}
 }
