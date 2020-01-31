@@ -63,7 +63,7 @@ public class HyperVictor extends WPI_VictorSPX {
 	 */
 	@Override
 	public void set(double speed) {
-		lazySet(ControlMode.PercentOutput, speed);
+		set(ControlMode.PercentOutput, speed);
 	}
 
 	/**

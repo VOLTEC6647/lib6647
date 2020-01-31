@@ -14,14 +14,16 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
- * Wrapper for the {@link GenericHID} class for easy {@link Button}
- * initialization, among other things.
+ * Wrapper for the {@link GenericHID} class, for easy {@link Button}
+ * initialization and increased controller compatibility.
  */
 public class JController extends GenericHID {
 	/** HashMap storing the {@link JController}'s {@link Button Buttons}. */
 	private final HashMap<String, Button> buttons = new HashMap<>();
-	/** Left or right axis of the {@link JController} (assuming it's a gamepad). */
-	private int leftAxis = 1, rightAxis = 5;
+	/** Tolerance for this {@link JController}'s axes. */
+	private double axisTolerance = 0.15;
+	/** This {@JController}'s axes' values. */
+	private int leftX = 0, leftY = 1, rightX = 4, rightY = 5;
 
 	/**
 	 * {@link JsonNode} holding the {@link JController}'s profile (friendly
@@ -30,16 +32,35 @@ public class JController extends GenericHID {
 	private JsonNode profile;
 
 	/**
-	 * Constructor for {@link JController}.
+	 * Constructor for a {@link JController}.
 	 * 
 	 * Initializes each and every {@link Button} from the {@link Joystick} found at
-	 * the given port. Also initializes {@link Button Buttons} for each of the axes
-	 * and POVs. Also initializes its {@link #profile} if possible.
+	 * the given port, and initializes {@link Button Buttons} for each of the
+	 * {@link JController}'s axes and POVs with the default tolerance of 0.15. Also
+	 * initializes its {@link #profile} if possible.
 	 * 
 	 * @param port
 	 */
 	public JController(int port) {
+		this(port, 0.15);
+	}
+
+	/**
+	 * Constructor for a {@link JController}.
+	 * 
+	 * Initializes each and every {@link Button} from the {@link Joystick} found at
+	 * the given port, and initializes {@link Button Buttons} for each of the
+	 * {@link JController}'s axes and POVs with the specified tolerance. Also
+	 * initializes its {@link #profile} if possible.
+	 * 
+	 * @param port
+	 * @param axisTolerance
+	 */
+	public JController(int port, double axisTolerance) {
 		super(port);
+
+		// Set tolerance of JController to specified amount.
+		this.axisTolerance = axisTolerance;
 
 		try {
 			profile = JSONReader.getInstance().getNode("Profiles", getName());
@@ -49,7 +70,7 @@ public class JController extends GenericHID {
 					getName().toUpperCase(), e.getLocalizedMessage());
 
 			System.out.println(error);
-			DriverStation.reportError(error, false);
+			DriverStation.reportWarning(error, false);
 		}
 
 		// Button initialization. Starting at 1.
@@ -58,46 +79,17 @@ public class JController extends GenericHID {
 
 		// dPadButton initialization. Starting at 0.
 		for (int i = 0; i < this.getPOVCount(); i++) {
-			buttons.put("dPad" + i, buttonFromPOV(this, i));
+			buttons.put("dPad" + i, buttonFromPOV(i));
 			for (int j = 0; j <= 315; j += 45)
-				buttons.put("dPad" + i + "_" + j, buttonFromPOV(this, i, j));
+				buttons.put("dPad" + i + "_" + j, buttonFromPOV(i, j));
 		}
 
 		// axisButton (Stick) initialization. Starting at 0.
 		for (int i = 0; i < this.getAxisCount(); i++) {
-			buttons.put("Stick" + i, buttonFromAxis(this, i, 0.30, true));
-			buttons.put("Stick" + i + "_1", buttonFromAxis(this, i, 0.30, false));
-			buttons.put("Stick" + i + "_-1", buttonFromAxis(this, i, -0.30, false));
+			buttons.put("Stick" + i, buttonFromAxis(i));
+			buttons.put("Stick" + i + "_1", buttonFromAxis(i, false));
+			buttons.put("Stick" + i + "_-1", buttonFromAxis(i, true));
 		}
-	}
-
-	/**
-	 * Method to set {@link #leftAxis} and {@link #rightAxis}.
-	 * 
-	 * @param {@link #leftAxis}
-	 * @param {@link #rightAxis}
-	 */
-	public void setLeftRightAxis(int leftAxis, int rightAxis) {
-		this.leftAxis = leftAxis;
-		this.rightAxis = rightAxis;
-	}
-
-	/**
-	 * Method to get {@link #leftAxis} raw value.
-	 * 
-	 * @return {@link #leftAxis}
-	 */
-	public double getLeftAxis() {
-		return getRawAxis(leftAxis);
-	}
-
-	/**
-	 * Method to get {@link #rightAxis} raw value.
-	 * 
-	 * @return {@link #rightAxis}
-	 */
-	public double getRightAxis() {
-		return getRawAxis(rightAxis);
 	}
 
 	/**
@@ -105,7 +97,7 @@ public class JController extends GenericHID {
 	 * JSON configuration) from this {@link JController}.
 	 * 
 	 * @param buttonName
-	 * @return {@link Button}
+	 * @return {@link Button}.
 	 */
 	public Button get(String buttonName) {
 		return buttons.get(profile.get(buttonName).asText());
@@ -115,8 +107,8 @@ public class JController extends GenericHID {
 	 * Method for getting a {@link Button} from the {@link JController}.
 	 * 
 	 * @param button
-	 * @return {@link Button} from the specified {@link JController#joysticks
-	 *         joystick}
+	 * @return {@link Button} from the {@link JController}'s {@link #buttons}
+	 *         HashMap.
 	 */
 	public Button get(int button) {
 		return buttons.get("Button" + button);
@@ -128,11 +120,11 @@ public class JController extends GenericHID {
 	 * 
 	 * @param type
 	 * @param axis
-	 * @return {@link Button} from the {@link JController}, for the specified Stick
-	 *         or dPad
+	 * @return {@link Button} from the {@link JController}'s {@link #buttons}
+	 *         HashMap, for the specified Stick or dPad.
 	 */
-	public Button get(String type, int axis) {
-		return buttons.get(type + axis);
+	public Button get(JAxisType type, int axis) {
+		return buttons.get(type.getName() + axis);
 	}
 
 	/**
@@ -142,25 +134,25 @@ public class JController extends GenericHID {
 	 * @param type
 	 * @param axis
 	 * @param angle
-	 * @return {@link Button} from the {@link JController}, for the specified Stick
-	 *         or dPad, for the specified angle or value
+	 * @return {@link Button} from the {@link JController}'s {@link #buttons}
+	 *         HashMap, for the specified Stick or dPad, for the specified angle or
+	 *         value
 	 */
-	public Button get(String type, int axis, int angle) {
-		return buttons.get(type + axis + "_" + angle);
+	public Button get(JAxisType type, int axis, int angle) {
+		return buttons.get(type.getName() + axis + "_" + angle);
 	}
 
 	/**
 	 * Method for getting a dPadButton input for any angle.
 	 * 
-	 * @param controller
 	 * @param pov
 	 * @return dPadButton
 	 */
-	private Button buttonFromPOV(GenericHID controller, int pov) {
+	private Button buttonFromPOV(int pov) {
 		return new Button() {
 			@Override
 			public boolean get() {
-				return controller.getPOV(pov) > -1;
+				return getPOV(pov) > -1;
 			}
 		};
 	}
@@ -168,60 +160,144 @@ public class JController extends GenericHID {
 	/**
 	 * Method for getting a dPadButton input for a specific angle.
 	 * 
-	 * @param controller
 	 * @param pov
 	 * @param angle
 	 * @return povButton
 	 */
-	private Button buttonFromPOV(GenericHID controller, int pov, int angle) {
+	private Button buttonFromPOV(int pov, int angle) {
 		return new Button() {
 			@Override
 			public boolean get() {
-				return controller.getPOV(pov) == angle;
+				return getPOV(pov) == angle;
 			}
 		};
 	}
 
 	/**
-	 * Method for getting an axisButton input for any value, with given value as
-	 * tolerance (so as to avoid accidental input due to improper
+	 * Method for getting an {@link Button axisButton} for any absolute value, with
+	 * given value as tolerance (so as to avoid accidental input due to improper
 	 * {@link JController} calibration).
 	 * 
-	 * @param controller
 	 * @param axis
-	 * @param tolerance
-	 * @param absolute
+	 * @param negative
 	 * @return axisButton
 	 */
-	private Button buttonFromAxis(GenericHID controller, int axis, double tolerance, boolean absolute) {
+	private Button buttonFromAxis(int axis) {
 		return new Button() {
 			@Override
 			public boolean get() {
-				return absolute ? Math.abs(controller.getRawAxis(axis)) < tolerance
-						: controller.getRawAxis(axis) < tolerance;
+				return Math.abs(getRawAxis(axis)) < axisTolerance;
 			}
 		};
 	}
 
 	/**
-	 * @deprecated Use "Stick0" syntax instead.
-	 * @param hand
-	 * @return 0
+	 * Method for getting an {@link Button axisButton} for either a positive or
+	 * negative value, with given value as tolerance (so as to avoid accidental
+	 * input due to improper {@link JController} calibration).
+	 * 
+	 * @param axis
+	 * @param negative
+	 * @return axisButton
 	 */
-	@Deprecated
-	@Override
-	public double getX(Hand hand) {
-		return 0;
+	private Button buttonFromAxis(int axis, boolean negative) {
+		return new Button() {
+			@Override
+			public boolean get() {
+				return getRawAxis(axis) < (axisTolerance * (negative ? -1 : 1));
+			}
+		};
 	}
 
 	/**
-	 * @deprecated Use "Stick0" syntax instead.
+	 * Sets both X and Y axes for a specific {@link Hand}.
+	 * 
 	 * @param hand
-	 * @return 0
+	 * @param axisX
+	 * @param axisY
 	 */
-	@Deprecated
+	public void setXY(Hand hand, int axisX, int axisY) {
+		setX(hand, axisX);
+		setY(hand, axisY);
+	}
+
+	/**
+	 * Set X axis for a specific {@link Hand}.
+	 * 
+	 * @param hand
+	 * @param axis
+	 */
+	public void setX(Hand hand, int axis) {
+		switch (hand) {
+		case kLeft:
+			leftX = axis;
+			break;
+		case kRight:
+			rightX = axis;
+		default:
+		}
+	}
+
+	@Override
+	public double getX(Hand hand) {
+		return getX(hand, true);
+	}
+
+	/**
+	 * Get X raw axis, for a specific hand, with or without tolerance.
+	 * 
+	 * @param hand
+	 * @param useTolerance
+	 * @return x position, with or without tolerance
+	 */
+	public double getX(Hand hand, boolean useTolerance) {
+		switch (hand) {
+		case kLeft:
+			return (!useTolerance || (Math.abs(getRawAxis(leftX)) > axisTolerance)) ? getRawAxis(leftX) : 0.0;
+		case kRight:
+			return (!useTolerance || (Math.abs(getRawAxis(rightX)) > axisTolerance)) ? getRawAxis(rightX) : 0.0;
+		default:
+			return Double.NaN;
+		}
+	}
+
+	/**
+	 * Set Y axis for a specific {@link Hand}.
+	 * 
+	 * @param hand
+	 * @param axis
+	 */
+	public void setY(Hand hand, int axis) {
+		switch (hand) {
+		case kLeft:
+			leftY = axis;
+			break;
+		case kRight:
+			rightY = axis;
+		default:
+		}
+	}
+
 	@Override
 	public double getY(Hand hand) {
-		return 0;
+		return getY(hand, true);
+	}
+
+	/**
+	 * Get Y raw axis, for a specific hand, with or without tolerance.
+	 * 
+	 * @param hand
+	 * @param useTolerance
+	 * @return y position, with or without tolerance
+	 */
+	public double getY(Hand hand, boolean useTolerance) {
+		switch (hand) {
+		case kLeft:
+			return (!useTolerance || (Math.abs(getRawAxis(leftY)) > axisTolerance)) ? getRawAxis(leftY) : 0.0;
+		case kRight:
+			return (!useTolerance || (Math.abs(getRawAxis(rightY)) > axisTolerance)) ? getRawAxis(rightY) : 0.0;
+		default:
+			return Double.NaN;
+		}
 	}
 }

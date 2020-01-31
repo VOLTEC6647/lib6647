@@ -65,7 +65,7 @@ public class HyperTalon extends WPI_TalonSRX {
 	 */
 	@Override
 	public void set(double speed) {
-		lazySet(ControlMode.PercentOutput, speed);
+		set(ControlMode.PercentOutput, speed);
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class HyperTalon extends WPI_TalonSRX {
 	 */
 	@Override
 	public void set(ControlMode mode, double speed) {
-		lazySet(mode, speed);
+		set(mode, speed, false);
 	}
 
 	/**
@@ -116,5 +116,12 @@ public class HyperTalon extends WPI_TalonSRX {
 			lastMode = mode;
 			super.set(mode, speed);
 		}
+	}
+
+	/**
+	 * Syntactic sugar for resetting the {@link HyperTalon}'s Encoder.
+	 */
+	public void reset() {
+		setSelectedSensorPosition(0);
 	}
 }

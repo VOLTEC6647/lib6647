@@ -3,7 +3,6 @@ package org.usfirst.lib6647.subsystem.supercomponents;
 import java.util.HashMap;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.kauailabs.navx.frc.AHRS;
 
 import org.usfirst.lib6647.subsystem.ComponentInitException;
 import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
@@ -48,7 +47,7 @@ public interface SuperAHRS {
 								String.format("[!] INVALID OR EMPTY PORT VALUE FOR AHRS '%1$s' IN SUBSYSTEM '%2$s'",
 										json.get("name").asText(), subsystemName));
 
-					// Create AHRS object.
+					// Create HyperAHRS object.
 					HyperAHRS ahrs = new HyperAHRS(port, json.get("inverted").asBoolean());
 
 					// Additional initialization configuration.
@@ -71,12 +70,12 @@ public interface SuperAHRS {
 	}
 
 	/**
-	 * Gets specified {@link AHRS}.
+	 * Gets specified {@link HyperAHRS}.
 	 * 
-	 * @return {@link AHRS}
+	 * @return {@link HyperAHRS}
 	 * @param ahrsName
 	 */
-	default AHRS getAHRS(String ahrsName) {
+	default HyperAHRS getAHRS(String ahrsName) {
 		return ahrsDevices.get(ahrsName);
 	}
 
