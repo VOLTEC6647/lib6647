@@ -24,7 +24,7 @@ Currently written documentation can be found at https://lib6647.readthedocs.io/,
   + [ ] HyperEncoder
   + [ ] HyperPDP
   + [x] HyperPIDController
-  + [x] HyperProfiledPIDController
+  + [ ] HyperProfiledPIDController
   + [x] HyperSolenoid
   + [x] HyperTalon
   + [ ] HyperUltrasonic

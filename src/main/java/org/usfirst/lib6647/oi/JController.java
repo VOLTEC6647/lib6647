@@ -92,6 +92,25 @@ public class JController extends GenericHID {
 		}
 	}
 
+	@Override
+	public double getRawAxis(int axis) {
+		return getRawAxis(axis, false);
+	}
+
+	/**
+	 * Get the value of the axis, with or without tolerance.
+	 *
+	 * @param axis         The axis to read, starting at 0.
+	 * @param useTolerance Whether to apply tolerance or not.
+	 * @return The value of the axis.
+	 */
+	public double getRawAxis(int axis, boolean useTolerance) {
+		var ds = DriverStation.getInstance();
+		return (!useTolerance || (Math.abs(ds.getStickAxis(getPort(), axis)) > axisTolerance))
+				? ds.getStickAxis(getPort(), axis)
+				: 0.0;
+	}
+
 	/**
 	 * Method for getting a {@link Button} with a friendly name (declared in the
 	 * JSON configuration) from this {@link JController}.
@@ -253,9 +272,9 @@ public class JController extends GenericHID {
 	public double getX(Hand hand, boolean useTolerance) {
 		switch (hand) {
 		case kLeft:
-			return (!useTolerance || (Math.abs(getRawAxis(leftX)) > axisTolerance)) ? getRawAxis(leftX) : 0.0;
+			return getRawAxis(leftX, useTolerance);
 		case kRight:
-			return (!useTolerance || (Math.abs(getRawAxis(rightX)) > axisTolerance)) ? getRawAxis(rightX) : 0.0;
+			return getRawAxis(rightX, useTolerance);
 		default:
 			return Double.NaN;
 		}
@@ -293,9 +312,9 @@ public class JController extends GenericHID {
 	public double getY(Hand hand, boolean useTolerance) {
 		switch (hand) {
 		case kLeft:
-			return (!useTolerance || (Math.abs(getRawAxis(leftY)) > axisTolerance)) ? getRawAxis(leftY) : 0.0;
+			return getRawAxis(leftY, useTolerance);
 		case kRight:
-			return (!useTolerance || (Math.abs(getRawAxis(rightY)) > axisTolerance)) ? getRawAxis(rightY) : 0.0;
+			return getRawAxis(rightY, useTolerance);
 		default:
 			return Double.NaN;
 		}
