@@ -22,7 +22,7 @@ public class HyperVictor extends WPI_VictorSPX {
 	/**
 	 * HyperComponent Wrapper for {@link WPI_VictorSPX}.
 	 * 
-	 * @param port
+	 * @param port The {@link HyperVictor}'s port (set via CTRE's Phoenix Tuner)
 	 */
 	public HyperVictor(int port) {
 		super(port);
@@ -31,16 +31,18 @@ public class HyperVictor extends WPI_VictorSPX {
 	}
 
 	/**
-	 * Returns {@link #limiter} value for Victor speed.
+	 * Returns {@link #limiter} value for {@link WPI_VictorSPX} speed.
 	 * 
-	 * @return limiter
+	 * @return limiter The {@link HyperVictor}'s current limiter
 	 */
 	public double getLimiter() {
 		return limiter;
 	}
 
 	/**
-	 * Sets {@link #limiter limiter} for Victor speed.
+	 * Sets {@link #limiter limiter} for {@link WPI_VictorSPX} speed.
+	 * 
+	 * @param limiter The amount to set the {@link #limiter} to
 	 */
 	public void setLimiter(double limiter) {
 		this.limiter = limiter;
@@ -49,7 +51,7 @@ public class HyperVictor extends WPI_VictorSPX {
 	/**
 	 * Raises {@link #limiter} by a given amount.
 	 * 
-	 * @param amount
+	 * @param amount The amount to raise the {@link #limiter} by
 	 */
 	public void raiseLimiter(double amount) {
 		limiter += amount;
@@ -59,7 +61,7 @@ public class HyperVictor extends WPI_VictorSPX {
 	 * Sets {@link HyperVictor} to a given speed, in
 	 * {@link ControlMode#PercentOutput PercentOutput}.
 	 * 
-	 * @param speed
+	 * @param speed The speed at which to set this
 	 */
 	@Override
 	public void set(double speed) {
@@ -69,8 +71,8 @@ public class HyperVictor extends WPI_VictorSPX {
 	/**
 	 * Sets {@link HyperVictor} to a given speed, in the given {@link ControlMode}.
 	 * 
-	 * @param mode
-	 * @param speed
+	 * @param mode  The mode at which to set this {@link HyperVictor}
+	 * @param speed The speed at which to set this {@link HyperVictor}
 	 */
 	@Override
 	public void set(ControlMode mode, double speed) {
@@ -81,9 +83,9 @@ public class HyperVictor extends WPI_VictorSPX {
 	 * Sets {@link HyperVictor} to a given speed, in the given {@link ControlMode}.
 	 * Also sets whether to limit the set value or not.
 	 * 
-	 * @param mode
-	 * @param speed
-	 * @param limited
+	 * @param mode    The mode at which to set this {@link HyperVictor}
+	 * @param speed   The speed at which to set this {@link HyperVictor}
+	 * @param limited Whether or not to limit the given speed
 	 */
 	public void set(ControlMode mode, double speed, boolean limited) {
 		lazySet(mode, speed >= limiter && limited ? limiter : speed);
@@ -93,8 +95,8 @@ public class HyperVictor extends WPI_VictorSPX {
 	 * Sets {@link HyperVictor} to a given amount multiplied by {@link #limiter}, in
 	 * the given {@link ControlMode}.
 	 * 
-	 * @param mode
-	 * @param speed
+	 * @param mode  The mode at which to set this {@link HyperVictor}
+	 * @param speed The speed at which to set this {@link HyperVictor}
 	 */
 	public void setWithRamp(ControlMode mode, double speed) {
 		lazySet(mode, speed * limiter);
@@ -105,8 +107,8 @@ public class HyperVictor extends WPI_VictorSPX {
 	 * Copied over from:
 	 * https://github.com/Team254/FRC-2019-Public/blob/master/src/main/java/com/team254/lib/drivers/LazyTalonSRX.java
 	 * 
-	 * @param mode
-	 * @param speed
+	 * @param mode  The mode at which to set this {@link HyperVictor}
+	 * @param speed The speed at which to set this {@link HyperVictor}
 	 */
 	private void lazySet(ControlMode mode, double speed) {
 		if (speed != lastSpeed || mode != lastMode) {

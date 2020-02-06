@@ -45,6 +45,9 @@ public abstract class PIDSuperSubsystem extends SuperSubsystem {
 					else
 						controller.disableContinuousInput();
 
+					if (json.hasNonNull("minI") && json.hasNonNull("maxI"))
+						controller.setIntegratorRange(json.get("minI").asDouble(), json.get("maxI").asDouble());
+
 					controller.setOutputRange(json.get("outputMin").asDouble(), json.get("outputMax").asDouble());
 					controller.setTolerance(json.get("tolerance").asDouble());
 

@@ -62,16 +62,16 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.1'
 	
 	// Phoenix CTRE dependencies.
-	implementation group: 'com.ctre.phoenix', name: 'api-java', version: '5.18.0'
-	implementation group: 'com.ctre.phoenix', name: 'wpiapi-java', version: '5.18.0'
+	implementation group: 'com.ctre.phoenix', name: 'api-java', version: '5.18.1'
+	implementation group: 'com.ctre.phoenix', name: 'wpiapi-java', version: '5.18.1'
 
-	testImplementation group: 'com.ctre.phoenix', name: 'cci', version: '5.18.0'
-	testImplementation group: 'com.ctre.phoenix', name: 'diagnostics', version: '5.18.0'
-	testImplementation group: 'com.ctre.phoenix', name: 'platform-stub', version: '5.18.0'
-	testImplementation group: 'com.ctre.phoenix', name: 'core', version: '5.18.0'
+	testImplementation group: 'com.ctre.phoenix', name: 'cci', version: '5.18.1'
+	testImplementation group: 'com.ctre.phoenix', name: 'diagnostics', version: '5.18.1'
+	testImplementation group: 'com.ctre.phoenix', name: 'platform-stub', version: '5.18.1'
+	testImplementation group: 'com.ctre.phoenix', name: 'core', version: '5.18.1'
 
     // Kauai Labs dependencies.
-    implementation group: 'com.kauailabs.navx.frc', name: 'navx-java', version: '3.1.400'
+    implementation group: 'com.kauailabs.navx.frc', name: 'navx-java', version: '3.1.409'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'

@@ -61,7 +61,7 @@ public class HyperAHRS extends AHRS {
 	 */
 	@Override
 	public float getYaw() {
-		return (inverted ? -1 : 1) * super.getYaw();
+		return (inverted ? -1.0F : 1.0F) * super.getYaw();
 	}
 
 	/**
@@ -70,6 +70,15 @@ public class HyperAHRS extends AHRS {
 	 */
 	@Override
 	public double getAngle() {
-		return (inverted ? -1 : 1) * super.getAngle();
+		return (inverted ? -1.0 : 1.0) * super.getAngle();
+	}
+
+	/**
+	 * Returns the heading of the {@link HyperAHRS}.
+	 *
+	 * @return The {@link HyperAHRS}'s heading in degrees, from -180 to 180
+	 */
+	public double getHeading() {
+		return Math.IEEEremainder(super.getAngle(), 360) * (inverted ? -1.0 : 1.0);
 	}
 }
