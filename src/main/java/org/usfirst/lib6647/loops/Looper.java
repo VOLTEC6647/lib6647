@@ -10,7 +10,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /**
  * This code runs all of the robot's loops. {@link Loop} objects are stored in a
  * {@link #loops list}. They are started when the robot powers up and stopped
- * after the match. Copied over from:
+ * after the match.
+ * 
+ * <p>
+ * Copied over from:
  * https://github.com/Team254/FRC-2019-Public/blob/master/src/main/java/com/team254/frc2019/loops/Looper.java.
  */
 public class Looper implements ILooper {
@@ -38,8 +41,8 @@ public class Looper implements ILooper {
 	 * Constructor for {@link Looper}. Runs each declared {@link Loop} at the
 	 * provided rate.
 	 * 
-	 * @param period
-	 * @param name
+	 * @param period The {@link Looper}'s period time, in seconds
+	 * @param name   The {@link Looper}'s name
 	 */
 	public Looper(double period, String name) {
 		this.period = period;
@@ -73,7 +76,7 @@ public class Looper implements ILooper {
 	 * Constructor for {@link Looper}. Runs each declared {@link Loop} at the
 	 * default {@link #period rate} of 0.01 (10ms).
 	 * 
-	 * @param name
+	 * @param name The {@link Looper}'s name
 	 */
 	public Looper(String name) {
 		this(0.01, name);
@@ -82,7 +85,7 @@ public class Looper implements ILooper {
 	/**
 	 * Adds each given {@link Loop} to the {@link #loops list}.
 	 * 
-	 * @param loops
+	 * @param loops The {@link Loop Loops} to register
 	 */
 	@Override
 	public synchronized void register(Loop... loops) {

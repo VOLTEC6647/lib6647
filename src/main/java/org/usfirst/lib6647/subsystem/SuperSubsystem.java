@@ -3,18 +3,19 @@ package org.usfirst.lib6647.subsystem;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.usfirst.lib6647.loops.ILooper;
+import org.usfirst.lib6647.loops.Loop;
+import org.usfirst.lib6647.loops.Looper;
 import org.usfirst.lib6647.util.JSONInitException;
 import org.usfirst.lib6647.util.JSONReader;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
  * Abstract class to allow usage of {@link #robotMap JSON files} for
- * {@link Subsystem} creation.
+ * {@link SubsystemBase Subsystem} creation.
  */
-public abstract class SuperSubsystem implements Subsystem {
+public abstract class SuperSubsystem extends SubsystemBase {
 	/** Bread and butter of {@link SuperSubsystem}. */
 	protected JsonNode robotMap;
 	/** Name of the {@link SuperSubsystem}. */
@@ -23,7 +24,7 @@ public abstract class SuperSubsystem implements Subsystem {
 	/**
 	 * Constructor for {@link SuperSubsystem}.
 	 * 
-	 * @param name (of the {@link Subsystem})
+	 * @param name The name of the {@link SuperSubsystem}
 	 */
 	public SuperSubsystem(String name) {
 		this.name = name;
@@ -39,32 +40,43 @@ public abstract class SuperSubsystem implements Subsystem {
 
 			System.exit(1);
 		}
-
-		CommandScheduler.getInstance().registerSubsystem(this);
 	}
 
 	/**
-	 * Gets {@link SuperSubsystem}'s {@link SuperSubsystem#name name}.
+	 * Gets {@link SuperSubsystem}'s {@link #name}.
 	 * 
-	 * @return name
+	 * @return The {@link SuperSubsystem}'s name
 	 */
 	public String getName() {
 		return name;
 	}
 
-	// Optional design pattern for caching periodic reads to avoid hammering the
-	// HAL/CAN.
+	/**
+	 * Optional design pattern for caching periodic reads to avoid hammering the
+	 * HAL/CAN.
+	 */
 	public synchronized void readPeriodicInputs() {
 	}
 
-	// Optional design pattern for caching periodic writes to avoid hammering the
-	// HAL/CAN.
+	/**
+	 * Optional design pattern for caching periodic writes to avoid hammering the
+	 * HAL/CAN.
+	 */
 	public synchronized void writePeriodicOutputs() {
 	}
 
+	/**
+	 * {@link Loop Loops} are to be registered in this method.
+	 * 
+	 * @param looper The {@link Looper} with which to register the {@link Loop
+	 *               Loops}
+	 */
 	public void registerLoops(ILooper looper) {
 	}
 
+	/**
+	 * Optional method to reset sensors right before a {@link Loop} begins.
+	 */
 	public void zeroSensors() {
 	}
 }

@@ -10,7 +10,7 @@ public class JSONInitException extends Exception {
 	/**
 	 * {@link Exception} for errors thrown while initializing JSON files.
 	 * 
-	 * @param message
+	 * @param message The error message
 	 */
 	public JSONInitException(String message) {
 		super(message);

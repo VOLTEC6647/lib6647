@@ -15,25 +15,28 @@ import org.usfirst.lib6647.util.MotorUtils;
 import edu.wpi.first.wpilibj.DriverStation;
 
 /**
- * Interface to allow {@link HyperVictor} initialization via JSON. Subsystems
- * declared need to extend {@link SuperSubsystem} or {@link PIDSuperSubsystem}
- * and implement this interface in order to initialize {@link HyperTalon
- * HyperVictors} declared in {@link SuperSubsystem#robotMap robotMap}.
+ * Interface to allow {@link HyperVictor} initialization via JSON.
+ * 
+ * <p>
+ * Subsystems declared need to extend {@link SuperSubsystem} or
+ * {@link PIDSuperSubsystem} and implement this interface in order to initialize
+ * {@link HyperTalon HyperVictor objects} declared in
+ * {@link SuperSubsystem#robotMap}.
  */
 public interface SuperVictor extends MotorUtils {
 	/**
-	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperVictor
-	 * HyperVictors}.
+	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperVictor} instances.
 	 */
 	final HashMap<String, HyperVictor> victors = new HashMap<>();
 
 	/**
-	 * Method to initialize {@link HyperVictor HyperVictors} declared in the
-	 * {@link SuperSubsystem#robotMap robotMap} JSON file, and add them to the
+	 * Method to initialize {@link HyperVictor HyperVictor objects} declared in the
+	 * {@link SuperSubsystem#robotMap JSON file}, and add them to the
 	 * {@link #victors} HashMap using its declared name as its key.
 	 * 
-	 * @param {@link SuperSubsystem#robotMap}
-	 * @param {@link SuperSubsystem#getName}
+	 * @param robotMap      The inherited {@link SuperSubsystem#robotMap} location
+	 * @param subsystemName The {@link SuperSubsystem}'s name; you can just pass on
+	 *                      the {@link SuperSubsystem#getName} method
 	 */
 	default void initVictors(JsonNode robotMap, String subsystemName) {
 
@@ -81,9 +84,9 @@ public interface SuperVictor extends MotorUtils {
 					throw new ComponentInitException(
 							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY VICTOR ENTRY IN SUBSYSTEM '%s'",
 									subsystemName.toUpperCase()));
-			} catch (ComponentInitException e) {
-				System.out.println(e.getMessage());
-				DriverStation.reportError(e.getMessage(), false);
+			} catch (Exception e) {
+				System.out.println(e.getLocalizedMessage());
+				DriverStation.reportError(e.getLocalizedMessage(), false);
 			}
 		});
 	}
@@ -91,10 +94,10 @@ public interface SuperVictor extends MotorUtils {
 	/**
 	 * Sets a given {@link HyperVictor}'s {@link HyperVictor#limiter limiter} value
 	 * from a {@link JsonNode}. Max value is 1, min value is 0 (which would make the
-	 * {@link HyperVictor} stop).
+	 * {@link HyperVictor} stop entirely).
 	 * 
-	 * @param {@link JsonNode}
-	 * @param {@link HyperVictor}
+	 * @param json   The node to read
+	 * @param victor The {@link HyperVictor} to configure
 	 */
 	private void setLimiter(JsonNode json, HyperVictor victor) {
 		double limiter = json.get("limiter").asDouble();
@@ -102,28 +105,24 @@ public interface SuperVictor extends MotorUtils {
 	}
 
 	/**
-	 * Sets a given {@link HyperVictor}'s inverted value from a {@link JsonNode}.
-	 * 
-	 * @param {@link JsonNode}
-	 * @param {@link HyperVictor}
-	 */
-	private void setInverted(JsonNode json, HyperVictor victor) {
-		victor.setInverted(json.get("inverted").asBoolean());
-	}
-
-	/**
 	 * Sets a given {@link HyperVictor}'s {@link NeutralMode} from a
-	 * {@link JsonNode} key.
+	 * {@link JsonNode}.
 	 * 
-	 * @param {@link JsonNode}
-	 * @param {@link HyperVictor}
-	 * @throws ComponentInitException if {@link JsonNode} key is defined, but empty
-	 *                                or invalid.
+	 * <p>
+	 * There are three types of {@link NeutralMode NeutralModes}:
+	 * <p>
+	 * - <b>{@link NeutralMode#Coast Coast}</b>
+	 * <p>
+	 * - <b>{@link NeutralMode#Brake Brake}</b>
+	 * <p>
+	 * - <b>{@link NeutralMode#EEPROMSetting EEPROMSetting}</b>
+	 * <p>
+	 * All of which must share the same name in the {@link JsonNode}.
 	 * 
-	 * @note There are three types of {@link NeutralMode NeutralModes}:
-	 *       {@link NeutralMode#Coast Coast}, {@link NeutralMode#Brake Brake}, and
-	 *       {@link NeutralMode#EEPROMSetting EEPROMSetting}. All of which must
-	 *       share the same name in the {@link JsonNode}.
+	 * @param json   The node to read
+	 * @param victor The {@link HyperVictor} to configure
+	 * @throws ComponentInitException When {@link JsonNode} key is defined, but
+	 *                                empty or invalid
 	 */
 	private void setNeutralMode(JsonNode json, HyperVictor victor) throws ComponentInitException {
 		if (getNeutralMode(json.get("neutralMode").asText()) == null)
@@ -135,11 +134,20 @@ public interface SuperVictor extends MotorUtils {
 	}
 
 	/**
-	 * Sets a given {@link HyperVictor}'s ClosedloopRamp from a {@link JsonNode}
-	 * key.
+	 * Sets a given {@link HyperVictor}'s inverted value from a {@link JsonNode}.
 	 * 
-	 * @param {@link JsonNode}
-	 * @param {@link HyperVictor}
+	 * @param json   The node to read
+	 * @param victor The {@link HyperVictor} to configure
+	 */
+	private void setInverted(JsonNode json, HyperVictor victor) {
+		victor.setInverted(json.get("inverted").asBoolean());
+	}
+
+	/**
+	 * Sets a given {@link HyperVictor}'s Closed-loop ramp from a {@link JsonNode}.
+	 * 
+	 * @param json   The node to read
+	 * @param victor The {@link HyperVictor} to configure
 	 */
 	private void setClosedloopRamp(JsonNode json, HyperVictor victor) {
 		JsonNode closed = json.get("loopRamp").get("closed");
@@ -152,10 +160,10 @@ public interface SuperVictor extends MotorUtils {
 	}
 
 	/**
-	 * Sets a given {@link HyperVictor}'s OpenloopRamp from a {@link JsonNode} key.
+	 * Sets a given {@link HyperVictor}'s Open-loop ramp from a {@link JsonNode}.
 	 * 
-	 * @param {@link JsonNode}
-	 * @param {@link HyperVictor}
+	 * @param json   The node to read
+	 * @param victor The {@link HyperVictor} to configure
 	 */
 	private void setOpenloopRamp(JsonNode json, HyperVictor victor) {
 		JsonNode open = json.get("loopRamp").get("open");
@@ -167,10 +175,10 @@ public interface SuperVictor extends MotorUtils {
 	}
 
 	/**
-	 * Gets specified {@link HyperVictor}.
+	 * Gets specified {@link HyperVictor} from the {@link #victors} HashMap.
 	 * 
-	 * @return {@link HyperVictor}
-	 * @param victorName
+	 * @param victorName The name of the {@link HyperVictor}
+	 * @return The requested {@link HyperVictor}, if found
 	 */
 	default HyperVictor getVictor(String victorName) {
 		return victors.get(victorName);

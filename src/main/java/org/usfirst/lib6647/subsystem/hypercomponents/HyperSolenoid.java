@@ -4,20 +4,20 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 /**
  * Simple Wrapper for a {@link Solenoid}, currently only adds a
- * {@link HyperSolenoid#toggle()} method.
+ * {@link #toggle()} method.
  */
 public class HyperSolenoid extends Solenoid {
 	/**
-	 * HyperComponent Wrapper for {@link Solenoid}.
+	 * HyperComponent Wrapper for a {@link Solenoid}.
 	 * 
-	 * @param channel
+	 * @param channel The {@link HyperSolenoid}'s channel
 	 */
 	public HyperSolenoid(int channel) {
 		super(channel);
 	}
 
 	/**
-	 * Toggle {@link Solenoid}.
+	 * Toggle the {@link HyperSolenoid}.
 	 */
 	public void toggle() {
 		set(!get());

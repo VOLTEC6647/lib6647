@@ -28,20 +28,24 @@ public abstract class LooperRobot extends TimedRobot {
 	protected final HashMap<String, JController> joysticks = new HashMap<>();
 
 	/**
-	 * Constructor for {@link LooperRobot} with default period. Every subsystem must
-	 * be registered via lambda syntax (e.g. Chassis::new), using the
-	 * {@link #registerSubsystems} method.
+	 * Constructor for {@link LooperRobot} with a default period time of 0.02s.
+	 * 
+	 * <p>
+	 * Every subsystem must be registered via lambda syntax (e.g. Chassis::new),
+	 * using the {@link #registerSubsystems} method.
 	 */
 	protected LooperRobot() {
 		this(0.02);
 	}
 
 	/**
-	 * Constructor for {@link LooperRobot} with a specific period time. Every
-	 * subsystem must be registered via lambda syntax (e.g. Chassis::new), using the
-	 * {@link #registerSubsystems} method.
+	 * Constructor for {@link LooperRobot} with a specific period time.
 	 * 
-	 * @param period
+	 * <p>
+	 * Every subsystem must be registered via lambda syntax (e.g. Chassis::new),
+	 * using the {@link #registerSubsystems} method.
+	 * 
+	 * @param period The robot's period time, in seconds
 	 */
 	protected <T extends SuperSubsystem> LooperRobot(double period) {
 		super(period);
@@ -108,8 +112,8 @@ public abstract class LooperRobot extends TimedRobot {
 	/**
 	 * Get {@link SuperSubsystem Subsystem} from {@link #robotMap}.
 	 * 
-	 * @param name
-	 * @return subsystem
+	 * @param name The name of the {@link SuperSubsystem Subsystem}
+	 * @return A {@link SuperSubsystem Subsystem} instance, if found
 	 */
 	public synchronized SuperSubsystem getSubsystem(String name) {
 		return robotMap.getSubsystem(name);
@@ -119,7 +123,7 @@ public abstract class LooperRobot extends TimedRobot {
 	 * Returns a Stream of every {@link SuperSubsystem Subsystem} from
 	 * {@link #robotMap}.
 	 * 
-	 * @return subsystems
+	 * @return Every {@link SuperSubsystem Subsystem} instance
 	 */
 	public synchronized Stream<SuperSubsystem> getSubsystems() {
 		return robotMap.getSubsystems().stream();
@@ -128,13 +132,20 @@ public abstract class LooperRobot extends TimedRobot {
 	/**
 	 * Get specified {@link JController Joystick} from {@link #joysticks}.
 	 * 
-	 * @param name
-	 * @return joystick
+	 * @param name The name of the {@link JController}
+	 * @return A {@link JController} instance, if found
 	 */
 	public synchronized JController getJoystick(String name) {
 		return joysticks.get(name);
 	}
 
+	/**
+	 * Register each and every given {@link SuperSubsystem Subsystem}.
+	 * 
+	 * @param <T>        extends SuperSubsystem
+	 * @param subsystems Every subsystem, in a lambda Supplier syntax (e.g.
+	 *                   Chassis::new)
+	 */
 	@SafeVarargs
 	public synchronized final <T extends SuperSubsystem> void registerSubsystems(Supplier<T>... subsystems) {
 		if (robotMap.getSubsystems().isEmpty())

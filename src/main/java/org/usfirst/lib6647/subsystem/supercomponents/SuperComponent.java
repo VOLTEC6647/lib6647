@@ -11,21 +11,25 @@ import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import edu.wpi.first.wpilibj.DriverStation;
 
 /**
- * Interface to allow a custom Component's initialization via JSON. Subsystems
- * declared need to extend {@link SuperSubsystem} or {@link PIDSuperSubsystem}
- * and implement this interface in order to initialize custom Components
- * declared in {@link SuperSubsystem#robotMap robotMap}.
+ * Interface to allow a custom type of Component's initialization via JSON.
+ * 
+ * <p>
+ * Subsystems declared need to extend {@link SuperSubsystem} or
+ * {@link PIDSuperSubsystem} and implement this interface in order to initialize
+ * custom Component objects declared in {@link SuperSubsystem#robotMap}.
  */
 public interface SuperComponent {
 	/**
-	 * HashMap storing the {@link SuperSubsystem}'s custom Components. Components
-	 * obtained must be cast to be used properly.
+	 * HashMap storing the {@link SuperSubsystem}'s {@link SuperComponent custom
+	 * Component} instances.
+	 * 
+	 * @NOTE Components obtained must be cast to be used properly.
 	 */
 	final HashMap<String, Object> customComponents = new HashMap<>();
 
 	/**
 	 * Method to initialize custom Components declared in the
-	 * {@link SuperSubsystem#robotMap robotMap} JSON file, and add them to the
+	 * {@link SuperSubsystem#robotMap JSON file}, and add them to the
 	 * {@link #customComponents} HashMap using its declared name as its key.
 	 * 
 	 * @param {@link        SuperSubsystem#robotMap}
@@ -38,32 +42,45 @@ public interface SuperComponent {
 		robotMap.get(componentName).spliterator().forEachRemaining(node -> {
 			try {
 				customInit(node, subsystemName);
-			} catch (ComponentInitException e) {
-				System.out.println(e.getMessage());
-				DriverStation.reportError(e.getMessage(), false);
+			} catch (Exception e) {
+				System.out.println(e.getLocalizedMessage());
+				DriverStation.reportError(e.getLocalizedMessage(), false);
 			}
 		});
 	}
 
 	/**
-	 * This method must be implemented in order to add the custom Component to
-	 * {@link SuperComponent#customComponents}. Each and every value to be read
-	 * during initialization must also be declared here. See any other
-	 * SuperComponent for an example. Make sure to properly handle any
-	 * {@link Exception} and throw a {@link ComponentInitException} with the
-	 * subsystem's name in the message.
+	 * This method must be implemented in order to add the custom Components to
+	 * {@link SuperComponent#customComponents}.
 	 * 
-	 * @param node
-	 * @param subsystemName
-	 * @throws ComponentInitException
+	 * <p>
+	 * Each and every value to be read during initialization must also be declared
+	 * here.
+	 * 
+	 * <p>
+	 * You can view {@link SuperTalon any} {@link SuperVictor other}
+	 * {@link SuperSolenoid SuperComponent} for an example.
+	 * 
+	 * @NOTE Make sure to properly handle any {@link Exception} and throw a
+	 *       {@link ComponentInitException} with the subsystem's name in the
+	 *       message.
+	 * 
+	 * @param node          The node in {@link SuperSubsystem#robotMap} to look for
+	 *                      initialization data
+	 * @param subsystemName The {@link SuperSubsystem}'s name; you can just pass on
+	 *                      the {@link SuperSubsystem#getName} method
+	 * @throws ComponentInitException When an error occurs while initializing a
+	 *                                {@link SuperComponent custom Component}.
 	 */
 	public void customInit(JsonNode node, String subsystemName) throws ComponentInitException;
 
 	/**
-	 * Gets specified {@link SuperComponent}. Must be cast to be properly used.
+	 * Gets specified custom Component from the {@link #customComponents} HashMap.
 	 * 
-	 * @return Component
-	 * @param componentName
+	 * @NOTE Must be cast in order to be properly used.
+	 * 
+	 * @param componentName The name of the custom Component
+	 * @return The requested custom Component, if found
 	 */
 	default Object getComponent(String componentName) {
 		return customComponents.get(componentName);

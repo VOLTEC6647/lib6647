@@ -49,7 +49,7 @@ public class HyperAHRS extends AHRS {
 	 * Sets whether or not the values read by this {@link SuperAHRS AHRS} should be
 	 * inverted.
 	 * 
-	 * @param inverted
+	 * @param inverted Whether or not to invert read values.
 	 */
 	public void setInverted(boolean inverted) {
 		this.inverted = inverted;

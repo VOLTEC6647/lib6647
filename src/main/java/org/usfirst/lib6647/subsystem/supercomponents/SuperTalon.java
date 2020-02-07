@@ -14,24 +14,28 @@ import org.usfirst.lib6647.util.MotorUtils;
 import edu.wpi.first.wpilibj.DriverStation;
 
 /**
- * Interface to allow {@link HyperTalon} initialization via JSON. Subsystems
- * declared need to extend {@link SuperSubsystem} or {@link PIDSuperSubsystem}
- * and implement this interface in order to initialize {@link HyperTalon
- * HyperTalons} declared in {@link SuperSubsystem#robotMap robotMap}.
+ * Interface to allow {@link HyperTalon} initialization via JSON.
+ * 
+ * <p>
+ * Subsystems declared need to extend {@link SuperSubsystem} or
+ * {@link PIDSuperSubsystem} and implement this interface in order to initialize
+ * {@link HyperTalon HyperTalon objects} declared in
+ * {@link SuperSubsystem#robotMap}.
  */
 public interface SuperTalon extends MotorUtils {
 	/**
-	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperTalon HyperTalons}.
+	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperTalon} instances.
 	 */
 	final HashMap<String, HyperTalon> talons = new HashMap<>();
 
 	/**
-	 * Method to initialize {@link HyperTalon HyperTalons} declared in the
-	 * {@link SuperSubsystem#robotMap robotMap} JSON file, and add them to the
+	 * Method to initialize {@link HyperTalon HyperTalon objects} declared in the
+	 * {@link SuperSubsystem#robotMap JSON file}, and add them to the
 	 * {@link #talons} HashMap using its declared name as its key.
 	 * 
-	 * @param {@link SuperSubsystem#robotMap}
-	 * @param {@link SuperSubsystem#getName}
+	 * @param robotMap      The inherited {@link SuperSubsystem#robotMap} location
+	 * @param subsystemName The {@link SuperSubsystem}'s name; you can just pass on
+	 *                      the {@link SuperSubsystem#getName} method
 	 */
 	default void initTalons(JsonNode robotMap, String subsystemName) {
 
@@ -85,9 +89,9 @@ public interface SuperTalon extends MotorUtils {
 					throw new ComponentInitException(
 							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY TALON ENTRY IN SUBSYSTEM '%s'",
 									subsystemName.toUpperCase()));
-			} catch (ComponentInitException e) {
-				System.out.println(e.getMessage());
-				DriverStation.reportError(e.getMessage(), false);
+			} catch (Exception e) {
+				System.out.println(e.getLocalizedMessage());
+				DriverStation.reportError(e.getLocalizedMessage(), false);
 			}
 		});
 	}
@@ -97,8 +101,8 @@ public interface SuperTalon extends MotorUtils {
 	 * from a {@link JsonNode}. Max value is 1, min value is 0 (which would make the
 	 * {@link HyperTalon} stop entirely).
 	 * 
-	 * @param {@link JsonNode}
-	 * @param {@link HyperTalon}
+	 * @param json  The node to read
+	 * @param talon The {@link HyperTalon} to configure
 	 */
 	private void setLimiter(JsonNode json, HyperTalon talon) {
 		double limiter = json.get("limiter").asDouble();
@@ -109,15 +113,21 @@ public interface SuperTalon extends MotorUtils {
 	 * Sets a given {@link HyperTalon}'s {@link NeutralMode} from a
 	 * {@link JsonNode}.
 	 * 
-	 * @param {@link JsonNode}
-	 * @param {@link HyperTalon}
-	 * @throws ComponentInitException if {@link JsonNode} key is defined, but empty
-	 *                                or invalid.
+	 * <p>
+	 * There are three types of {@link NeutralMode NeutralModes}:
+	 * <p>
+	 * - <b>{@link NeutralMode#Coast Coast}</b>
+	 * <p>
+	 * - <b>{@link NeutralMode#Brake Brake}</b>
+	 * <p>
+	 * - <b>{@link NeutralMode#EEPROMSetting EEPROMSetting}</b>
+	 * <p>
+	 * All of which must share the same name in the {@link JsonNode}.
 	 * 
-	 * @note There are three types of {@link NeutralMode NeutralModes}:
-	 *       {@link NeutralMode#Coast Coast}, {@link NeutralMode#Brake Brake}, and
-	 *       {@link NeutralMode#EEPROMSetting EEPROMSetting}. All of which must
-	 *       share the same name in the {@link JsonNode}.
+	 * @param json  The node to read
+	 * @param talon The {@link HyperTalon} to configure
+	 * @throws ComponentInitException When {@link JsonNode} key is defined, but
+	 *                                empty or invalid
 	 */
 	private void setNeutralMode(JsonNode json, HyperTalon talon) throws ComponentInitException {
 		if (getNeutralMode(json.get("neutralMode").asText()) == null)
@@ -131,18 +141,18 @@ public interface SuperTalon extends MotorUtils {
 	/**
 	 * Sets a given {@link HyperTalon}'s inverted value from a {@link JsonNode}.
 	 * 
-	 * @param {@link JsonNode}
-	 * @param {@link HyperTalon}
+	 * @param json  The node to read
+	 * @param talon The {@link HyperTalon} to configure
 	 */
 	private void setInverted(JsonNode json, HyperTalon talon) {
 		talon.setInverted(json.get("inverted").asBoolean());
 	}
 
 	/**
-	 * Sets a given {@link HyperTalon}'s ClosedloopRamp from a {@link JsonNode} key.
+	 * Sets a given {@link HyperTalon}'s Closed-loop ramp from a {@link JsonNode}.
 	 * 
-	 * @param {@link JsonNode}
-	 * @param {@link HyperTalon}
+	 * @param json  The node to read
+	 * @param talon The {@link HyperTalon} to configure
 	 */
 	private void setClosedloopRamp(JsonNode json, HyperTalon talon) {
 		JsonNode closed = json.get("loopRamp").get("closed");
@@ -155,10 +165,10 @@ public interface SuperTalon extends MotorUtils {
 	}
 
 	/**
-	 * Sets a given {@link HyperTalon}'s OpenloopRamp from a {@link JsonNode}.
+	 * Sets a given {@link HyperTalon}'s Open-loop ramp from a {@link JsonNode}.
 	 * 
-	 * @param {@link JsonNode}
-	 * @param {@link HyperTalon}
+	 * @param json  The node to read
+	 * @param talon The {@link HyperTalon} to configure
 	 */
 	private void setOpenloopRamp(JsonNode json, HyperTalon talon) {
 		JsonNode open = json.get("loopRamp").get("open");
@@ -173,8 +183,8 @@ public interface SuperTalon extends MotorUtils {
 	 * Sets a given {@link HyperTalon}'s sensors from a {@link JsonNode} key (fairly
 	 * limited in terms of configuration at the moment).
 	 * 
-	 * @param {@link JsonNode}
-	 * @param {@link HyperTalon}
+	 * @param json  The node to read
+	 * @param talon The {@link HyperTalon} to configure
 	 */
 	private void setSensors(JsonNode json, HyperTalon talon) {
 		JsonNode sensor = json.get("sensor");
@@ -190,10 +200,10 @@ public interface SuperTalon extends MotorUtils {
 	}
 
 	/**
-	 * Sets a given {@link HyperTalon}'s PID values from a {@link JsonNode} key.
+	 * Sets a given {@link HyperTalon}'s PID values from a {@link JsonNode}.
 	 * 
-	 * @param {@link JsonNode}
-	 * @param {@link HyperTalon}
+	 * @param json  The node to read
+	 * @param talon The {@link HyperTalon} to configure
 	 */
 	private void setPIDValues(JsonNode json, HyperTalon talon) {
 		JsonNode pid = json.get("pid");
@@ -206,10 +216,10 @@ public interface SuperTalon extends MotorUtils {
 	}
 
 	/**
-	 * Gets specified {@link HyperTalon}.
+	 * Gets specified {@link HyperTalon} from the {@link #talons} HashMap.
 	 * 
-	 * @return {@link HyperTalon}
-	 * @param talonName
+	 * @param talonName The name of the {@link HyperTalon}
+	 * @return The requested {@link HyperTalon}, if found
 	 */
 	default HyperTalon getTalon(String talonName) {
 		return talons.get(talonName);

@@ -22,7 +22,7 @@ public class JController extends GenericHID {
 	private final HashMap<String, Button> buttons = new HashMap<>();
 	/** Tolerance for this {@link JController}'s axes. */
 	private double axisTolerance = 0.15;
-	/** This {@JController}'s axes' values. */
+	/** This {@link JController}'s axes' values. */
 	private int leftX = 0, leftY = 1, rightX = 4, rightY = 5;
 
 	/**
@@ -34,10 +34,14 @@ public class JController extends GenericHID {
 	/**
 	 * Constructor for a {@link JController}.
 	 * 
+	 * <p>
 	 * Initializes each and every {@link Button} from the {@link Joystick} found at
 	 * the given port, and initializes {@link Button Buttons} for each of the
-	 * {@link JController}'s axes and POVs with the default tolerance of 0.15. Also
-	 * initializes its {@link #profile} if possible.
+	 * {@link JController}'s axes and POVs with the default {@link #axisTolerance
+	 * tolerance} of 0.15.
+	 * 
+	 * <p>
+	 * Also initializes its {@link #profile} if possible.
 	 * 
 	 * @param port The port to be read
 	 */
@@ -48,13 +52,17 @@ public class JController extends GenericHID {
 	/**
 	 * Constructor for a {@link JController}.
 	 * 
+	 * <p>
 	 * Initializes each and every {@link Button} from the {@link Joystick} found at
 	 * the given port, and initializes {@link Button Buttons} for each of the
-	 * {@link JController}'s axes and POVs with the given tolerance value. Also
-	 * initializes its {@link #profile} if possible.
+	 * {@link JController}'s axes and POVs with the given {@link #axisTolerance
+	 * tolerance} value.
 	 * 
-	 * @param axisTolerance The amount of tolerance to apply to this
-	 *                      {@JController}'s axes
+	 * <p>
+	 * Also initializes its {@link #profile} if possible.
+	 * 
+	 * @param axisTolerance The amount of {@link #axisTolerance tolerance} to apply
+	 *                      to this {@link JController}'s axes
 	 */
 	public JController(int port, double axisTolerance) {
 		super(port);
@@ -93,15 +101,20 @@ public class JController extends GenericHID {
 	}
 
 	@Override
+	public String getName() {
+		return DriverStation.getInstance().getJoystickName(getPort()).trim();
+	}
+
+	@Override
 	public double getRawAxis(int axis) {
 		return getRawAxis(axis, false);
 	}
 
 	/**
-	 * Get the value of the axis, with or without tolerance.
+	 * Get the value of the axis, with or without {@link #axisTolerance tolerance}.
 	 *
 	 * @param axis         The axis to read, starting at 0
-	 * @param useTolerance Whether to apply tolerance or not
+	 * @param useTolerance Whether to apply {@link #axisTolerance tolerance} or not
 	 * @return The value of the axis
 	 */
 	public double getRawAxis(int axis, boolean useTolerance) {
@@ -266,12 +279,13 @@ public class JController extends GenericHID {
 	}
 
 	/**
-	 * Get X raw axis, for a specific hand, with or without tolerance.
+	 * Get X raw axis, for a specific hand, with or without {@link #axisTolerance
+	 * tolerance}.
 	 * 
 	 * @param hand         The hand to be used
-	 * @param useTolerance Whether to use tolerance or not
+	 * @param useTolerance Whether to apply {@link #axisTolerance tolerance} or not
 	 * @return The x position of the given {@link Hand hand}'s axes, with or without
-	 *         tolerance
+	 *         {@link #axisTolerance tolerance}
 	 */
 	public double getX(Hand hand, boolean useTolerance) {
 		switch (hand) {
@@ -308,12 +322,13 @@ public class JController extends GenericHID {
 	}
 
 	/**
-	 * Get Y raw axis, for a specific hand, with or without tolerance.
+	 * Get Y raw axis, for a specific hand, with or without {@link #axisTolerance
+	 * tolerance}.
 	 * 
 	 * @param hand         The hand to be used
-	 * @param useTolerance Whether to use tolerance or not
+	 * @param useTolerance Whether to apply {@link #axisTolerance tolerance} or not
 	 * @return The y position of the given {@link Hand hand}'s axes, with or without
-	 *         tolerance
+	 *         {@link #axisTolerance tolerance}
 	 */
 	public double getY(Hand hand, boolean useTolerance) {
 		switch (hand) {
@@ -334,7 +349,19 @@ public class JController extends GenericHID {
 	 * @return The direction of the vector in radians
 	 */
 	public double getAngleRadians(Hand hand) {
-		return Math.atan2(getX(hand), -getY(hand));
+		return getAngleRadians(hand, false);
+	}
+
+	/**
+	 * Get the direction of the vector formed by the joystick and its origin in
+	 * radians.
+	 *
+	 * @param hand         The {@link Hand hand} to be used
+	 * @param useTolerance Whether to apply {@link #axisTolerance tolerance} or not
+	 * @return The direction of the vector in radians
+	 */
+	public double getAngleRadians(Hand hand, boolean useTolerance) {
+		return Math.atan2(getX(hand, useTolerance), -getY(hand, useTolerance));
 	}
 
 	/**
@@ -345,6 +372,18 @@ public class JController extends GenericHID {
 	 * @return The direction of the vector in degrees
 	 */
 	public double getAngleDegrees(Hand hand) {
-		return Math.toDegrees(getAngleRadians(hand));
+		return getAngleDegrees(hand, false);
+	}
+
+	/**
+	 * Get the direction of the vector formed by the joystick and its origin in
+	 * degrees.
+	 *
+	 * @param hand         The {@link Hand hand} to be used
+	 * @param useTolerance Whether to apply {@link #axisTolerance tolerance} or not
+	 * @return The direction of the vector in degrees
+	 */
+	public double getAngleDegrees(Hand hand, boolean useTolerance) {
+		return Math.toDegrees(getAngleRadians(hand, useTolerance));
 	}
 }

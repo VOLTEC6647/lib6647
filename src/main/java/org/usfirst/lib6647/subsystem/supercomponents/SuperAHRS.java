@@ -14,22 +14,28 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 
 /**
- * Interface to allow {@link HyperAHRS} initialization via JSON. Subsystems
- * declared need to extend {@link SuperSubsystem} or {@link PIDSuperSubsystem}
- * and implement this interface in order to initialize any {@link HyperAHRS}
- * declared in {@link SuperSubsystem#robotMap robotMap}.
+ * Interface to allow {@link HyperAHRS} initialization via JSON.
+ * 
+ * <p>
+ * Subsystems declared need to extend {@link SuperSubsystem} or
+ * {@link PIDSuperSubsystem} and implement this interface in order to initialize
+ * any {@link HyperAHRS HyperAHRS objects} declared in
+ * {@link SuperSubsystem#robotMap}.
  */
 public interface SuperAHRS {
-	/** HashMap storing the {@link SuperSubsystem}'s {@link HyperAHRS} devices. */
+	/**
+	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperAHRS} instances.
+	 */
 	final HashMap<String, HyperAHRS> ahrsDevices = new HashMap<>();
 
 	/**
-	 * Method to initialize {@link HyperAHRS} devices declared in the
-	 * {@link SuperSubsystem#robotMap robotMap} JSON file, and add them to the
+	 * Method to initialize {@link HyperAHRS HyperAHRS objects} declared in the
+	 * {@link SuperSubsystem#robotMap JSON file}, and add them to the
 	 * {@link #ahrsDevices} HashMap using its declared name as its key.
 	 * 
-	 * @param {@link SuperSubsystem#robotMap}
-	 * @param {@link SuperSubsystem#getName}
+	 * @param robotMap      The inherited {@link SuperSubsystem#robotMap} location
+	 * @param subsystemName The {@link SuperSubsystem}'s name; you can just pass on
+	 *                      the {@link SuperSubsystem#getName} method
 	 */
 	default void initAHRS(JsonNode robotMap, String subsystemName) {
 
@@ -62,28 +68,28 @@ public interface SuperAHRS {
 					throw new ComponentInitException(
 							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY AHRS ENTRY IN SUBSYSTEM '%s'",
 									subsystemName.toUpperCase()));
-			} catch (ComponentInitException e) {
-				System.out.println(e.getMessage());
-				DriverStation.reportError(e.getMessage(), false);
+			} catch (Exception e) {
+				System.out.println(e.getLocalizedMessage());
+				DriverStation.reportError(e.getLocalizedMessage(), false);
 			}
 		});
 	}
 
 	/**
-	 * Gets specified {@link HyperAHRS}.
+	 * Gets specified {@link HyperAHRS} from the {@link #ahrsDevices} HashMap.
 	 * 
-	 * @return {@link HyperAHRS}
-	 * @param ahrsName
+	 * @param ahrsName The name of the {@link HyperAHRS}
+	 * @return The requested {@link HyperAHRS}, if found
 	 */
 	default HyperAHRS getAHRS(String ahrsName) {
 		return ahrsDevices.get(ahrsName);
 	}
 
 	/**
-	 * Get roboRIO port from String.
+	 * Get a {@link HyperAHRS} port value from a String.
 	 * 
-	 * @param port
-	 * @return port
+	 * @param port The {@link HyperAHRS}'s port, as a String value
+	 * @return The {@link SerialPort.Port}, as a valid port value
 	 */
 	private SerialPort.Port getPort(String port) {
 		switch (port) {

@@ -13,25 +13,28 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 /**
  * Interface to allow {@link PowerDistributionPanel} initialization via JSON.
+ * 
+ * <p>
  * Subsystems declared need to extend {@link SuperSubsystem} or
  * {@link PIDSuperSubsystem} and implement this interface in order to initialize
- * {@link PowerDistributionPanel PDPs} declared in
- * {@link SuperSubsystem#robotMap robotMap}.
+ * {@link PowerDistributionPanel PowerDistributionPanel objects} declared in
+ * {@link SuperSubsystem#robotMap}.
  */
 public interface SuperPDP {
 	/**
-	 * HashMap storing the {@link SuperSubsystem}'s {@link PowerDistributionPanel
-	 * PDPs}.
+	 * HashMap storing the {@link SuperSubsystem}'s {@link PowerDistributionPanel}
+	 * instances.
 	 */
 	final HashMap<String, PowerDistributionPanel> PDPs = new HashMap<>();
 
 	/**
-	 * Method to initialize {@link PowerDistributionPanel PDPs} declared in the
-	 * {@link SuperSubsystem#robotMap robotMap} JSON file, and add them to the
-	 * {@link #PDPs} HashMap using its declared name as its key.
+	 * Method to initialize {@link PowerDistributionPanel PowerDistributionPanel
+	 * objects} declared in the {@link SuperSubsystem#robotMap JSON file}, and add
+	 * them to the {@link #PDPs} HashMap using its declared name as its key.
 	 * 
-	 * @param {@link SuperSubsystem#robotMap}
-	 * @param {@link SuperSubsystem#getName}
+	 * @param robotMap      The inherited {@link SuperSubsystem#robotMap} location
+	 * @param subsystemName The {@link SuperSubsystem}'s name; you can just pass on
+	 *                      the {@link SuperSubsystem#getName} method
 	 */
 	default void initPDPs(JsonNode robotMap, String subsystemName) {
 
@@ -62,18 +65,18 @@ public interface SuperPDP {
 					throw new ComponentInitException(
 							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY PDP ENTRY IN SUBSYSTEM '%s'",
 									subsystemName.toUpperCase()));
-			} catch (ComponentInitException e) {
-				System.out.println(e.getMessage());
-				DriverStation.reportError(e.getMessage(), false);
+			} catch (Exception e) {
+				System.out.println(e.getLocalizedMessage());
+				DriverStation.reportError(e.getLocalizedMessage(), false);
 			}
 		});
 	}
 
 	/**
-	 * Gets specified {@link PowerDistributionPanel}.
+	 * Gets specified {@link PowerDistributionPanel} from the {@link #PDPs} HashMap.
 	 * 
-	 * @return {@link PowerDistributionPanel}
-	 * @param pdpName
+	 * @param pdpName The name of the {@link PowerDistributionPanel}
+	 * @return The requested {@link PowerDistributionPanel}, if found
 	 */
 	default PowerDistributionPanel getPDP(String pdpName) {
 		return PDPs.get(pdpName);

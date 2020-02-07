@@ -12,25 +12,28 @@ import org.usfirst.lib6647.subsystem.hypercomponents.HyperSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 
 /**
- * Interface to allow {@link HyperSolenoid} initialization via JSON. Subsystems
- * declared need to extend {@link SuperSubsystem} or {@link PIDSuperSubsystem}
- * and implement this interface in order to initialize {@link HyperSolenoid
- * HyperSolenoids} declared in {@link SuperSubsystem#robotMap robotMap}.
+ * Interface to allow {@link HyperSolenoid} initialization via JSON.
+ * 
+ * <p>
+ * Subsystems declared need to extend {@link SuperSubsystem} or
+ * {@link PIDSuperSubsystem} and implement this interface in order to initialize
+ * {@link HyperSolenoid HyperSolenoid objects} declared in
+ * {@link SuperSubsystem#robotMap}.
  */
 public interface SuperSolenoid {
 	/**
-	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperSolenoid
-	 * HyperSolenoids}.
+	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperSolenoid} instances.
 	 */
 	final HashMap<String, HyperSolenoid> solenoids = new HashMap<>();
 
 	/**
-	 * Method to initialize {@link HyperSolenoid HyperSolenoids} declared in the
-	 * {@link SuperSubsystem#robotMap robotMap} JSON file, and add them to the
+	 * Method to initialize {@link HyperSolenoid HyperSolenoid objects} declared in
+	 * the {@link SuperSubsystem#robotMap JSON file}, and add them to the
 	 * {@link #solenoids} HashMap using its declared name as its key.
 	 * 
-	 * @param {@link SuperSubsystem#robotMap}
-	 * @param {@link SuperSubsystem#getName}
+	 * @param robotMap      The inherited {@link SuperSubsystem#robotMap} location
+	 * @param subsystemName The {@link SuperSubsystem}'s name; you can just pass on
+	 *                      the {@link SuperSubsystem#getName} method
 	 */
 	default void initSolenoids(JsonNode robotMap, String subsystemName) {
 
@@ -53,7 +56,7 @@ public interface SuperSolenoid {
 
 					// Additional initialization configuration.
 					if (json.hasNonNull("initialValue"))
-						setInitialValue(json, solenoid);
+						solenoid.set(json.get("initialValue").asBoolean());
 					// ...
 
 					// Put object in HashMap with its declared name as key after initialization and
@@ -63,29 +66,18 @@ public interface SuperSolenoid {
 					throw new ComponentInitException(
 							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY SOLENOID ENTRY IN SUBSYSTEM '%s'",
 									subsystemName.toUpperCase()));
-			} catch (ComponentInitException e) {
-				System.out.println(e.getMessage());
-				DriverStation.reportError(e.getMessage(), false);
+			} catch (Exception e) {
+				System.out.println(e.getLocalizedMessage());
+				DriverStation.reportError(e.getLocalizedMessage(), false);
 			}
 		});
 	}
 
 	/**
-	 * Sets a given {@link HyperSolenoid}'s inverted value from a {@link JsonNode}.
+	 * Gets specified {@link HyperSolenoid} from the {@link #solenoids} HashMap.
 	 * 
-	 * @param {@link JsonNode}
-	 * @param {@link HyperSolenoid}
-	 * @throws ComponentInitException if {@link JsonNode} key is defined, but empty.
-	 */
-	private void setInitialValue(JsonNode json, HyperSolenoid solenoid) throws ComponentInitException {
-		solenoid.set(json.get("initialValue").asBoolean());
-	}
-
-	/**
-	 * Gets specified {@link HyperSolenoid}.
-	 * 
-	 * @return {@link HyperSolenoid}
-	 * @param solenoidName
+	 * @param solenoidName The name of the {@link HyperSolenoid}
+	 * @return The requested {@link HyperSolenoid}, if found
 	 */
 	default HyperSolenoid getSolenoid(String solenoidName) {
 		return solenoids.get(solenoidName);

@@ -55,11 +55,11 @@ dependencies {
     implementation group: 'edu.wpi.first.wpilibOldCommands', name: 'wpilibOldCommands-java', version: '2020.2.2'
 
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.1'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.2'
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.1'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.2'
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.1'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.2'
 	
 	// Phoenix CTRE dependencies.
 	implementation group: 'com.ctre.phoenix', name: 'api-java', version: '5.18.1'

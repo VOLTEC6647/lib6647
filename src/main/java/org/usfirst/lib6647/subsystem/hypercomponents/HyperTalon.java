@@ -109,6 +109,8 @@ public class HyperTalon extends WPI_TalonSRX {
 
 	/**
 	 * Sets {@link HyperTalon} to a given speed, with the given {@link ControlMode}.
+	 * 
+	 * <p>
 	 * Copied over from:
 	 * https://github.com/Team254/FRC-2019-Public/blob/master/src/main/java/com/team254/lib/drivers/LazyTalonSRX.java
 	 * 

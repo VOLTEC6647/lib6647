@@ -12,24 +12,28 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 
 /**
- * Interface to allow {@link Compressor} initialization via JSON. Subsystems
- * declared need to extend {@link SuperSubsystem} or {@link PIDSuperSubsystem}
- * and implement this interface in order to initialize {@link Compressor
- * Compressors} declared in {@link SuperSubsystem#robotMap robotMap}.
+ * Interface to allow {@link Compressor} initialization via JSON.
+ * 
+ * <p>
+ * Subsystems declared need to extend {@link SuperSubsystem} or
+ * {@link PIDSuperSubsystem} and implement this interface in order to initialize
+ * {@link Compressor Compressor objects} declared in
+ * {@link SuperSubsystem#robotMap}.
  */
 public interface SuperCompressor {
 	/**
-	 * HashMap storing the {@link SuperSubsystem}'s {@link Compressor Compressors}.
+	 * HashMap storing the {@link SuperSubsystem}'s {@link Compressor} instances.
 	 */
 	final HashMap<String, Compressor> compressors = new HashMap<>();
 
 	/**
-	 * Method to initialize {@link Compressor Compressors} declared in the
-	 * {@link SuperSubsystem#robotMap robotMap} JSON file, and add them to the
+	 * Method to initialize {@link Compressor objects} declared in the
+	 * {@link SuperSubsystem#robotMap JSON file}, and add them to the
 	 * {@link #compressors} HashMap using its declared name as its key.
 	 * 
-	 * @param {@link SuperSubsystem#robotMap}
-	 * @param {@link SuperSubsystem#getName}
+	 * @param robotMap      The inherited {@link SuperSubsystem#robotMap} location
+	 * @param subsystemName The {@link SuperSubsystem}'s name; you can just pass on
+	 *                      the {@link SuperSubsystem#getName} method
 	 */
 	default void initCompressors(JsonNode robotMap, String subsystemName) {
 
@@ -51,6 +55,7 @@ public interface SuperCompressor {
 					Compressor compressor = new Compressor(json.get("module").asInt());
 
 					// Additional initialization configuration.
+					// (None required at the moment).
 					// ...
 
 					// Put object in HashMap with its declared name as key after initialization and
@@ -60,18 +65,18 @@ public interface SuperCompressor {
 					throw new ComponentInitException(
 							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY COMPRESSOR ENTRY IN SUBSYSTEM '%s'",
 									subsystemName.toUpperCase()));
-			} catch (ComponentInitException e) {
-				System.out.println(e.getMessage());
-				DriverStation.reportError(e.getMessage(), false);
+			} catch (Exception e) {
+				System.out.println(e.getLocalizedMessage());
+				DriverStation.reportError(e.getLocalizedMessage(), false);
 			}
 		});
 	}
 
 	/**
-	 * Gets specified {@link Compressor}.
+	 * Gets specified {@link Compressor} from the {@link #compressors} HashMap.
 	 * 
-	 * @return {@link Compressor}
-	 * @param compressorName
+	 * @param compressorName The name of the {@link Compressor}
+	 * @return The requested {@link Compressor}, if found
 	 */
 	default Compressor getCompressor(String compressorName) {
 		return compressors.get(compressorName);

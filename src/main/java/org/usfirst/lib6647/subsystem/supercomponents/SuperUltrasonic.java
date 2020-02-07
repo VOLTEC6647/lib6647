@@ -12,24 +12,28 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Ultrasonic;
 
 /**
- * Interface to allow {@link Ultrasonic} initialization via JSON. Subsystems
- * declared need to extend {@link SuperSubsystem} or {@link PIDSuperSubsystem}
- * and implement this interface in order to initialize {@link Ultrasonic
- * Ultrasonics} declared in {@link SuperSubsystem#robotMap robotMap}.
+ * Interface to allow {@link Ultrasonic} initialization via JSON.
+ * 
+ * <p>
+ * Subsystems declared need to extend {@link SuperSubsystem} or
+ * {@link PIDSuperSubsystem} and implement this interface in order to initialize
+ * {@link Ultrasonic Ultrasonic objects} declared in
+ * {@link SuperSubsystem#robotMap}.
  */
 public interface SuperUltrasonic {
 	/**
-	 * HashMap storing the {@link SuperSubsystem}'s {@link Ultrasonic Ultrasonics}.
+	 * HashMap storing the {@link SuperSubsystem}'s {@link Ultrasonic} instances.
 	 */
 	final HashMap<String, Ultrasonic> ultrasonics = new HashMap<>();
 
 	/**
-	 * Method to initialize {@link Ultrasonic Ultrasonics} declared in the
-	 * {@link SuperSubsystem#robotMap robotMap} JSON file, and add them to the
+	 * Method to initialize {@link Ultrasonic Ultrasonic objects} declared in the
+	 * {@link SuperSubsystem#robotMap JSON file}, and add them to the
 	 * {@link #ultrasonics} HashMap using its declared name as its key.
 	 * 
-	 * @param {@link SuperSubsystem#robotMap}
-	 * @param {@link SuperSubsystem#getName}
+	 * @param robotMap      The inherited {@link SuperSubsystem#robotMap} location
+	 * @param subsystemName The {@link SuperSubsystem}'s name; you can just pass on
+	 *                      the {@link SuperSubsystem#getName} method
 	 */
 	default void initUltrasonics(JsonNode robotMap, String subsystemName) {
 
@@ -61,18 +65,18 @@ public interface SuperUltrasonic {
 					throw new ComponentInitException(
 							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY ULTRASONIC ENTRY IN SUBSYSTEM '%s'",
 									subsystemName.toUpperCase()));
-			} catch (ComponentInitException e) {
-				System.out.println(e.getMessage());
-				DriverStation.reportError(e.getMessage(), false);
+			} catch (Exception e) {
+				System.out.println(e.getLocalizedMessage());
+				DriverStation.reportError(e.getLocalizedMessage(), false);
 			}
 		});
 	}
 
 	/**
-	 * Gets specified {@link Ultrasonic}.
+	 * Gets specified {@link Ultrasonic} from the {@link #ultrasonics} HashMap.
 	 * 
-	 * @return {@link Ultrasonic}
-	 * @param ultrasonicName
+	 * @param ultrasonicName The name of the {@link Ultrasonic}
+	 * @return The requested {@link Ultrasonic}, if found
 	 */
 	default Ultrasonic getUltrasonic(String ultrasonicName) {
 		return ultrasonics.get(ultrasonicName);

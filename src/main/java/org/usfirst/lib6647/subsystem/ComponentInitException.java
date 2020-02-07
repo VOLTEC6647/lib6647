@@ -10,7 +10,7 @@ public class ComponentInitException extends Exception {
 	/**
 	 * {@link Exception} for errors thrown while initializing Super/HyperComponents.
 	 * 
-	 * @param message
+	 * @param message The error message
 	 */
 	public ComponentInitException(String message) {
 		super(message);

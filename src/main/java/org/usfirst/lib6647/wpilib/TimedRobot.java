@@ -44,7 +44,7 @@ public class TimedRobot extends IterativeRobotBase {
 	/**
 	 * Constructor for TimedRobot.
 	 *
-	 * @param period Period in seconds.
+	 * @param period Period in seconds
 	 */
 	protected TimedRobot(double period) {
 		super(period);

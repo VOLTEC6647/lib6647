@@ -13,26 +13,28 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  * Interface to allow {@link HyperDoubleSolenoid} initialization via JSON.
+ * 
+ * <p>
  * Subsystems declared need to extend {@link SuperSubsystem} or
  * {@link PIDSuperSubsystem} and implement this interface in order to initialize
- * {@link HyperDoubleSolenoid HyperDoubleSolenoids} declared in
- * {@link SuperSubsystem#robotMap robotMap}.
+ * {@link HyperDoubleSolenoid HyperDoubleSolenoid objects} declared in
+ * {@link SuperSubsystem#robotMap}.
  */
 public interface SuperDoubleSolenoid {
 	/**
-	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperDoubleSolenoid
-	 * HyperDoubleSolenoids}.
+	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperDoubleSolenoid}
+	 * instances.
 	 */
 	final HashMap<String, HyperDoubleSolenoid> doubleSolenoids = new HashMap<>();
 
 	/**
-	 * Method to initialize {@link HyperDoubleSolenoid HyperDoubleSolenoids}
-	 * declared in the {@link SuperSubsystem#robotMap robotMap} JSON file, and add
-	 * them to the {@link #doubleSolenoids} HashMap using its declared name as its
-	 * key.
+	 * Method to initialize {@link HyperDoubleSolenoid HyperDoubleSolenoid objects}
+	 * declared in the {@link SuperSubsystem#robotMap JSON file}, and add them to
+	 * the {@link #doubleSolenoids} HashMap using its declared name as its key.
 	 * 
-	 * @param {@link SuperSubsystem#robotMap}
-	 * @param {@link SuperSubsystem#getName}
+	 * @param robotMap      The inherited {@link SuperSubsystem#robotMap} location
+	 * @param subsystemName The {@link SuperSubsystem}'s name; you can just pass on
+	 *                      the {@link SuperSubsystem#getName} method
 	 */
 	default void initDoubleSolenoids(JsonNode robotMap, String subsystemName) {
 
@@ -66,18 +68,19 @@ public interface SuperDoubleSolenoid {
 					throw new ComponentInitException(
 							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY DOUBLESOLENOID ENTRY IN SUBSYSTEM '%s'",
 									subsystemName.toUpperCase()));
-			} catch (ComponentInitException e) {
-				System.out.println(e.getMessage());
-				DriverStation.reportError(e.getMessage(), false);
+			} catch (Exception e) {
+				System.out.println(e.getLocalizedMessage());
+				DriverStation.reportError(e.getLocalizedMessage(), false);
 			}
 		});
 	}
 
 	/**
-	 * Gets specified {@link HyperDoubleSolenoid}.
+	 * Gets specified {@link HyperDoubleSolenoid} from the {@link #doubleSolenoids}
+	 * HashMap.
 	 * 
-	 * @return {@link HyperDoubleSolenoid}
-	 * @param doubleSolenoidName
+	 * @param doubleSolenoidName The name of the {@link HyperDoubleSolenoid}
+	 * @return The requested {@link HyperDoubleSolenoid}, if found
 	 */
 	default HyperDoubleSolenoid getDoubleSolenoid(String doubleSolenoidName) {
 		return doubleSolenoids.get(doubleSolenoidName);

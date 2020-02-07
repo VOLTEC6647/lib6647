@@ -6,7 +6,10 @@ import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 /**
- * Class to enable characterization of simulations. Copied over from:
+ * Class to enable characterization of simulations.
+ * 
+ * <p>
+ * Copied over from:
  * https://github.com/wpilibsuite/frc-characterization/blob/master/frc_characterization/robot/project/src/main/java/dc/SimEnabler.java.
  */
 public class SimEnabler implements Sendable {

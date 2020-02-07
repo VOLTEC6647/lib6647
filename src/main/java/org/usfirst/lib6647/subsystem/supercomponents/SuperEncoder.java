@@ -13,24 +13,27 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 
 /**
- * Interface to allow {@link Encoder} initialization via JSON. Subsystems
- * declared need to extend {@link SuperSubsystem} or {@link PIDSuperSubsystem}
- * and implement this interface in order to initialize {@link Encoder Encoders}
- * declared in {@link SuperSubsystem#robotMap robotMap}.
+ * Interface to allow {@link Encoder} initialization via JSON.
+ * 
+ * <p>
+ * Subsystems declared need to extend {@link SuperSubsystem} or
+ * {@link PIDSuperSubsystem} and implement this interface in order to initialize
+ * {@link Encoder Encoder objects} declared in {@link SuperSubsystem#robotMap}.
  */
 public interface SuperEncoder extends MotorUtils {
 	/**
-	 * HashMap storing the {@link SuperSubsystem}'s {@link Encoder Encoders}.
+	 * HashMap storing the {@link SuperSubsystem}'s {@link Encoder} instances.
 	 */
 	final HashMap<String, Encoder> encoders = new HashMap<>();
 
 	/**
-	 * Method to initialize {@link Encoder Encoders} declared in the
-	 * {@link SuperSubsystem#robotMap robotMap} JSON file, and add them to the
+	 * Method to initialize {@link Encoder Encoder objects} declared in the
+	 * {@link SuperSubsystem#robotMap JSON file}, and add them to the
 	 * {@link #encoders} HashMap using its declared name as its key.
 	 * 
-	 * @param {@link SuperSubsystem#robotMap}
-	 * @param {@link SuperSubsystem#getName}
+	 * @param robotMap      The inherited {@link SuperSubsystem#robotMap} location
+	 * @param subsystemName The {@link SuperSubsystem}'s name; you can just pass on
+	 *                      the {@link SuperSubsystem#getName} method
 	 */
 	default void initEncoders(JsonNode robotMap, String subsystemName) {
 
@@ -54,7 +57,8 @@ public interface SuperEncoder extends MotorUtils {
 							json.get("reverse").asBoolean(), getEncodingType(json.get("encodingType").asText()));
 
 					// Additional initialization configuration.
-					encoder.reset();
+					if (json.get("resetOnStart").asBoolean(false))
+						encoder.reset();
 					// ...
 
 					// Put object in HashMap with its declared name as key after initialization and
@@ -64,18 +68,18 @@ public interface SuperEncoder extends MotorUtils {
 					throw new ComponentInitException(
 							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY ENCODER ENTRY IN SUBSYSTEM '%s'",
 									subsystemName.toUpperCase()));
-			} catch (ComponentInitException e) {
-				System.out.println(e.getMessage());
-				DriverStation.reportError(e.getMessage(), false);
+			} catch (Exception e) {
+				System.out.println(e.getLocalizedMessage());
+				DriverStation.reportError(e.getLocalizedMessage(), false);
 			}
 		});
 	}
 
 	/**
-	 * Gets specified {@link Encoder}.
+	 * Gets specified {@link Encoder} from the {@link #encoders} HashMap.
 	 * 
-	 * @return {@link Encoder}
-	 * @param encoderName
+	 * @param encoderName The name of the {@link Encoder}
+	 * @return The requested {@link Encoder}, if found
 	 */
 	default Encoder getEncoder(String encoderName) {
 		return encoders.get(encoderName);

@@ -12,7 +12,7 @@ public enum JAxisType {
 	/**
 	 * Get the {@link JAxisType axis'} name.
 	 * 
-	 * @return
+	 * @return The {@link JAxisType axis'} name
 	 */
 	public String getName() {
 		return name;
@@ -21,7 +21,7 @@ public enum JAxisType {
 	/**
 	 * Constructor for {@link JAxisType}.
 	 * 
-	 * @param name
+	 * @param name The {@link JAxisType axis'} name
 	 */
 	JAxisType(String name) {
 		this.name = name;

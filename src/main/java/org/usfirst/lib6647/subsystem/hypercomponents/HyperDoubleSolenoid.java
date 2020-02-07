@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 /**
  * Simple Wrapper for a {@link Solenoid DoubleSolenoid}, currently only adds a
- * {@link HyperDoubleSolenoid#toggle()} method.
+ * {@link #toggle()} method.
  */
 public class HyperDoubleSolenoid {
 	/** {@link Solenoid Solenoids} used by this HyperComponent. */
@@ -13,8 +13,8 @@ public class HyperDoubleSolenoid {
 	/**
 	 * HyperComponent Wrapper for a {@link Solenoid DoubleSolenoid}.
 	 * 
-	 * @param forwardChannel
-	 * @param reverseChannel
+	 * @param forwardChannel The {@link Solenoid DoubleSolenoid}'s forward channel
+	 * @param reverseChannel The {@link Solenoid DoubleSolenoid}'s reverse channel
 	 */
 	public HyperDoubleSolenoid(int forwardChannel, int reverseChannel) {
 		forward = new Solenoid(forwardChannel);
@@ -24,7 +24,7 @@ public class HyperDoubleSolenoid {
 	/**
 	 * Set {@link Solenoid DoubleSolenoid} to a specific value.
 	 * 
-	 * @param value
+	 * @param value The value to set the {@link Solenoid DoubleSolenoid}
 	 */
 	public void set(boolean value) {
 		forward.set(value);

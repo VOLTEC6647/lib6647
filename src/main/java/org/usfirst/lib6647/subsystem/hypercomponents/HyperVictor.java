@@ -104,6 +104,8 @@ public class HyperVictor extends WPI_VictorSPX {
 
 	/**
 	 * Sets {@link HyperVictor} to a given speed, in the given {@link ControlMode}.
+	 * 
+	 * <p>
 	 * Copied over from:
 	 * https://github.com/Team254/FRC-2019-Public/blob/master/src/main/java/com/team254/lib/drivers/LazyTalonSRX.java
 	 * 

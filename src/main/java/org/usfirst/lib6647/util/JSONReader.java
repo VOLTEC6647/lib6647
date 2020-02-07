@@ -19,8 +19,10 @@ public class JSONReader {
 	/** Jackson's {@link ObjectMapper}, only one instance required. */
 	private static final ObjectMapper mapper = new ObjectMapper();
 	/**
-	 * Map holding each of the JSON files to be read, with its name as its key. E.g.
-	 * a file path such as '/home/lvuser/deploy/Profiles.json' has a key of
+	 * Map holding each of the JSON files to be read, with its name as its key.
+	 * 
+	 * <p>
+	 * E.g. a file path such as '/home/lvuser/deploy/Profiles.json' has a key of
 	 * 'Profiles'.
 	 */
 	private static final Map<String, String> filePaths = new HashMap<>();
@@ -38,7 +40,7 @@ public class JSONReader {
 	/**
 	 * Gets static {@link JSONReader} instance.
 	 * 
-	 * @return static {@link JSONReader} instance
+	 * @return The static {@link JSONReader} instance
 	 */
 	public synchronized static JSONReader getInstance() {
 		return instance;
@@ -48,7 +50,7 @@ public class JSONReader {
 	 * Must be instantiated with each name of every JSON file that goes into the
 	 * roboRIO's /home/lvuser/deploy directory.
 	 * 
-	 * @param fileNames
+	 * @param fileNames Every JSON file's names, without extension
 	 */
 	private JSONReader(final String... fileNames) {
 		for (final String fileName : fileNames)
@@ -58,10 +60,11 @@ public class JSONReader {
 	/**
 	 * Get a {@link JsonNode} from one of the JSON files in {@link #filePaths}.
 	 * 
-	 * @param fileName
-	 * @param nodeName
-	 * @return JsonNode
-	 * @throws JSONInitException
+	 * @param fileName A JSON file's name, without extension
+	 * @param nodeName The node to be read
+	 * @return The JsonNode object
+	 * @throws JSONInitException When JSON file does not exist, or is not
+	 *                           readable/writeable.
 	 */
 	public synchronized JsonNode getNode(String fileName, String nodeName) throws JSONInitException {
 		try (Reader file = new FileReader(filePaths.get(fileName))) {
@@ -80,7 +83,7 @@ public class JSONReader {
 	/**
 	 * Puts a file entry into {@link #filePaths}, with the fileName as its key.
 	 * 
-	 * @param fileName
+	 * @param fileName A JSON file's name, without extension
 	 */
 	private void putFile(final String fileName) {
 		filePaths.putIfAbsent(fileName, String.format("%1$s/%2$s.json", Filesystem.getDeployDirectory(), fileName));

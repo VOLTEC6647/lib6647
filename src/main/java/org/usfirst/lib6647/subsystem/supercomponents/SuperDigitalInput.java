@@ -12,25 +12,28 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 
 /**
- * Interface to allow {@link DigitalInput} initialization via JSON. Subsystems
- * declared need to extend {@link SuperSubsystem} or {@link PIDSuperSubsystem}
- * and implement this interface in order to initialize {@link DigitalInput
- * DigitalInputs} declared in {@link SuperSubsystem#robotMap robotMap}.
+ * Interface to allow {@link DigitalInput} initialization via JSON.
+ * 
+ * <p>
+ * Subsystems declared need to extend {@link SuperSubsystem} or
+ * {@link PIDSuperSubsystem} and implement this interface in order to initialize
+ * {@link DigitalInput DigitalInput objects} declared in
+ * {@link SuperSubsystem#robotMap}.
  */
 public interface SuperDigitalInput {
 	/**
-	 * HashMap storing the {@link SuperSubsystem}'s {@link DigitalInput
-	 * DigitalInputs}.
+	 * HashMap storing the {@link SuperSubsystem}'s {@link DigitalInput} instances.
 	 */
 	final HashMap<String, DigitalInput> digitalInputs = new HashMap<>();
 
 	/**
-	 * Method to initialize {@link DigitalInput DigitalInputs} declared in the
-	 * {@link SuperSubsystem#robotMap robotMap} JSON file, and add them to the
+	 * Method to initialize {@link DigitalInput DigitalInput objects} declared in
+	 * the {@link SuperSubsystem#robotMap JSON file}, and add them to the
 	 * {@link #digitalInputs} HashMap using its declared name as its key.
 	 * 
-	 * @param {@link SuperSubsystem#robotMap}
-	 * @param {@link SuperSubsystem#getName}
+	 * @param robotMap      The inherited {@link SuperSubsystem#robotMap} location
+	 * @param subsystemName The {@link SuperSubsystem}'s name; you can just pass on
+	 *                      the {@link SuperSubsystem#getName} method
 	 */
 	default void initDigitalInputs(JsonNode robotMap, String subsystemName) {
 
@@ -61,18 +64,18 @@ public interface SuperDigitalInput {
 					throw new ComponentInitException(
 							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY DIGITALINPUT ENTRY IN SUBSYSTEM '%s'",
 									subsystemName.toUpperCase()));
-			} catch (ComponentInitException e) {
-				System.out.println(e.getMessage());
-				DriverStation.reportError(e.getMessage(), false);
+			} catch (Exception e) {
+				System.out.println(e.getLocalizedMessage());
+				DriverStation.reportError(e.getLocalizedMessage(), false);
 			}
 		});
 	}
 
 	/**
-	 * Gets specified {@link DigitalInput}.
+	 * Gets specified {@link DigitalInput} from the {@link #digitalInputs} HashMap.
 	 * 
-	 * @return {@link DigitalInput}
-	 * @param digitalInputName
+	 * @param digitalInputName The name of the {@link DigitalInput}
+	 * @return The requested {@link DigitalInput}, if found
 	 */
 	default DigitalInput getDigitalInput(String digitalInputName) {
 		return digitalInputs.get(digitalInputName);

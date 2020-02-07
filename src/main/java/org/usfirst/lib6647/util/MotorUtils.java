@@ -2,6 +2,7 @@ package org.usfirst.lib6647.util;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 
@@ -11,15 +12,21 @@ import edu.wpi.first.wpilibj.CounterBase.EncodingType;
  */
 public interface MotorUtils {
 	/**
-	 * Method to convert a String value to its respective {@link NeutralMode}.
+	 * Get a {@link NeutralMode} value from a String.
 	 * 
-	 * @param neutralMode
-	 * @return {@link NeutralMode}
+	 * <p>
+	 * There are three types of {@link NeutralMode NeutralModes}:
+	 * <p>
+	 * - <b>{@link NeutralMode#Coast Coast}</b>
+	 * <p>
+	 * - <b>{@link NeutralMode#Brake Brake}</b>
+	 * <p>
+	 * - <b>{@link NeutralMode#EEPROMSetting EEPROMSetting}</b>
+	 * <p>
+	 * All of which must share the same name in the {@link JsonNode}.
 	 * 
-	 * @note There are three types of {@link NeutralMode NeutralModes}:
-	 *       {@link NeutralMode#Coast}, {@link NeutralMode#Brake}, and
-	 *       {@link NeutralMode#EEPROMSetting}. All of which should share the same
-	 *       name in the {@link JSONObject}.
+	 * @param neutralMode The desired {@link NeutralMode}, as a String value
+	 * @return The {@link NeutralMode}, as a valid enum
 	 */
 	default NeutralMode getNeutralMode(String neutralMode) {
 		switch (neutralMode) {
@@ -35,22 +42,37 @@ public interface MotorUtils {
 	}
 
 	/**
-	 * Method to convert a String to its respective {@link FeedbackDevice}.
+	 * Get a {@link FeedbackDevice} value from a String.
 	 * 
-	 * @param feedbackDevice
-	 * @return {@link FeedbackDevice}
+	 * <p>
+	 * There are eleven types of {@link FeedbackDevice FeedbackDevices}:
+	 * <p>
+	 * - <b>{@link FeedbackDevice#QuadEncoder}</b>
+	 * <p>
+	 * - <b>{@link FeedbackDevice#Analog}</b>
+	 * <p>
+	 * - <b>{@link FeedbackDevice#Tachometer}</b>
+	 * <p>
+	 * - <b>{@link FeedbackDevice#PulseWidthEncodedPosition}</b>
+	 * <p>
+	 * - <b>{@link FeedbackDevice#SensorSum}</b>
+	 * <p>
+	 * - <b>{@link FeedbackDevice#SensorDifference}</b>
+	 * <p>
+	 * - <b>{@link FeedbackDevice#RemoteSensor0}</b>
+	 * <p>
+	 * - <b>{@link FeedbackDevice#RemoteSensor1}</b>
+	 * <p>
+	 * - <b>{@link FeedbackDevice#SoftwareEmulatedSensor}</b>
+	 * <p>
+	 * - <b>{@link FeedbackDevice#CTRE_MagEncoder_Absolute}</b>
+	 * <p>
+	 * - <b>{@link FeedbackDevice#CTRE_MagEncoder_Relative}</b>
+	 * <p>
+	 * All of which must share the same name in the {@link JsonNode}.
 	 * 
-	 * @note There are eleven types of {@link FeedbackDevice FeedbackDevices}:
-	 *       {@link FeedbackDevice#QuadEncoder}, {@link FeedbackDevice#Analog},
-	 *       {@link FeedbackDevice#Tachometer},
-	 *       {@link FeedbackDevice#PulseWidthEncodedPosition},
-	 *       {@link FeedbackDevice#SensorSum},
-	 *       {@link FeedbackDevice#SensorDifference},
-	 *       {@link FeedbackDevice#RemoteSensor0},
-	 *       {@link FeedbackDevice#RemoteSensor1},
-	 *       {@link FeedbackDevice#SoftwareEmulatedSensor},
-	 *       {@link FeedbackDevice#CTRE_MagEncoder_Absolute},
-	 *       {@link FeedbackDevice#CTRE_MagEncoder_Relative}
+	 * @param feedbackDevice The desired {@link FeedbackDevice}, as a String value
+	 * @return The {@link FeedbackDevice}, as a valid enum
 	 */
 	default FeedbackDevice getFeedbackDevice(String feedbackDevice) {
 		switch (feedbackDevice) {
@@ -82,10 +104,10 @@ public interface MotorUtils {
 	}
 
 	/**
-	 * Method to convert a String to its respective {@link EncodingType}.
+	 * Get an {@link EncodingType} value from a String.
 	 * 
-	 * @param encodingType
-	 * @return {@link EncodingType}
+	 * @param encodingType The desired {@link EncodingType}, as a String value
+	 * @return The {@link EncodingType}, as a valid enum
 	 */
 	default EncodingType getEncodingType(String encodingType) {
 		switch (encodingType) {

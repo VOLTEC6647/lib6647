@@ -9,6 +9,7 @@ import java.util.Map;
 import org.usfirst.lib6647.loops.ILooper;
 import org.usfirst.lib6647.loops.Loop;
 import org.usfirst.lib6647.loops.LoopType;
+import org.usfirst.lib6647.loops.Looper;
 
 /**
  * Class holding instances of objects required to read values from a JSON file,
@@ -185,10 +186,10 @@ public class RobotMap implements ILooper {
 	/**
 	 * Registers {@link Loop loops} for every {@link SuperSubsystem}.
 	 * 
-	 * @param enabledLooper
-	 * @param teleopLooper
-	 * @param autoLooper
-	 * @param disabledLooper
+	 * @param enabledLooper  The enabled {@link Looper}
+	 * @param teleopLooper   The teleop {@link Looper}
+	 * @param autoLooper     The auto {@link Looper}
+	 * @param disabledLooper The disabled {@link Looper}
 	 */
 	public void registerLoops(ILooper enabledLooper, ILooper teleopLooper, ILooper autoLooper, ILooper disabledLooper) {
 		subsystems.values().forEach(s -> s.registerLoops(this));
@@ -199,6 +200,12 @@ public class RobotMap implements ILooper {
 		disabledLooper.register(new DisabledLoop());
 	}
 
+	/**
+	 * Used to add {@link Loop Loops} to a List, in order to be later run depending
+	 * on its {@link LoopType}.
+	 * 
+	 * @param loops {@link Loop Loops} to be registered
+	 */
 	@Override
 	public void register(Loop... loops) {
 		for (Loop loop : loops) {
