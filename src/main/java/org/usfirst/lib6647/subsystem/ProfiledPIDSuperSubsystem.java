@@ -36,12 +36,11 @@ public class ProfiledPIDSuperSubsystem extends SuperSubsystem implements SuperPr
 	/**
 	 * Sets the specified {@link ProfiledPIDController}'s goal to the given value.
 	 *
-	 * @param name     The name of the {@link ProfiledPIDController}
-	 * @param setpoint The value to be set as the {@link ProfiledPIDController}'s
-	 *                 goal
+	 * @param name The name of the {@link ProfiledPIDController}
+	 * @param goal The value to be set as the {@link ProfiledPIDController}'s goal
 	 */
-	public synchronized void setGoal(String name, double setpoint) {
-		getProfiledPIDController(name).setGoal(setpoint);
+	public synchronized void setGoal(String name, double goal) {
+		getProfiledPIDController(name).setGoal(goal);
 	}
 
 	/**

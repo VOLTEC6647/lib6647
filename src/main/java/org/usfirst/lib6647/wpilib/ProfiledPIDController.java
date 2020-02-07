@@ -12,8 +12,10 @@ import org.usfirst.lib6647.subsystem.hypercomponents.HyperPIDController;
 
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 
 /**
@@ -28,6 +30,8 @@ public class ProfiledPIDController implements Sendable {
 	private HyperPIDController controller;
 	private TrapezoidProfile.State goal = new TrapezoidProfile.State(), setpoint = new TrapezoidProfile.State();
 	private TrapezoidProfile.Constraints constraints;
+
+	private boolean fixedValues = true;
 
 	/**
 	 * Allocates a {@link ProfiledPIDController} with an already initialized
@@ -65,7 +69,7 @@ public class ProfiledPIDController implements Sendable {
 
 	/**
 	 * Allocates a ProfiledPIDController with the given constants for Kp, Ki, and
-	 * Kd. v
+	 * Kd.
 	 * 
 	 * @param constraints Velocity and acceleration constraints for goal
 	 * @param period      The period between controller updates in seconds
@@ -381,6 +385,12 @@ public class ProfiledPIDController implements Sendable {
 	 */
 	public void outputPIDValues() {
 		controller.outputPIDValues();
+
+		SmartDashboard.putNumber(controller.getSubsystemName() + "_" + controller.getName() + "_MaxVelocity",
+				constraints.maxVelocity);
+		SmartDashboard.putNumber(controller.getSubsystemName() + "_" + controller.getName() + "_MaxAcceleration",
+				constraints.maxAcceleration);
+		fixedValues = false;
 	}
 
 	/**
@@ -393,6 +403,29 @@ public class ProfiledPIDController implements Sendable {
 	 */
 	public void updatePIDValues() {
 		controller.updatePIDValues();
+
+		if (!fixedValues) {
+			try {
+				setConstraints(new TrapezoidProfile.Constraints(
+						SmartDashboard.getNumber(
+								controller.getSubsystemName() + "_" + controller.getName() + "_MaxVelocity",
+								constraints.maxVelocity),
+						SmartDashboard.getNumber(
+								controller.getSubsystemName() + "_" + controller.getName() + "_MaxAcceleration",
+								constraints.maxAcceleration)));
+			} catch (NumberFormatException e) {
+				DriverStation.reportError("[!] ERROR WHILE UPDATING PROFILE CONSTRAINTS OF PROFILED PID CONTROLLER '"
+						+ controller.getName().toUpperCase() + "' IN SUBSYSTEM '"
+						+ controller.getSubsystemName().toUpperCase()
+						+ "', ENSURE CURRENT VALUES IN SHUFFLEBOARD ARE OF TYPE 'DOUBLE':\n\t"
+						+ e.getLocalizedMessage(), false);
+				System.out.println("[!] ERROR WHILE UPDATING PROFILE CONSTRAINTS OF PROFILED PID CONTROLLER '"
+						+ controller.getName().toUpperCase() + "' IN SUBSYSTEM '"
+						+ controller.getSubsystemName().toUpperCase()
+						+ "', ENSURE CURRENT VALUES IN SHUFFLEBOARD ARE OF TYPE 'DOUBLE':\n\t"
+						+ e.getLocalizedMessage());
+			}
+		}
 	}
 
 	@Override

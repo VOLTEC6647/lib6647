@@ -41,6 +41,26 @@ public class HyperPIDController extends PIDController {
 		this.subsystemName = subsystemName;
 	}
 
+	/**
+	 * Get this {@link HyperPIDController}'s name.
+	 * 
+	 * @return The {@link HyperPIDController}'s name
+	 */
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Get the name of the {@link SuperSubsystem} this {@link HyperPIDController}
+	 * belongs to.
+	 * 
+	 * @return The name of the {@link SuperSubsystem} this belongs to
+	 */
+	public String getSubsystemName() {
+		return subsystemName;
+	}
+
 	@Override
 	public double calculate(double measurement) {
 		// 'Clamps' the calculated value to the declared minimum and maximum output.
@@ -78,13 +98,13 @@ public class HyperPIDController extends PIDController {
 			if (!SmartDashboard.getString(subsystemName + "_" + name + "D", getD() + "").equals(getD() + ""))
 				setD(Double.parseDouble(SmartDashboard.getString(subsystemName + "_" + name + "D", getD() + "")));
 		} catch (NumberFormatException e) {
-			DriverStation.reportError(
-					"[!] ERROR WHILE UPDATING PID VALUES, ENSURE CURRENT VALUES IN SHUFFLEBOARD ARE OF TYPE 'DOUBLE':\n\t"
-							+ e.getLocalizedMessage(),
+			DriverStation.reportError("[!] ERROR WHILE UPDATING PID VALUES OF PID CONTROLLER '" + name.toUpperCase()
+					+ "' IN SUBSYSTEM '" + subsystemName.toUpperCase()
+					+ "', ENSURE CURRENT VALUES IN SHUFFLEBOARD ARE OF TYPE 'DOUBLE':\n\t" + e.getLocalizedMessage(),
 					false);
-			System.out.println(
-					"[!] ERROR WHILE UPDATING PID VALUES, ENSURE CURRENT VALUES IN SHUFFLEBOARD ARE OF TYPE 'DOUBLE':\n\t"
-							+ e.getLocalizedMessage());
+			System.out.println("[!] ERROR WHILE UPDATING PID VALUES OF PID CONTROLLER '" + name.toUpperCase()
+					+ "' IN SUBSYSTEM '" + subsystemName.toUpperCase()
+					+ "', ENSURE CURRENT VALUES IN SHUFFLEBOARD ARE OF TYPE 'DOUBLE':\n\t" + e.getLocalizedMessage());
 		}
 	}
 
