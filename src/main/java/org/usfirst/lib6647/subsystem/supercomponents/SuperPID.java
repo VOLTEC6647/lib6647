@@ -48,20 +48,22 @@ public interface SuperPID {
 					PIDController controller = new PIDController(pidName, subsystemName, p, i, d, period);
 
 					// Read and apply PIDSuperSubsystem configuration from JSON file.
-					if (json.get("continuous").asBoolean(false))
+					if (json.hasNonNull("continuous") && json.get("continuous").asBoolean(false))
 						controller.enableContinuousInput(json.get("inputMin").asDouble(),
 								json.get("inputMax").asDouble());
 					else
 						controller.disableContinuousInput();
 
-					controller.setOutputRange(json.get("outputMin").asDouble(), json.get("outputMax").asDouble());
+					if (json.hasNonNull("outputMin") && json.hasNonNull("outputMax"))
+						controller.setOutputRange(json.get("outputMin").asDouble(), json.get("outputMax").asDouble());
 
 					if (json.hasNonNull("minI") && json.hasNonNull("maxI"))
 						controller.setIntegratorRange(json.get("minI").asDouble(), json.get("maxI").asDouble());
 
-					controller.setTolerance(json.get("tolerance").asDouble());
+					if (json.hasNonNull("tolerance"))
+						controller.setTolerance(json.get("tolerance").asDouble());
 
-					if (!json.get("fixedValues").asBoolean(true))
+					if (json.hasNonNull("fixedValues") && !json.get("fixedValues").asBoolean(true))
 						Shuffleboard.getTab(subsystemName).add(pidName, controller).withSize(2, 2);
 					// ...
 

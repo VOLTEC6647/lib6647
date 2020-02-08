@@ -54,24 +54,30 @@ public interface SuperProfiledPID {
 							new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration), period);
 
 					// Read and apply PIDSuperSubsystem configuration from JSON file.
-					if (json.get("continuous").asBoolean(false))
+					if (json.hasNonNull("continuous") && json.get("continuous").asBoolean(false))
 						controller.getPIDController().enableContinuousInput(json.get("inputMin").asDouble(),
 								json.get("inputMax").asDouble());
 					else
 						controller.getPIDController().disableContinuousInput();
 
-					controller.getPIDController().setOutputRange(json.get("outputMin").asDouble(),
-							json.get("outputMax").asDouble());
+					if (json.hasNonNull("outputMin") && json.hasNonNull("outputMax"))
+						controller.getPIDController().setOutputRange(json.get("outputMin").asDouble(),
+								json.get("outputMax").asDouble());
 
 					if (json.hasNonNull("minI") && json.hasNonNull("maxI"))
 						controller.getPIDController().setIntegratorRange(json.get("minI").asDouble(),
 								json.get("maxI").asDouble());
 
-					controller.getPIDController().setTolerance(json.get("positionTolerance").asDouble(),
-							json.get("velocityTolerance").asDouble(Double.POSITIVE_INFINITY));
+					if (json.hasNonNull("positionTolerance"))
+						if (json.hasNonNull("velocityTolerance"))
+							controller.getPIDController().setTolerance(json.get("positionTolerance").asDouble(),
+									json.get("velocityTolerance").asDouble(Double.POSITIVE_INFINITY));
+						else
+							controller.getPIDController().setTolerance(json.get("positionTolerance").asDouble());
 
-					if (!json.get("fixedValues").asBoolean(true))
-						Shuffleboard.getTab(subsystemName).add(pidName, controller).withSize(2, 2);
+					if (json.hasNonNull("fixedValues") && !json.get("fixedValues").asBoolean(true))
+						Shuffleboard.getTab(subsystemName).add(subsystemName + "_" + pidName, controller).withSize(3,
+								3);
 					// ...
 
 					// Put object in HashMap with its declared name as key after initialization and
