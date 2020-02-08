@@ -40,7 +40,7 @@ public class ProfiledPIDController implements Sendable {
 	 */
 	private double minimumInput, maximumInput;
 
-	private TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0), setpoint = new TrapezoidProfile.State(0, 0);
+	private TrapezoidProfile.State goal = new TrapezoidProfile.State(), setpoint = new TrapezoidProfile.State();
 	private TrapezoidProfile.Constraints constraints;
 
 	/**
@@ -87,7 +87,7 @@ public class ProfiledPIDController implements Sendable {
 
 		instances++;
 		SendableRegistry.addLW(this, "ProfiledPIDController", instances);
-		
+
 		HAL.report(tResourceType.kResourceType_ProfiledPIDController, instances);
 	}
 
@@ -215,7 +215,7 @@ public class ProfiledPIDController implements Sendable {
 	 * @param goal The desired {@link #goal} velocity
 	 */
 	public void setGoal(double positionGoal, double velocityGoal) {
-		this.goal = new TrapezoidProfile.State(positionGoal, velocityGoal);
+		goal = new TrapezoidProfile.State(positionGoal, velocityGoal);
 	}
 
 	/**

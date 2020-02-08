@@ -38,8 +38,8 @@ public final class ControllerUtil {
 	 */
 	public static double getModulusError(double reference, double measurement, double minimumInput,
 			double maximumInput) {
-		double modulus = maximumInput - minimumInput;
-		double error = reference % modulus - measurement % modulus;
+		var modulus = maximumInput - minimumInput;
+		var error = reference % modulus - measurement % modulus;
 
 		// Moduli on the difference arguments establish a precondition for the
 		// following modulus.

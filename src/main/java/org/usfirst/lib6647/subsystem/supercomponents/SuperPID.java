@@ -44,7 +44,7 @@ public interface SuperPID {
 					double p = json.get("p").asDouble(), i = json.get("i").asDouble(), d = json.get("d").asDouble(),
 							period = json.get("period").asDouble(0.02);
 
-					// Build HyperPIDController object.
+					// Build PIDController object.
 					PIDController controller = new PIDController(pidName, subsystemName, p, i, d, period);
 
 					// Read and apply PIDSuperSubsystem configuration from JSON file.

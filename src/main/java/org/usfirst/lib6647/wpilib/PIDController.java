@@ -135,7 +135,7 @@ public class PIDController implements Sendable, AutoCloseable {
 	 * 
 	 * @return The {@link #name} of this {@link PIDController}
 	 */
-	public String getName() {
+	public String getPIDName() {
 		return name;
 	}
 
