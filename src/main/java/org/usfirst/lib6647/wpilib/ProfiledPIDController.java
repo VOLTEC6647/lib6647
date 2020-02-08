@@ -405,10 +405,5 @@ public class ProfiledPIDController implements Sendable {
 				this::setConstraintVelocity);
 		builder.addDoubleProperty(subsystemName + "_" + name + "MaxAcceleration", () -> constraints.maxAcceleration,
 				this::setConstraintAcceleration);
-
-		builder.addDoubleProperty(subsystemName + "_" + name + "GoalPosition", () -> goal.position,
-				this::setGoalPosition);
-		builder.addDoubleProperty(subsystemName + "_" + name + "GoalVelocity", () -> goal.position,
-				this::setGoalVelocity);
 	}
 }
