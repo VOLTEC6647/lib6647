@@ -6,7 +6,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.usfirst.lib6647.subsystem.ComponentInitException;
-import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.subsystem.hypercomponents.HyperTalon;
 import org.usfirst.lib6647.util.MotorUtils;
@@ -17,10 +16,9 @@ import edu.wpi.first.wpilibj.DriverStation;
  * Interface to allow {@link HyperTalon} initialization via JSON.
  * 
  * <p>
- * Subsystems declared need to extend {@link SuperSubsystem} or
- * {@link PIDSuperSubsystem} and implement this interface in order to initialize
- * {@link HyperTalon HyperTalon objects} declared in
- * {@link SuperSubsystem#robotMap}.
+ * Subsystems declared need to extend {@link SuperSubsystem} and implement this
+ * interface in order to initialize {@link HyperTalon HyperTalon objects}
+ * declared in {@link SuperSubsystem#robotMap}.
  */
 public interface SuperTalon extends MotorUtils {
 	/**

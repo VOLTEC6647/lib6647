@@ -5,7 +5,6 @@ import java.util.HashMap;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.usfirst.lib6647.subsystem.ComponentInitException;
-import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -14,9 +13,9 @@ import edu.wpi.first.wpilibj.DriverStation;
  * Interface to allow a custom type of Component's initialization via JSON.
  * 
  * <p>
- * Subsystems declared need to extend {@link SuperSubsystem} or
- * {@link PIDSuperSubsystem} and implement this interface in order to initialize
- * custom Component objects declared in {@link SuperSubsystem#robotMap}.
+ * Subsystems declared need to extend {@link SuperSubsystem} or and implement
+ * this interface in order to initialize custom Component objects declared in
+ * {@link SuperSubsystem#robotMap}.
  */
 public interface SuperComponent {
 	/**

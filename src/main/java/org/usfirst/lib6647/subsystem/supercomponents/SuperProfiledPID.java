@@ -5,21 +5,20 @@ import java.util.HashMap;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.usfirst.lib6647.subsystem.ComponentInitException;
-import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.wpilib.ProfiledPIDController;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 
 /**
  * Interface to allow {@link ProfiledPIDController} initialization via JSON.
  * 
  * <p>
- * Subsystems declared need to extend {@link SuperSubsystem} or
- * {@link PIDSuperSubsystem} and implement this interface in order to initialize
- * {@link ProfiledPIDController ProfiledPIDController objects} declared in
- * {@link SuperSubsystem#robotMap}.
+ * Subsystems declared need to extend {@link SuperSubsystem} and implement this
+ * interface in order to initialize {@link ProfiledPIDController
+ * ProfiledPIDController objects} declared in {@link SuperSubsystem#robotMap}.
  */
 public interface SuperProfiledPID {
 	/**
@@ -56,21 +55,23 @@ public interface SuperProfiledPID {
 
 					// Read and apply PIDSuperSubsystem configuration from JSON file.
 					if (json.get("continuous").asBoolean(false))
-						controller.enableContinuousInput(json.get("inputMin").asDouble(),
+						controller.getPIDController().enableContinuousInput(json.get("inputMin").asDouble(),
 								json.get("inputMax").asDouble());
 					else
-						controller.disableContinuousInput();
+						controller.getPIDController().disableContinuousInput();
 
-					controller.setOutputRange(json.get("outputMin").asDouble(), json.get("outputMax").asDouble());
+					controller.getPIDController().setOutputRange(json.get("outputMin").asDouble(),
+							json.get("outputMax").asDouble());
 
 					if (json.hasNonNull("minI") && json.hasNonNull("maxI"))
-						controller.setIntegratorRange(json.get("minI").asDouble(), json.get("maxI").asDouble());
+						controller.getPIDController().setIntegratorRange(json.get("minI").asDouble(),
+								json.get("maxI").asDouble());
 
-					controller.setTolerance(json.get("positionTolerance").asDouble());
-					controller.setTolerance(json.get("velocityTolerance").asDouble(Double.POSITIVE_INFINITY));
+					controller.getPIDController().setTolerance(json.get("positionTolerance").asDouble(),
+							json.get("velocityTolerance").asDouble(Double.POSITIVE_INFINITY));
 
 					if (!json.get("fixedValues").asBoolean(true))
-						controller.outputPIDValues();
+						SmartDashboard.putData(controller);
 					// ...
 
 					// Put object in HashMap with its declared name as key after initialization and

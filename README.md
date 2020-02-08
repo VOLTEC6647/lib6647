@@ -23,7 +23,6 @@ Currently written documentation can be found at https://lib6647.readthedocs.io/,
   + [ ] HyperDoubleSolenoid
   + [ ] HyperEncoder
   + [ ] HyperPDP
-  + [x] HyperPIDController
   + [x] HyperSolenoid
   + [x] HyperTalon
   + [ ] HyperUltrasonic
@@ -59,7 +58,6 @@ Currently written documentation can be found at https://lib6647.readthedocs.io/,
   + [x] Copy SimEnabler class from frc-characterization, to enable characterization of simulations.
   + [ ] Create CharLoop classes, with templates to run characterization routines across different robots.
 * [ ] Implement trajectory generation into library.
-  + [ ] Create ProfiledPIDSuperSubsystem, with added JSON functionality.
 * [ ] Add more flexibility and configuration options.
 * [x] Comment everything.
 * [x] Do proper Exception handling.

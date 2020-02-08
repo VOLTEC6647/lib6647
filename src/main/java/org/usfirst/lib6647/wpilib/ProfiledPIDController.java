@@ -7,179 +7,216 @@
 
 package org.usfirst.lib6647.wpilib;
 
-import org.usfirst.lib6647.subsystem.SuperSubsystem;
-import org.usfirst.lib6647.subsystem.hypercomponents.HyperPIDController;
+import org.usfirst.lib6647.util.ControllerUtil;
 
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 
 /**
- * Implements a PID control loop whose setpoint is constrained by a trapezoid
- * profile. Users should call reset() when they first start running the
- * controller to avoid unwanted behavior.
+ * Implements a {@link PIDController PID control loop} whose
+ * {@link PIDController#getSetpoint() setpoint} is constrained by a trapezoid
+ * profile. Users should call {@link #reset(double)} when they first start
+ * running the {@link PIDController} to avoid unwanted behavior.
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public class ProfiledPIDController implements Sendable {
 	private static int instances;
 
-	private HyperPIDController controller;
+	/** Names of both the {@link PIDController} and its subsystem. */
+	private final String name, subsystemName;
+
+	/**
+	 * Instance of the {@link PIDController} used by this
+	 * {@link ProfiledPIDController}.
+	 */
+	private PIDController controller;
+
+	/**
+	 * {@link #minimumInput Minimum} and {@link #maximumInput maximum} input values
+	 * — limit setpoint to this.
+	 */
+	private double minimumInput, maximumInput;
+
 	private TrapezoidProfile.State goal = new TrapezoidProfile.State(), setpoint = new TrapezoidProfile.State();
 	private TrapezoidProfile.Constraints constraints;
 
-	private boolean fixedValues = true;
-
 	/**
-	 * Allocates a {@link ProfiledPIDController} with an already initialized
-	 * {@link HyperPIDController PIDController}.
-	 * 
-	 * @param controller
-	 * @param constraints
-	 */
-	public ProfiledPIDController(HyperPIDController controller, TrapezoidProfile.Constraints constraints) {
-		this.controller = controller;
-		this.constraints = constraints;
-		instances++;
-		HAL.report(tResourceType.kResourceType_ProfiledPIDController, instances);
-	}
-
-	/**
-	 * Allocates a {@link ProfiledPIDController} with the given constants.
+	 * Allocates a {@link ProfiledPIDController} with the given constants for
+	 * Proportional, Integral, and Derivative gains.
 	 *
-	 * @param name          The name of the {@link #controller PID controller}
-	 * @param subsystemName The name of the {@link SuperSubsystem} the
-	 *                      {@link #controller PID controller} belongs in
-	 * @param p             The {@link #controller PID controller}'s proportional
-	 *                      coefficient
-	 * @param i             The {@link #controller PID controller}'s integral
-	 *                      coefficient
-	 * @param d             The {@link #controller PID controller}'s derivative
-	 *                      coefficient
+	 * @param name          The name of this {@link ProfiledPIDController}
+	 * @param subsystemName The name of the Subsystem this
+	 *                      {@link ProfiledPIDController} belongs to
+	 * @param p             The Proportional coefficient
+	 * @param i             The Integral coefficient
+	 * @param d             The Derivative coefficient
 	 * @param constraints   Velocity and acceleration constraints for goal
 	 */
-	@SuppressWarnings("ParameterName")
-	public ProfiledPIDController(String name, String subsystemName, double Kp, double Ki, double Kd,
+	public ProfiledPIDController(String name, String subsystemName, double p, double i, double d,
 			TrapezoidProfile.Constraints constraints) {
-		this(name, subsystemName, Kp, Ki, Kd, constraints, 0.01);
+		this(name, subsystemName, p, i, d, constraints, 0.02);
 	}
 
 	/**
-	 * Allocates a ProfiledPIDController with the given constants for Kp, Ki, and
-	 * Kd.
-	 * 
-	 * @param constraints Velocity and acceleration constraints for goal
-	 * @param period      The period between controller updates in seconds
+	 * Allocates a {@link ProfiledPIDController} with the given constants for
+	 * {@link PIDController#getP() Proportional}, {@link PIDController#getI()
+	 * Integral}, and {@link PIDController#getD() Derivative} gains.
+	 *
+	 * @param name          The name of this {@link ProfiledPIDController}
+	 * @param subsystemName The name of the Subsystem this
+	 *                      {@link ProfiledPIDController} belongs to
+	 * @param p             The {@link ProfiledPIDController}'s
+	 *                      {@link PIDController#getP() Proportional} coefficient
+	 * @param i             The {@link ProfiledPIDController}'s
+	 *                      {@link PIDController#getI() Integral} coefficient
+	 * @param d             The {@link ProfiledPIDController}'s
+	 *                      {@link PIDController#getD() Derivative} coefficient
+	 * @param constraints   Velocity and acceleration constraints for goal
+	 * @param period        The period between controller updates in seconds
 	 */
-	@SuppressWarnings("ParameterName")
-	public ProfiledPIDController(String name, String subsystemName, double Kp, double Ki, double Kd,
+	public ProfiledPIDController(String name, String subsystemName, double p, double i, double d,
 			TrapezoidProfile.Constraints constraints, double period) {
-		controller = new HyperPIDController(name, subsystemName, Kp, Ki, Kd, period);
+		this.name = name;
+		this.subsystemName = subsystemName;
+
+		controller = new PIDController(name, subsystemName, p, i, d, period);
 		this.constraints = constraints;
+
 		instances++;
 		HAL.report(tResourceType.kResourceType_ProfiledPIDController, instances);
 	}
 
 	/**
-	 * Sets the PID Controller gain parameters.
+	 * Sets the {@link #controller PID loop} gain parameters.
 	 *
 	 * <p>
-	 * Sets the proportional, integral, and differential coefficients.
+	 * Sets the {@link PIDController#getP() Proportional},
+	 * {@link PIDController#getI() Integral}, and {@link PIDController#getD()
+	 * Derivative} coefficients.
 	 *
-	 * @param p The {@link #controller PID controller}'s proportional coefficient
-	 * @param i The {@link #controller PID controller}'s integral coefficient
-	 * @param d The {@link #controller PID controller}'s derivative coefficient
+	 * @param p The {@link ProfiledPIDController}'s {@link PIDController#getP()
+	 *          Proportional} coefficient
+	 * @param i The {@link ProfiledPIDController}'s {@link PIDController#getI()
+	 *          Integral} coefficient
+	 * @param d The {@link ProfiledPIDController}'s {@link PIDController#getD()
+	 *          Derivative} coefficient
 	 */
 	public void setPID(double p, double i, double d) {
 		controller.setPID(p, i, d);
 	}
 
 	/**
-	 * Sets the proportional coefficient of the PID controller gain.
+	 * Sets the {@link PIDController#getP() Proportional} coefficient of the
+	 * {@link #controller} gain.
 	 *
-	 * @param p The {@link #controller PID controller}'s proportional coefficient
+	 * @param p {@link PIDController#getP() Proportional} coefficient
 	 */
 	public void setP(double p) {
 		controller.setP(p);
 	}
 
 	/**
-	 * Sets the integral coefficient of the PID controller gain.
+	 * Sets the {@link PIDController#getI() Integral} coefficient of the
+	 * {@link #controller} gain.
 	 *
-	 * @param i The {@link #controller PID controller}'s integral coefficient
+	 * @param i {@link PIDController#getI() Integral} coefficient
 	 */
 	public void setI(double i) {
 		controller.setI(i);
 	}
 
 	/**
-	 * Sets the differential coefficient of the PID controller gain.
+	 * Sets the {@link PIDController#getD() Derivative} coefficient of the
+	 * {@link #controller} gain.
 	 *
-	 * @param d The {@link #controller PID controller}'s derivative coefficient
+	 * @param d {@link PIDController#getD() Derivative} coefficient
 	 */
 	public void setD(double d) {
 		controller.setD(d);
 	}
 
 	/**
-	 * Gets the proportional coefficient.
+	 * Gets the {@link PIDController#getP() Proportional} coefficient.
 	 *
-	 * @return proportional coefficient
+	 * @return The {@link #controller}'s {@link PIDController#getP() Proportional}
+	 *         coefficient
 	 */
 	public double getP() {
 		return controller.getP();
 	}
 
 	/**
-	 * Gets the integral coefficient.
+	 * Gets the {@link PIDController#getI() Integral} coefficient.
 	 *
-	 * @return integral coefficient
+	 * @return The {@link #controller}'s {@link PIDController#getI() Integral}
+	 *         coefficient
 	 */
 	public double getI() {
 		return controller.getI();
 	}
 
 	/**
-	 * Gets the differential coefficient.
+	 * Gets the {@link PIDController#getD() Derivative} coefficient.
 	 *
-	 * @return differential coefficient
+	 * @return The {@link #controller}'s {@link PIDController#getD() Derivative}
+	 *         coefficient
 	 */
 	public double getD() {
 		return controller.getD();
 	}
 
 	/**
-	 * Gets the period of this {@link #controller PID controller}.
+	 * Gets the {@link PIDController#getPeriod() period} of this
+	 * {@link ProfiledPIDController}.
 	 *
-	 * @return The period of the {@link #controller PID controller}
+	 * @return The {@link PIDController#getPeriod() period} of the
+	 *         {@link #controller}
 	 */
 	public double getPeriod() {
 		return controller.getPeriod();
 	}
 
 	/**
-	 * Sets the goal for the {@link ProfiledPIDController}.
+	 * Sets the {@link #goal} for the {@link ProfiledPIDController}.
 	 *
-	 * @param goal The desired goal state
+	 * @param goal The desired {@link #goal} state
 	 */
 	public void setGoal(TrapezoidProfile.State goal) {
 		this.goal = goal;
 	}
 
 	/**
-	 * Sets the goal for the {@link ProfiledPIDController}.
+	 * Sets the {@link #goal} for the {@link ProfiledPIDController}.
 	 *
-	 * @param goal The desired goal position
+	 * @param goal The desired {@link #goal} position
 	 */
-	public void setGoal(double goal) {
-		this.goal = new TrapezoidProfile.State(goal, 0);
+	public void setGoalPosition(double goal) {
+		setGoal(goal, 0);
 	}
 
 	/**
-	 * Gets the goal for the {@link ProfiledPIDController}.
+	 * Sets the {@link #goal} for the {@link ProfiledPIDController}.
+	 *
+	 * @param goal The desired {@link #goal} velocity
+	 */
+	public void setGoalVelocity(double goal) {
+		setGoal(0, goal);
+	}
+
+	/**
+	 * Sets the {@link #goal} for the {@link ProfiledPIDController}.
+	 *
+	 * @param goal The desired {@link #goal} position
+	 * @param goal The desired {@link #goal} velocity
+	 */
+	public void setGoal(double positionGoal, double velocityGoal) {
+		this.goal = new TrapezoidProfile.State(positionGoal, velocityGoal);
+	}
+
+	/**
+	 * Gets the {@link #goal} for the {@link ProfiledPIDController}.
 	 */
 	public TrapezoidProfile.State getGoal() {
 		return goal;
@@ -192,134 +229,68 @@ public class ProfiledPIDController implements Sendable {
 	 * This will return false until at least one input value has been computed.
 	 */
 	public boolean atGoal() {
-		return atSetpoint() && goal.equals(setpoint);
+		return controller.atSetpoint() && goal.equals(setpoint);
 	}
 
 	/**
-	 * Set velocity and acceleration constraints for goal.
+	 * Set velocity and acceleration {@link #constraints} for {@link #goal}.
 	 *
-	 * @param constraints Velocity and acceleration constraints for goal
+	 * @param constraints Velocity and acceleration {@link #constraints} for
+	 *                    {@link #goal}.
 	 */
 	public void setConstraints(TrapezoidProfile.Constraints constraints) {
 		this.constraints = constraints;
 	}
 
 	/**
-	 * Returns the current setpoint of the {@link ProfiledPIDController}.
+	 * Returns the current {@link #setpoint} of the {@link ProfiledPIDController}.
 	 *
-	 * @return The current setpoint
+	 * @return The current {@link #setpoint}.
 	 */
 	public TrapezoidProfile.State getSetpoint() {
 		return setpoint;
 	}
 
 	/**
-	 * Returns true if the error is within the tolerance of the error.
-	 *
-	 * <p>
-	 * This will return false until at least one input value has been computed.
-	 */
-	public boolean atSetpoint() {
-		return controller.atSetpoint();
-	}
-
-	/**
-	 * Enables continuous input.
-	 *
-	 * <p>
-	 * Rather then using the max and min input range as constraints, it considers
-	 * them to be the same point and automatically calculates the shortest route to
-	 * the setpoint.
-	 *
-	 * @param minimumInput The minimum value expected from the input
-	 * @param maximumInput The maximum value expected from the input
-	 */
-	public void enableContinuousInput(double minimumInput, double maximumInput) {
-		controller.setInputRange(minimumInput, maximumInput);
-	}
-
-	/**
-	 * Disables continuous input.
-	 */
-	public void disableContinuousInput() {
-		controller.disableContinuousInput();
-	}
-
-	/**
-	 * Sets the {@link #controller PID controller}'s minimum and maximum output.
+	 * Returns this {@link ProfiledPIDController}'s {@link PIDController}.
 	 * 
-	 * @param outputMin
-	 * @param outputMax
+	 * @return This {@link ProfiledPIDController}'s {@link PIDController}
 	 */
-	public void setOutputRange(double outputMin, double outputMax) {
-		controller.setOutputRange(outputMin, outputMax);
+	public PIDController getPIDController() {
+		return controller;
 	}
 
 	/**
-	 * Sets the minimum and maximum values for the integrator.
-	 *
-	 * <p>
-	 * When the cap is reached, the integrator value is added to the controller
-	 * output rather than the integrator value times the integral gain.
-	 *
-	 * @param minimumIntegral The minimum value of the integrator
-	 * @param maximumIntegral The maximum value of the integrator
-	 */
-	public void setIntegratorRange(double minimumIntegral, double maximumIntegral) {
-		controller.setIntegratorRange(minimumIntegral, maximumIntegral);
-	}
-
-	/**
-	 * Sets the error which is considered tolerable for use with atSetpoint().
-	 *
-	 * @param positionTolerance Position error which is tolerable
-	 */
-	public void setTolerance(double positionTolerance) {
-		setTolerance(positionTolerance, Double.POSITIVE_INFINITY);
-	}
-
-	/**
-	 * Sets the error which is considered tolerable for use with atSetpoint().
-	 *
-	 * @param positionTolerance Position error which is tolerable
-	 * @param velocityTolerance Velocity error which is tolerable
-	 */
-	public void setTolerance(double positionTolerance, double velocityTolerance) {
-		controller.setTolerance(positionTolerance, velocityTolerance);
-	}
-
-	/**
-	 * Returns the difference between the setpoint and the measurement.
-	 *
-	 * @return The {@link #controller PID controller}'s error
-	 */
-	public double getPositionError() {
-		return controller.getPositionError();
-	}
-
-	/**
-	 * Returns the change in error per second.
-	 */
-	public double getVelocityError() {
-		return controller.getVelocityError();
-	}
-
-	/**
-	 * Returns the next output of the PID controller.
+	 * Returns the next output of the {@link #controller PID controller}.
 	 *
 	 * @param measurement The current measurement of the process variable
 	 */
 	public double calculate(double measurement) {
+		if (controller.isContinuous()) {
+			// Get error which is smallest distance between goal and measurement
+			double error = ControllerUtil.getModulusError(goal.position, measurement, minimumInput, maximumInput);
+
+			// Recompute the profile goal with the smallest error, thus giving the shortest
+			// path. The goal
+			// may be outside the input range after this operation, but that's OK because
+			// the controller
+			// will still go there and report an error of zero. In other words, the setpoint
+			// only needs to
+			// be offset from the measurement by the input range modulus; they don't need to
+			// be equal.
+			goal.position = error + measurement;
+		}
+
 		var profile = new TrapezoidProfile(constraints, goal, setpoint);
 		setpoint = profile.calculate(getPeriod());
 		return controller.calculate(measurement, setpoint.position);
 	}
 
 	/**
-	 * Returns the next output of the PID controller.
+	 * Returns the next output of the {@link #controller PID controller}.
 	 *
 	 * @param measurement The current measurement of the process variable
-	 * @param goal        The new goal of the controller
+	 * @param goal        The new {@link #goal} position of the {@link #controller}
 	 */
 	public double calculate(double measurement, TrapezoidProfile.State goal) {
 		setGoal(goal);
@@ -327,22 +298,34 @@ public class ProfiledPIDController implements Sendable {
 	}
 
 	/**
-	 * Returns the next output of the PIDController.
+	 * Returns the next output of the {@link #controller PID controller}.
 	 *
 	 * @param measurement The current measurement of the process variable
-	 * @param goal        The new goal of the controller
+	 * @param goal        The new {@link #goal} position of the {@link #controller}
 	 */
 	public double calculate(double measurement, double goal) {
-		setGoal(goal);
+		setGoal(goal, 0);
 		return calculate(measurement);
 	}
 
 	/**
-	 * Returns the next output of the PID controller.
+	 * Returns the next output of the {@link #controller PID controller}.
 	 *
-	 * @param measurement The current measurement of the process variable
-	 * @param goal        The new goal of the controller
-	 * @param constraints Velocity and acceleration constraints for goal
+	 * @param measurement  The current measurement of the process variable
+	 * @param positionGoal The new {@link #goal} position of the {@link #controller}
+	 * @param velocityGoal The new {@link #goal} velocity of the {@link #controller}
+	 */
+	public double calculate(double measurement, double positionGoal, double velocityGoal) {
+		setGoal(positionGoal, velocityGoal);
+		return calculate(measurement);
+	}
+
+	/**
+	 * Returns the next output of the {@link #controller PID controller}.
+	 *
+	 * @param measurement The current measurement of the process variable.
+	 * @param goal        The new {@link #goal} of the {@link #controller}.
+	 * @param constraints Velocity and acceleration constraints for {@link #goal}.
 	 */
 	public double calculate(double measurement, TrapezoidProfile.State goal, TrapezoidProfile.Constraints constraints) {
 		setConstraints(constraints);
@@ -352,8 +335,7 @@ public class ProfiledPIDController implements Sendable {
 	/**
 	 * Reset the previous error and the integral term.
 	 *
-	 * @param measurement The current measured {@link TrapezoidProfile.State} of the
-	 *                    system
+	 * @param measurement The current measured State of the system.
 	 */
 	public void reset(TrapezoidProfile.State measurement) {
 		controller.reset();
@@ -363,8 +345,8 @@ public class ProfiledPIDController implements Sendable {
 	/**
 	 * Reset the previous error and the integral term.
 	 *
-	 * @param measuredPosition The current measured position of the system
-	 * @param measuredVelocity The current measured velocity of the system
+	 * @param measuredPosition The current measured position of the system.
+	 * @param measuredVelocity The current measured velocity of the system.
 	 */
 	public void reset(double measuredPosition, double measuredVelocity) {
 		reset(new TrapezoidProfile.State(measuredPosition, measuredVelocity));
@@ -374,66 +356,24 @@ public class ProfiledPIDController implements Sendable {
 	 * Reset the previous error and the integral term.
 	 *
 	 * @param measuredPosition The current measured position of the system. The
-	 *                         velocity is assumed to be zero
+	 *                         velocity is assumed to be zero.
 	 */
 	public void reset(double measuredPosition) {
 		reset(measuredPosition, 0.0);
 	}
 
-	/**
-	 * Method that enables the changing of PID values from the shuffleboard.
-	 */
-	public void outputPIDValues() {
-		controller.outputPIDValues();
-
-		SmartDashboard.putNumber(controller.getSubsystemName() + "_" + controller.getName() + "_MaxVelocity",
-				constraints.maxVelocity);
-		SmartDashboard.putNumber(controller.getSubsystemName() + "_" + controller.getName() + "_MaxAcceleration",
-				constraints.maxAcceleration);
-		fixedValues = false;
-	}
-
-	/**
-	 * Method to update current PID values from the ones found in the Shuffleboard.
-	 * 
-	 * <p>
-	 * The {@link #outputPIDValues()} method must first be called in order to
-	 * activate the changing of these values; whether or not to update PID values
-	 * can be specified in the {@link SuperSubsystem#robotMap JSON file}.
-	 */
-	public void updatePIDValues() {
-		controller.updatePIDValues();
-
-		if (!fixedValues) {
-			try {
-				setConstraints(new TrapezoidProfile.Constraints(
-						SmartDashboard.getNumber(
-								controller.getSubsystemName() + "_" + controller.getName() + "_MaxVelocity",
-								constraints.maxVelocity),
-						SmartDashboard.getNumber(
-								controller.getSubsystemName() + "_" + controller.getName() + "_MaxAcceleration",
-								constraints.maxAcceleration)));
-			} catch (NumberFormatException e) {
-				DriverStation.reportError("[!] ERROR WHILE UPDATING PROFILE CONSTRAINTS OF PROFILED PID CONTROLLER '"
-						+ controller.getName().toUpperCase() + "' IN SUBSYSTEM '"
-						+ controller.getSubsystemName().toUpperCase()
-						+ "', ENSURE CURRENT VALUES IN SHUFFLEBOARD ARE OF TYPE 'DOUBLE':\n\t"
-						+ e.getLocalizedMessage(), false);
-				System.out.println("[!] ERROR WHILE UPDATING PROFILE CONSTRAINTS OF PROFILED PID CONTROLLER '"
-						+ controller.getName().toUpperCase() + "' IN SUBSYSTEM '"
-						+ controller.getSubsystemName().toUpperCase()
-						+ "', ENSURE CURRENT VALUES IN SHUFFLEBOARD ARE OF TYPE 'DOUBLE':\n\t"
-						+ e.getLocalizedMessage());
-			}
-		}
-	}
-
 	@Override
 	public void initSendable(SendableBuilder builder) {
-		builder.setSmartDashboardType("ProfiledPIDController");
-		builder.addDoubleProperty("p", this::getP, this::setP);
-		builder.addDoubleProperty("i", this::getI, this::setI);
-		builder.addDoubleProperty("d", this::getD, this::setD);
-		builder.addDoubleProperty("goal", () -> getGoal().position, this::setGoal);
+		builder.setSmartDashboardType("PIDController");
+		builder.addDoubleProperty(subsystemName + "_" + name + "P", this::getP, this::setP);
+		builder.addDoubleProperty(subsystemName + "_" + name + "I", this::getI, this::setI);
+		builder.addDoubleProperty(subsystemName + "_" + name + "D", this::getD, this::setD);
+		builder.addDoubleArrayProperty(subsystemName + "_" + name + "constraints",
+				() -> new double[] { constraints.maxAcceleration, constraints.maxVelocity },
+				constraintsArray -> setConstraints(
+						new TrapezoidProfile.Constraints(constraintsArray[0], constraintsArray[1])));
+		builder.addDoubleArrayProperty(subsystemName + "_" + name + "goal",
+				() -> new double[] { getGoal().position, getGoal().velocity },
+				goalArray -> setGoal(new TrapezoidProfile.State(goalArray[0], goalArray[1])));
 	}
 }

@@ -5,32 +5,30 @@ import java.util.HashMap;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.usfirst.lib6647.subsystem.ComponentInitException;
-import org.usfirst.lib6647.subsystem.PIDSuperSubsystem;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
-import org.usfirst.lib6647.subsystem.hypercomponents.HyperPIDController;
+import org.usfirst.lib6647.wpilib.PIDController;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * Interface to allow {@link HyperPIDController} initialization via JSON.
+ * Interface to allow {@link PIDController} initialization via JSON.
  * 
  * <p>
- * Subsystems declared need to extend {@link SuperSubsystem} or
- * {@link PIDSuperSubsystem} and implement this interface in order to initialize
- * {@link HyperPIDController HyperPIDController objects} declared in
- * {@link SuperSubsystem#robotMap}.
+ * Subsystems declared need to extend {@link SuperSubsystem} and implement this
+ * interface in order to initialize {@link PIDController PIDController objects}
+ * declared in {@link SuperSubsystem#robotMap}.
  */
 public interface SuperPID {
 	/**
-	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperPIDController}
-	 * instances.
+	 * HashMap storing the {@link SuperSubsystem}'s {@link PIDController} instances.
 	 */
-	final HashMap<String, HyperPIDController> pidControllers = new HashMap<>();
+	final HashMap<String, PIDController> pidControllers = new HashMap<>();
 
 	/**
-	 * Method to initialize {@link HyperPIDController HyperPIDController objects}
-	 * declared in the {@link SuperSubsystem#robotMap JSON file}, and add them to
-	 * the {@link #pidControllers} HashMap using its declared name as its key.
+	 * Method to initialize {@link PIDController PIDController objects} declared in
+	 * the {@link SuperSubsystem#robotMap JSON file}, and add them to the
+	 * {@link #pidControllers} HashMap using its declared name as its key.
 	 * 
 	 * @param robotMap      The inherited {@link SuperSubsystem#robotMap} location
 	 * @param subsystemName The {@link SuperSubsystem}'s name; you can just pass on
@@ -47,11 +45,12 @@ public interface SuperPID {
 							period = json.get("period").asDouble(0.02);
 
 					// Build HyperPIDController object.
-					HyperPIDController controller = new HyperPIDController(pidName, subsystemName, p, i, d, period);
+					PIDController controller = new PIDController(pidName, subsystemName, p, i, d, period);
 
 					// Read and apply PIDSuperSubsystem configuration from JSON file.
 					if (json.get("continuous").asBoolean(false))
-						controller.setInputRange(json.get("inputMin").asDouble(), json.get("inputMax").asDouble());
+						controller.enableContinuousInput(json.get("inputMin").asDouble(),
+								json.get("inputMax").asDouble());
 					else
 						controller.disableContinuousInput();
 
@@ -63,7 +62,7 @@ public interface SuperPID {
 					controller.setTolerance(json.get("tolerance").asDouble());
 
 					if (!json.get("fixedValues").asBoolean(true))
-						controller.outputPIDValues();
+						SmartDashboard.putData(controller);
 					// ...
 
 					// Put object in HashMap with its declared name as key after initialization and
@@ -81,13 +80,13 @@ public interface SuperPID {
 	}
 
 	/**
-	 * Gets specified {@link HyperPIDController} from the {@link #pidControllers}
+	 * Gets specified {@link PIDController} from the {@link #pidControllers}
 	 * HashMap.
 	 * 
-	 * @param pidName The name of the {@link HyperPIDController}
-	 * @return The requested {@link HyperPIDController}, if found
+	 * @param pidName The name of the {@link PIDController}
+	 * @return The requested {@link PIDController}, if found
 	 */
-	default HyperPIDController getPIDController(String pidName) {
+	default PIDController getPIDController(String pidName) {
 		return pidControllers.get(pidName);
 	}
 }
