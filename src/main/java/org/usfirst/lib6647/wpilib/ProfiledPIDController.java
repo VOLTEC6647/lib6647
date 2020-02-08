@@ -39,7 +39,7 @@ public class ProfiledPIDController implements Sendable {
 	 */
 	private double minimumInput, maximumInput;
 
-	private TrapezoidProfile.State goal = new TrapezoidProfile.State(), setpoint = new TrapezoidProfile.State();
+	private TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0), setpoint = new TrapezoidProfile.State(0, 0);
 	private TrapezoidProfile.Constraints constraints;
 
 	/**

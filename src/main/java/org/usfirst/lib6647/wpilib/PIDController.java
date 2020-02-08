@@ -120,8 +120,6 @@ public class PIDController implements Sendable, AutoCloseable {
 		this.period = period;
 
 		instances++;
-		SendableRegistry.addLW(this, "PIDController", instances);
-
 		HAL.report(tResourceType.kResourceType_PIDController2, instances);
 	}
 
@@ -414,7 +412,7 @@ public class PIDController implements Sendable, AutoCloseable {
 		builder.addDoubleProperty(subsystemName + "_" + name + "P", this::getP, this::setP);
 		builder.addDoubleProperty(subsystemName + "_" + name + "I", this::getI, this::setI);
 		builder.addDoubleProperty(subsystemName + "_" + name + "D", this::getD, this::setD);
-		
+
 		builder.addDoubleProperty(subsystemName + "_" + name + "Setpoint", this::getSetpoint, this::setSetpoint);
 	}
 }

@@ -62,7 +62,7 @@ public interface SuperPID {
 					controller.setTolerance(json.get("tolerance").asDouble());
 
 					if (!json.get("fixedValues").asBoolean(true))
-						Shuffleboard.getTab(subsystemName).add(pidName, controller);
+						Shuffleboard.getTab(subsystemName).add(pidName, controller).withSize(2, 2);
 					// ...
 
 					// Put object in HashMap with its declared name as key after initialization and
