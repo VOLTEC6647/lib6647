@@ -120,6 +120,8 @@ public class PIDController implements Sendable, AutoCloseable {
 		this.period = period;
 
 		instances++;
+		SendableRegistry.addLW(this, "PIDController", instances);
+
 		HAL.report(tResourceType.kResourceType_PIDController2, instances);
 	}
 
