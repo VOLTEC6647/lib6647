@@ -9,7 +9,7 @@ import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.wpilib.PIDController;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 /**
  * Interface to allow {@link PIDController} initialization via JSON.
@@ -62,7 +62,7 @@ public interface SuperPID {
 					controller.setTolerance(json.get("tolerance").asDouble());
 
 					if (!json.get("fixedValues").asBoolean(true))
-						SmartDashboard.putData(controller);
+						Shuffleboard.getTab(subsystemName).add(pidName, controller);
 					// ...
 
 					// Put object in HashMap with its declared name as key after initialization and

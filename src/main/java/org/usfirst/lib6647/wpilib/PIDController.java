@@ -409,10 +409,12 @@ public class PIDController implements Sendable, AutoCloseable {
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
-		builder.setSmartDashboardType("PIDController");
+		builder.setSmartDashboardType("RobotPreferences");
+
 		builder.addDoubleProperty(subsystemName + "_" + name + "P", this::getP, this::setP);
 		builder.addDoubleProperty(subsystemName + "_" + name + "I", this::getI, this::setI);
 		builder.addDoubleProperty(subsystemName + "_" + name + "D", this::getD, this::setD);
-		builder.addDoubleProperty(subsystemName + "_" + name + "setpoint", this::getSetpoint, this::setSetpoint);
+		
+		builder.addDoubleProperty(subsystemName + "_" + name + "Setpoint", this::getSetpoint, this::setSetpoint);
 	}
 }

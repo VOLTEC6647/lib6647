@@ -9,7 +9,7 @@ import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.wpilib.ProfiledPIDController;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 
 /**
@@ -71,7 +71,7 @@ public interface SuperProfiledPID {
 							json.get("velocityTolerance").asDouble(Double.POSITIVE_INFINITY));
 
 					if (!json.get("fixedValues").asBoolean(true))
-						SmartDashboard.putData(controller);
+						Shuffleboard.getTab(subsystemName).add(pidName, controller);
 					// ...
 
 					// Put object in HashMap with its declared name as key after initialization and

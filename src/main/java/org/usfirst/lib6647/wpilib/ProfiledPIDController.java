@@ -233,6 +233,34 @@ public class ProfiledPIDController implements Sendable {
 	}
 
 	/**
+	 * Set velocity {@link #constraints constraint} for {@link #goal}.
+	 *
+	 * @param maxVelocity This {@link ProfiledPIDController}'s max velocity
+	 */
+	public void setConstraintVelocity(double maxVelocity) {
+		setConstraints(new TrapezoidProfile.Constraints(maxVelocity, constraints.maxAcceleration));
+	}
+
+	/**
+	 * Set acceleration {@link #constraints constraint} for {@link #goal}.
+	 *
+	 * @param maxAcceleration This {@link ProfiledPIDController}'s max acceleration
+	 */
+	public void setConstraintAcceleration(double maxAcceleration) {
+		setConstraints(new TrapezoidProfile.Constraints(constraints.maxVelocity, maxAcceleration));
+	}
+
+	/**
+	 * Set velocity and acceleration {@link #constraints} for {@link #goal}.
+	 *
+	 * @param maxVelocity     This {@link ProfiledPIDController}'s max velocity
+	 * @param maxAcceleration This {@link ProfiledPIDController}'s max acceleration
+	 */
+	public void setConstraints(double maxVelocity, double maxAcceleration) {
+		setConstraints(new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
+	}
+
+	/**
 	 * Set velocity and acceleration {@link #constraints} for {@link #goal}.
 	 *
 	 * @param constraints Velocity and acceleration {@link #constraints} for
@@ -364,16 +392,20 @@ public class ProfiledPIDController implements Sendable {
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
-		builder.setSmartDashboardType("PIDController");
+		builder.setSmartDashboardType("RobotPreferences");
+
 		builder.addDoubleProperty(subsystemName + "_" + name + "P", this::getP, this::setP);
 		builder.addDoubleProperty(subsystemName + "_" + name + "I", this::getI, this::setI);
 		builder.addDoubleProperty(subsystemName + "_" + name + "D", this::getD, this::setD);
-		builder.addDoubleArrayProperty(subsystemName + "_" + name + "constraints",
-				() -> new double[] { constraints.maxAcceleration, constraints.maxVelocity },
-				constraintsArray -> setConstraints(
-						new TrapezoidProfile.Constraints(constraintsArray[0], constraintsArray[1])));
-		builder.addDoubleArrayProperty(subsystemName + "_" + name + "goal",
-				() -> new double[] { getGoal().position, getGoal().velocity },
-				goalArray -> setGoal(new TrapezoidProfile.State(goalArray[0], goalArray[1])));
+
+		builder.addDoubleProperty(subsystemName + "_" + name + "MaxVelocity", () -> constraints.maxVelocity,
+				this::setConstraintVelocity);
+		builder.addDoubleProperty(subsystemName + "_" + name + "MaxAcceleration", () -> constraints.maxAcceleration,
+				this::setConstraintAcceleration);
+
+		builder.addDoubleProperty(subsystemName + "_" + name + "GoalPosition", () -> goal.position,
+				this::setGoalPosition);
+		builder.addDoubleProperty(subsystemName + "_" + name + "GoalVelocity", () -> goal.position,
+				this::setGoalVelocity);
 	}
 }
