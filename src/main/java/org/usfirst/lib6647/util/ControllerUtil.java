@@ -14,7 +14,7 @@ import org.usfirst.lib6647.wpilib.PIDController;
  * controllers}.
  * 
  * <p>
- * Copied over from:
+ * Originally copied over from:
  * https://github.com/wpilibsuite/allwpilib/blob/7b6838c80880d52e759d3017b0f1c16cffa3e2ce/wpilibj/src/main/java/edu/wpi/first/wpilibj/controller/ControllerUtil.java
  */
 public final class ControllerUtil {
@@ -22,16 +22,7 @@ public final class ControllerUtil {
 	 * Returns modulus of error where error is the difference between the reference
 	 * and a measurement.
 	 *
-	 * <p>
-	 * This implements modular subtraction defined as:
-	 *
-	 * <p>
-	 * e = (r mod m - x mod m) mod m
-	 *
-	 * <p>
-	 * with an offset in the modulus range for minimum input.
-	 *
-	 * @param reference    Reference input of a controller
+	 * @param reference    Reference input of a controller (setpoint)
 	 * @param measurement  The current measurement
 	 * @param minimumInput The minimum value expected from the input
 	 * @param maximumInput The maximum value expected from the input
@@ -39,11 +30,10 @@ public final class ControllerUtil {
 	public static double getModulusError(double reference, double measurement, double minimumInput,
 			double maximumInput) {
 		var modulus = maximumInput - minimumInput;
-		var error = reference % modulus - measurement % modulus;
+		var error = reference - measurement;
 
-		// Moduli on the difference arguments establish a precondition for the
-		// following modulus.
-		return (error - minimumInput) % modulus + minimumInput;
+		return (modulus > 0) ? ((Math.abs(error) > modulus / 2) ? ((error > 0) ? error - modulus : error + modulus)
+				: error % modulus) : error;
 	}
 
 	private ControllerUtil() {
