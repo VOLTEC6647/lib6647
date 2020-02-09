@@ -18,9 +18,10 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 
 /**
  * Implements a {@link PIDController PID control loop} whose
- * {@link PIDController#getSetpoint() setpoint} is constrained by a trapezoid
- * profile. Users should call {@link #reset(double)} when they first start
- * running the {@link PIDController} to avoid unwanted behavior.
+ * {@link PIDController#getSetpoint() setpoint} is constrained by a
+ * {@link TrapezoidProfile trapezoid profile}. Users should call
+ * {@link #reset(double)} when they first start running the {@link #controller
+ * PID controller} to avoid unwanted behavior.
  */
 public class ProfiledPIDController implements Sendable {
 	private static int instances;
@@ -45,15 +46,19 @@ public class ProfiledPIDController implements Sendable {
 
 	/**
 	 * Allocates a {@link ProfiledPIDController} with the given constants for
-	 * Proportional, Integral, and Derivative gains.
+	 * {@link PIDController#getP() Proportional}, {@link PIDController#getI()
+	 * Integral}, and {@link PIDController#getD() Derivative} gains.
 	 *
 	 * @param name          The name of this {@link ProfiledPIDController}
 	 * @param subsystemName The name of the Subsystem this
 	 *                      {@link ProfiledPIDController} belongs to
-	 * @param p             The Proportional coefficient
-	 * @param i             The Integral coefficient
-	 * @param d             The Derivative coefficient
-	 * @param constraints   Velocity and acceleration constraints for goal
+	 * @param p             The {@link ProfiledPIDController}'s
+	 *                      {@link PIDController#getP() Proportional} coefficient
+	 * @param i             The {@link ProfiledPIDController}'s
+	 *                      {@link PIDController#getI() Integral} coefficient
+	 * @param d             The {@link ProfiledPIDController}'s
+	 *                      {@link PIDController#getD() Derivative} coefficient
+	 * @param constraints   Velocity and acceleration constraints for {@link #goal}
 	 */
 	public ProfiledPIDController(String name, String subsystemName, double p, double i, double d,
 			TrapezoidProfile.Constraints constraints) {
@@ -74,7 +79,7 @@ public class ProfiledPIDController implements Sendable {
 	 *                      {@link PIDController#getI() Integral} coefficient
 	 * @param d             The {@link ProfiledPIDController}'s
 	 *                      {@link PIDController#getD() Derivative} coefficient
-	 * @param constraints   Velocity and acceleration constraints for goal
+	 * @param constraints   Velocity and acceleration constraints for {@link #goal}
 	 * @param period        The period between controller updates in seconds
 	 */
 	public ProfiledPIDController(String name, String subsystemName, double p, double i, double d,
@@ -267,7 +272,7 @@ public class ProfiledPIDController implements Sendable {
 	 * Set velocity and acceleration {@link #constraints} for {@link #goal}.
 	 *
 	 * @param constraints Velocity and acceleration {@link #constraints} for
-	 *                    {@link #goal}.
+	 *                    {@link #goal}
 	 */
 	public void setConstraints(TrapezoidProfile.Constraints constraints) {
 		this.constraints = constraints;
@@ -276,19 +281,102 @@ public class ProfiledPIDController implements Sendable {
 	/**
 	 * Returns the current {@link #setpoint} of the {@link ProfiledPIDController}.
 	 *
-	 * @return The current {@link #setpoint}.
+	 * @return The current {@link #setpoint}
 	 */
 	public TrapezoidProfile.State getSetpoint() {
 		return setpoint;
 	}
 
 	/**
-	 * Returns this {@link ProfiledPIDController}'s {@link PIDController}.
-	 * 
-	 * @return This {@link ProfiledPIDController}'s {@link PIDController}
+	 * Enables continuous input.
+	 *
+	 * <p>
+	 * Rather then using the max and min input range as constraints, it considers
+	 * them to be the same point and automatically calculates the shortest route to
+	 * the setpoint.
+	 *
+	 * @param minimumInput The minimum value expected from the input
+	 * @param maximumInput The maximum value expected from the input
 	 */
-	public PIDController getPIDController() {
-		return controller;
+	public void enableContinuousInput(double minimumInput, double maximumInput) {
+		this.minimumInput = minimumInput;
+		this.maximumInput = maximumInput;
+
+		controller.enableContinuousInput(minimumInput, maximumInput);
+	}
+
+	/**
+	 * Disables continuous input.
+	 */
+	public void disableContinuousInput() {
+		this.minimumInput = Double.NEGATIVE_INFINITY;
+		this.maximumInput = Double.POSITIVE_INFINITY;
+
+		controller.disableContinuousInput();
+	}
+
+	/**
+	 * Sets the minimum and maximum values for the integrator.
+	 *
+	 * <p>
+	 * When the cap is reached, the integrator value is added to the controller
+	 * output rather than the integrator value times the integral gain.
+	 *
+	 * @param minimumIntegral The minimum value of the integrator
+	 * @param maximumIntegral The maximum value of the integrator
+	 */
+	public void setIntegratorRange(double minimumIntegral, double maximumIntegral) {
+		controller.setIntegratorRange(minimumIntegral, maximumIntegral);
+	}
+
+	/**
+	 * Sets the {@link #controller PID controller}'s minimum and maximum output
+	 * values.
+	 * 
+	 * @param minimumOutput The {@link PIDController}'s {@link #minimumOutput
+	 *                      minimum}
+	 * @param maximumOutput The {@link PIDController}'s {@link #maximumOutput
+	 *                      maximum}
+	 */
+	public void setOutputRange(double minimumOutput, double maximumOutput) {
+		controller.setOutputRange(minimumOutput, maximumOutput);
+	}
+
+	/**
+	 * Sets the error which is considered tolerable for use with atSetpoint().
+	 *
+	 * @param positionTolerance Position error which is tolerable
+	 */
+	public void setTolerance(double positionTolerance) {
+		setTolerance(positionTolerance, Double.POSITIVE_INFINITY);
+	}
+
+	/**
+	 * Sets the error which is considered tolerable for use with atSetpoint().
+	 *
+	 * @param positionTolerance Position error which is tolerable
+	 * @param velocityTolerance Velocity error which is tolerable
+	 */
+	public void setTolerance(double positionTolerance, double velocityTolerance) {
+		controller.setTolerance(positionTolerance, velocityTolerance);
+	}
+
+	/**
+	 * Returns the difference between the {@link #setpoint} and the measurement.
+	 *
+	 * @return The position error
+	 */
+	public double getPositionError() {
+		return controller.getPositionError();
+	}
+
+	/**
+	 * Returns the change in error per second.
+	 * 
+	 * @return The velocity error
+	 */
+	public double getVelocityError() {
+		return controller.getVelocityError();
 	}
 
 	/**
@@ -299,15 +387,15 @@ public class ProfiledPIDController implements Sendable {
 	public double calculate(double measurement) {
 		if (controller.isContinuous()) {
 			// Get error which is smallest distance between goal and measurement
-			double error = ControllerUtil.getModulusError(goal.position, measurement, minimumInput, maximumInput);
+			var error = ControllerUtil.getModulusError(goal.position, measurement, minimumInput, maximumInput);
 
 			// Recompute the profile goal with the smallest error, thus giving the shortest
-			// path. The goal
-			// may be outside the input range after this operation, but that's OK because
-			// the controller
-			// will still go there and report an error of zero. In other words, the setpoint
-			// only needs to
-			// be offset from the measurement by the input range modulus; they don't need to
+			// path. The goal may be outside the input range after this operation, but
+			// that's OK because
+			// the controller will still go there and report an error of zero. In other
+			// words, the setpoint
+			// only needs to be offset from the measurement by the input range modulus; they
+			// don't need to
 			// be equal.
 			goal.position = error + measurement;
 		}

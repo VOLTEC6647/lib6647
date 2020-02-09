@@ -31,10 +31,10 @@ public final class ControllerUtil {
 	 * <p>
 	 * with an offset in the modulus range for minimum input.
 	 *
-	 * @param reference    Reference input of a controller.
-	 * @param measurement  The current measurement.
-	 * @param minimumInput The minimum value expected from the input.
-	 * @param maximumInput The maximum value expected from the input.
+	 * @param reference    Reference input of a controller
+	 * @param measurement  The current measurement
+	 * @param minimumInput The minimum value expected from the input
+	 * @param maximumInput The maximum value expected from the input
 	 */
 	public static double getModulusError(double reference, double measurement, double minimumInput,
 			double maximumInput) {

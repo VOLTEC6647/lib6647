@@ -55,25 +55,23 @@ public interface SuperProfiledPID {
 
 					// Read and apply PIDSuperSubsystem configuration from JSON file.
 					if (json.hasNonNull("continuous") && json.get("continuous").asBoolean(false))
-						controller.getPIDController().enableContinuousInput(json.get("inputMin").asDouble(),
+						controller.enableContinuousInput(json.get("inputMin").asDouble(),
 								json.get("inputMax").asDouble());
 					else
-						controller.getPIDController().disableContinuousInput();
+						controller.disableContinuousInput();
 
 					if (json.hasNonNull("outputMin") && json.hasNonNull("outputMax"))
-						controller.getPIDController().setOutputRange(json.get("outputMin").asDouble(),
-								json.get("outputMax").asDouble());
+						controller.setOutputRange(json.get("outputMin").asDouble(), json.get("outputMax").asDouble());
 
 					if (json.hasNonNull("minI") && json.hasNonNull("maxI"))
-						controller.getPIDController().setIntegratorRange(json.get("minI").asDouble(),
-								json.get("maxI").asDouble());
+						controller.setIntegratorRange(json.get("minI").asDouble(), json.get("maxI").asDouble());
 
 					if (json.hasNonNull("positionTolerance"))
 						if (json.hasNonNull("velocityTolerance"))
-							controller.getPIDController().setTolerance(json.get("positionTolerance").asDouble(),
+							controller.setTolerance(json.get("positionTolerance").asDouble(),
 									json.get("velocityTolerance").asDouble(Double.POSITIVE_INFINITY));
 						else
-							controller.getPIDController().setTolerance(json.get("positionTolerance").asDouble());
+							controller.setTolerance(json.get("positionTolerance").asDouble());
 
 					if (json.hasNonNull("fixedValues") && !json.get("fixedValues").asBoolean(true))
 						Shuffleboard.getTab(subsystemName).add(subsystemName + "_" + pidName, controller).withSize(3,
