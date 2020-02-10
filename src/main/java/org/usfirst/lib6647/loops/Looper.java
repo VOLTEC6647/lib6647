@@ -21,7 +21,6 @@ public class Looper implements ILooper {
 	private final double period;
 	/** Name of {@link Notifier}/{@link Looper} instance. */
 	private final String name;
-
 	/** Check to see if the {@link Looper} is currently running. */
 	private boolean running;
 

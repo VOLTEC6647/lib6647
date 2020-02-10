@@ -2,11 +2,11 @@ package org.usfirst.lib6647.subsystem;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import org.usfirst.lib6647.json.JSONInitException;
+import org.usfirst.lib6647.json.JSONReader;
 import org.usfirst.lib6647.loops.ILooper;
 import org.usfirst.lib6647.loops.Loop;
 import org.usfirst.lib6647.loops.Looper;
-import org.usfirst.lib6647.util.JSONInitException;
-import org.usfirst.lib6647.util.JSONReader;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;

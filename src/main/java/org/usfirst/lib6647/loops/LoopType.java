@@ -1,7 +1,5 @@
 package org.usfirst.lib6647.loops;
 
-import org.usfirst.lib6647.wpilib.LooperRobot;
-
 /**
  * Enum holding possible {@link Loop} types.
  * 

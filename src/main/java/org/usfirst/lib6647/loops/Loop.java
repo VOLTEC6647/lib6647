@@ -1,7 +1,5 @@
 package org.usfirst.lib6647.loops;
 
-import org.usfirst.lib6647.wpilib.LooperRobot;
-
 /**
  * Interface for {@link Loop Loops}, which are routine that run periodically in
  * the robot code (such as periodic gyroscope calibration, etc.).

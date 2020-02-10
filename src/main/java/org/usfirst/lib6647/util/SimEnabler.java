@@ -1,4 +1,4 @@
-package org.usfirst.lib6647.wpilib;
+package org.usfirst.lib6647.util;
 
 import edu.wpi.first.hal.sim.DriverStationSim;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 public class SimEnabler implements Sendable {
 	DriverStationSim sim = new DriverStationSim();
 
-	protected SimEnabler() {
+	public SimEnabler() {
 		sim.setAutonomous(true);
 	}
 

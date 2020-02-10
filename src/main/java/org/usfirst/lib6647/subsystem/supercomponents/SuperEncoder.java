@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import org.usfirst.lib6647.subsystem.ComponentInitException;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
-import org.usfirst.lib6647.util.MotorUtils;
+import org.usfirst.lib6647.util.MotorUtil;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.Encoder;
  * interface in order to initialize {@link Encoder Encoder objects} declared in
  * {@link SuperSubsystem#robotMap}.
  */
-public interface SuperEncoder extends MotorUtils {
+public interface SuperEncoder {
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s {@link Encoder} instances.
 	 */
@@ -53,7 +53,8 @@ public interface SuperEncoder extends MotorUtils {
 
 					// Create Encoder object.
 					Encoder encoder = new Encoder(json.get("channelA").asInt(), json.get("channelB").asInt(),
-							json.get("reverse").asBoolean(), getEncodingType(json.get("encodingType").asText()));
+							json.get("reverse").asBoolean(),
+							MotorUtil.getEncodingType(json.get("encodingType").asText()));
 
 					// Additional initialization configuration.
 					if (json.get("resetOnStart").asBoolean(false))

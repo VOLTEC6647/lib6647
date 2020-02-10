@@ -5,16 +5,18 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package org.usfirst.lib6647.wpilib;
+package org.usfirst.lib6647.wpilib.controller;
 
 import org.usfirst.lib6647.util.ControllerUtil;
+import org.usfirst.lib6647.wpilib.trajectory.TrapezoidProfile;
+import org.usfirst.lib6647.wpilib.trajectory.TrapezoidProfile.Constraints;
+import org.usfirst.lib6647.wpilib.trajectory.TrapezoidProfile.State;
 
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 
 /**
  * Implements a {@link PIDController PID control loop} whose
@@ -41,8 +43,8 @@ public class ProfiledPIDController implements Sendable {
 	 */
 	private double minimumInput, maximumInput;
 
-	private TrapezoidProfile.State goal = new TrapezoidProfile.State(), setpoint = new TrapezoidProfile.State();
-	private TrapezoidProfile.Constraints constraints;
+	private State goal = new State(), setpoint = new State();
+	private Constraints constraints;
 
 	/**
 	 * Allocates a {@link ProfiledPIDController} with the given constants for
@@ -61,7 +63,7 @@ public class ProfiledPIDController implements Sendable {
 	 * @param constraints   Velocity and acceleration constraints for {@link #goal}
 	 */
 	public ProfiledPIDController(String name, String subsystemName, double p, double i, double d,
-			TrapezoidProfile.Constraints constraints) {
+			Constraints constraints) {
 		this(name, subsystemName, p, i, d, constraints, 0.02);
 	}
 
@@ -83,7 +85,7 @@ public class ProfiledPIDController implements Sendable {
 	 * @param period        The period between controller updates in seconds
 	 */
 	public ProfiledPIDController(String name, String subsystemName, double p, double i, double d,
-			TrapezoidProfile.Constraints constraints, double period) {
+			Constraints constraints, double period) {
 		this.name = name;
 		this.subsystemName = subsystemName;
 
@@ -191,7 +193,7 @@ public class ProfiledPIDController implements Sendable {
 	 *
 	 * @param goal The desired {@link #goal} state
 	 */
-	public void setGoal(TrapezoidProfile.State goal) {
+	public void setGoal(State goal) {
 		this.goal = goal;
 	}
 
@@ -201,7 +203,7 @@ public class ProfiledPIDController implements Sendable {
 	 * @param goal The desired {@link #goal} position
 	 */
 	public void setGoalPosition(double goal) {
-		setGoal(goal, 0);
+		setGoal(goal, this.goal.velocity);
 	}
 
 	/**
@@ -210,7 +212,7 @@ public class ProfiledPIDController implements Sendable {
 	 * @param goal The desired {@link #goal} velocity
 	 */
 	public void setGoalVelocity(double goal) {
-		setGoal(0, goal);
+		setGoal(this.goal.position, goal);
 	}
 
 	/**
@@ -220,13 +222,13 @@ public class ProfiledPIDController implements Sendable {
 	 * @param goal The desired {@link #goal} velocity
 	 */
 	public void setGoal(double positionGoal, double velocityGoal) {
-		goal = new TrapezoidProfile.State(positionGoal, velocityGoal);
+		goal = new State(positionGoal, velocityGoal);
 	}
 
 	/**
 	 * Gets the {@link #goal} for the {@link ProfiledPIDController}.
 	 */
-	public TrapezoidProfile.State getGoal() {
+	public State getGoal() {
 		return goal;
 	}
 
@@ -246,7 +248,7 @@ public class ProfiledPIDController implements Sendable {
 	 * @param maxVelocity This {@link ProfiledPIDController}'s max velocity
 	 */
 	public void setConstraintVelocity(double maxVelocity) {
-		setConstraints(new TrapezoidProfile.Constraints(maxVelocity, constraints.maxAcceleration));
+		setConstraints(new Constraints(maxVelocity, constraints.maxAcceleration));
 	}
 
 	/**
@@ -255,7 +257,7 @@ public class ProfiledPIDController implements Sendable {
 	 * @param maxAcceleration This {@link ProfiledPIDController}'s max acceleration
 	 */
 	public void setConstraintAcceleration(double maxAcceleration) {
-		setConstraints(new TrapezoidProfile.Constraints(constraints.maxVelocity, maxAcceleration));
+		setConstraints(new Constraints(constraints.maxVelocity, maxAcceleration));
 	}
 
 	/**
@@ -265,7 +267,7 @@ public class ProfiledPIDController implements Sendable {
 	 * @param maxAcceleration This {@link ProfiledPIDController}'s max acceleration
 	 */
 	public void setConstraints(double maxVelocity, double maxAcceleration) {
-		setConstraints(new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
+		setConstraints(new Constraints(maxVelocity, maxAcceleration));
 	}
 
 	/**
@@ -274,7 +276,7 @@ public class ProfiledPIDController implements Sendable {
 	 * @param constraints Velocity and acceleration {@link #constraints} for
 	 *                    {@link #goal}
 	 */
-	public void setConstraints(TrapezoidProfile.Constraints constraints) {
+	public void setConstraints(Constraints constraints) {
 		this.constraints = constraints;
 	}
 
@@ -283,7 +285,7 @@ public class ProfiledPIDController implements Sendable {
 	 *
 	 * @return The current {@link #setpoint}
 	 */
-	public TrapezoidProfile.State getSetpoint() {
+	public State getSetpoint() {
 		return setpoint;
 	}
 
@@ -385,22 +387,17 @@ public class ProfiledPIDController implements Sendable {
 	 * @param measurement The current measurement of the process variable
 	 */
 	public double calculate(double measurement) {
+		TrapezoidProfile profile;
+
 		if (controller.isContinuous()) {
 			// Get error which is smallest distance between goal and measurement
 			var error = ControllerUtil.getModulusError(goal.position, measurement, minimumInput, maximumInput);
-
-			// Recompute the profile goal with the smallest error, thus giving the shortest
-			// path. The goal may be outside the input range after this operation, but
-			// that's OK because
-			// the controller will still go there and report an error of zero. In other
-			// words, the setpoint
-			// only needs to be offset from the measurement by the input range modulus; they
-			// don't need to
-			// be equal.
 			goal.position = error + measurement;
-		}
 
-		var profile = new TrapezoidProfile(constraints, goal, setpoint);
+			profile = new TrapezoidProfile(constraints, goal, setpoint, true, error);
+		} else
+			profile = new TrapezoidProfile(constraints, goal, setpoint);
+
 		setpoint = profile.calculate(getPeriod());
 		return controller.calculate(measurement, setpoint.position);
 	}
@@ -411,7 +408,7 @@ public class ProfiledPIDController implements Sendable {
 	 * @param measurement The current measurement of the process variable
 	 * @param goal        The new {@link #goal} position of the {@link #controller}
 	 */
-	public double calculate(double measurement, TrapezoidProfile.State goal) {
+	public double calculate(double measurement, State goal) {
 		setGoal(goal);
 		return calculate(measurement);
 	}

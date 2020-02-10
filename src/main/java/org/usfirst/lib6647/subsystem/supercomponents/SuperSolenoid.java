@@ -41,7 +41,7 @@ public interface SuperSolenoid {
 				if (json.hasNonNull("name") && !solenoids.containsKey(json.get("name").asText())
 						&& json.hasNonNull("channel")) {
 					// Read values from JsonNode.
-					int channel = json.get("channel").asInt(-1);
+					var channel = json.get("channel").asInt(-1);
 
 					// Check if the required JsonNode values to initialize the object are present.
 					if (channel < 0)
@@ -50,7 +50,7 @@ public interface SuperSolenoid {
 								json.get("name").asText(), subsystemName));
 
 					// Create HyperSolenoid object.
-					HyperSolenoid solenoid = new HyperSolenoid(json.get("channel").asInt());
+					var solenoid = new HyperSolenoid(json.get("channel").asInt());
 
 					// Additional initialization configuration.
 					if (json.hasNonNull("initialValue"))

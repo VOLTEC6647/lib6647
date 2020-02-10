@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package org.usfirst.lib6647.wpilib;
+package org.usfirst.lib6647.wpilib.controller;
 
 import org.usfirst.lib6647.util.ControllerUtil;
 

@@ -41,7 +41,7 @@ public interface SuperCompressor {
 				if (json.hasNonNull("name") && !compressors.containsKey(json.get("name").asText())
 						&& json.hasNonNull("module")) {
 					// Read values from JsonNode.
-					int module = json.get("module").asInt(-1);
+					var module = json.get("module").asInt(-1);
 
 					// Check if the required JsonNode values to initialize the object are present.
 					if (module < 0)
@@ -50,7 +50,7 @@ public interface SuperCompressor {
 										json.get("name").asText(), subsystemName));
 
 					// Create Compressor object.
-					Compressor compressor = new Compressor(json.get("module").asInt());
+					var compressor = new Compressor(json.get("module").asInt());
 
 					// Additional initialization configuration.
 					// (None required at the moment).

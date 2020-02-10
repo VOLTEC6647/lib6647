@@ -67,6 +67,7 @@ Currently written documentation can be found at https://lib6647.readthedocs.io/,
 ## Authors
 
 * **Francisco Rubio** - [pacoito123](https://github.com/pacoito123)
+* **Ian De La Garza** - [ianyan11](https://github.com/ianyan11)
 
 ## License
 

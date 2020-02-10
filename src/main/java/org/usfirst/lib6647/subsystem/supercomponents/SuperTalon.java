@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.usfirst.lib6647.subsystem.ComponentInitException;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.subsystem.hypercomponents.HyperTalon;
-import org.usfirst.lib6647.util.MotorUtils;
+import org.usfirst.lib6647.util.MotorUtil;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  * interface in order to initialize {@link HyperTalon HyperTalon objects}
  * declared in {@link SuperSubsystem#robotMap}.
  */
-public interface SuperTalon extends MotorUtils {
+public interface SuperTalon {
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperTalon} instances.
 	 */
@@ -43,7 +43,7 @@ public interface SuperTalon extends MotorUtils {
 				if (json.hasNonNull("name") && !talons.containsKey(json.get("name").asText())
 						&& json.hasNonNull("port")) {
 					// Read values from JsonNode.
-					int port = json.get("port").asInt(-1);
+					var port = json.get("port").asInt(-1);
 
 					// Check if the required JsonNode values to initialize the object are present.
 					if (port < 0)
@@ -52,7 +52,7 @@ public interface SuperTalon extends MotorUtils {
 										json.get("name").asText(), subsystemName));
 
 					// Create HyperTalon object.
-					HyperTalon talon = new HyperTalon(json.get("port").asInt());
+					var talon = new HyperTalon(json.get("port").asInt());
 
 					// Additional initialization configuration.
 					talon.setName(json.get("name").asText());
@@ -103,7 +103,7 @@ public interface SuperTalon extends MotorUtils {
 	 * @param talon The {@link HyperTalon} to configure
 	 */
 	private void setLimiter(JsonNode json, HyperTalon talon) {
-		double limiter = json.get("limiter").asDouble();
+		var limiter = json.get("limiter").asDouble();
 		talon.setLimiter(limiter < 0.0 ? 0.0 : limiter > 1.0 ? 1.0 : limiter);
 	}
 
@@ -128,12 +128,12 @@ public interface SuperTalon extends MotorUtils {
 	 *                                empty or invalid
 	 */
 	private void setNeutralMode(JsonNode json, HyperTalon talon) throws ComponentInitException {
-		if (getNeutralMode(json.get("neutralMode").asText()) == null)
+		if (MotorUtil.getNeutralMode(json.get("neutralMode").asText()) == null)
 			throw new ComponentInitException(
 					String.format("[!] INVALID OR EMPTY NEUTRAL MODE CONFIGURATION FOR TALON '%s'.",
 							json.get("name").asText().toUpperCase()));
 
-		talon.setNeutralMode(getNeutralMode(json.get("neutralMode").asText()));
+		talon.setNeutralMode(MotorUtil.getNeutralMode(json.get("neutralMode").asText()));
 	}
 
 	/**
@@ -153,7 +153,7 @@ public interface SuperTalon extends MotorUtils {
 	 * @param talon The {@link HyperTalon} to configure
 	 */
 	private void setClosedloopRamp(JsonNode json, HyperTalon talon) {
-		JsonNode closed = json.get("loopRamp").get("closed");
+		var closed = json.get("loopRamp").get("closed");
 
 		if (closed.hasNonNull("timeoutMs"))
 			talon.configClosedloopRamp(closed.get("secondsFromNeutralToFull").asDouble(),
@@ -169,7 +169,7 @@ public interface SuperTalon extends MotorUtils {
 	 * @param talon The {@link HyperTalon} to configure
 	 */
 	private void setOpenloopRamp(JsonNode json, HyperTalon talon) {
-		JsonNode open = json.get("loopRamp").get("open");
+		var open = json.get("loopRamp").get("open");
 
 		if (open.hasNonNull("timeoutMs"))
 			talon.configOpenloopRamp(open.get("secondsFromNeutralToFull").asDouble(), open.get("timeoutMs").asInt());
@@ -185,10 +185,10 @@ public interface SuperTalon extends MotorUtils {
 	 * @param talon The {@link HyperTalon} to configure
 	 */
 	private void setSensors(JsonNode json, HyperTalon talon) {
-		JsonNode sensor = json.get("sensor");
-		JsonNode feedback = sensor.get("feedback");
+		var sensor = json.get("sensor");
+		var feedback = sensor.get("feedback");
 
-		talon.configSelectedFeedbackSensor(getFeedbackDevice(feedback.get("feedbackDevice").asText()),
+		talon.configSelectedFeedbackSensor(MotorUtil.getFeedbackDevice(feedback.get("feedbackDevice").asText()),
 				feedback.get("pidIdx").asInt(), feedback.get("timeoutMs").asInt());
 
 		talon.setSensorPhase(sensor.get("phase").asBoolean());
@@ -204,8 +204,8 @@ public interface SuperTalon extends MotorUtils {
 	 * @param talon The {@link HyperTalon} to configure
 	 */
 	private void setPIDValues(JsonNode json, HyperTalon talon) {
-		JsonNode pid = json.get("pid");
-		int slotIdx = pid.get("slotIdx").asInt();
+		var pid = json.get("pid");
+		var slotIdx = pid.get("slotIdx").asInt();
 
 		talon.config_kP(slotIdx, pid.get("p").asDouble());
 		talon.config_kI(slotIdx, pid.get("i").asDouble());

@@ -42,7 +42,7 @@ public interface SuperPDP {
 				if (json.hasNonNull("name") && !PDPs.containsKey(json.get("name").asText())
 						&& json.hasNonNull("module")) {
 					// Read values from JsonNode.
-					int module = json.get("module").asInt(-1);
+					var module = json.get("module").asInt(-1);
 
 					// Check if the required JsonNode values to initialize the object are present.
 					if (module < 0)
@@ -51,7 +51,7 @@ public interface SuperPDP {
 										json.get("name").asText(), subsystemName));
 
 					// Create Ultrasonic object.
-					PowerDistributionPanel pdp = new PowerDistributionPanel(module);
+					var pdp = new PowerDistributionPanel(module);
 
 					// Additional initialization configuration.
 					// ...

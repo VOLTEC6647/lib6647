@@ -51,7 +51,7 @@ public interface SuperUltrasonic {
 										json.get("name").asText(), subsystemName));
 
 					// Create Ultrasonic object.
-					Ultrasonic ultrasonic = new Ultrasonic(pingChannel, echoChannel);
+					var ultrasonic = new Ultrasonic(pingChannel, echoChannel);
 
 					// Additional initialization configuration.
 					// ...

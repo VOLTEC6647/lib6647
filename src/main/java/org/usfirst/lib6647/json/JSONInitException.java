@@ -1,4 +1,4 @@
-package org.usfirst.lib6647.util;
+package org.usfirst.lib6647.json;
 
 /**
  * {@link Exception} for errors thrown while initializing JSON files.

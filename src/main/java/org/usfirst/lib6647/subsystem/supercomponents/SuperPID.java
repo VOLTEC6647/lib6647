@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import org.usfirst.lib6647.subsystem.ComponentInitException;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
-import org.usfirst.lib6647.wpilib.PIDController;
+import org.usfirst.lib6647.wpilib.controller.PIDController;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -40,12 +40,12 @@ public interface SuperPID {
 		robotMap.get("pid").spliterator().forEachRemaining(json -> {
 			try {
 				if (json.hasNonNull("name") && !pidControllers.containsKey(json.get("name").asText())) {
-					String pidName = json.get("name").asText();
+					var pidName = json.get("name").asText();
 					double p = json.get("p").asDouble(), i = json.get("i").asDouble(), d = json.get("d").asDouble(),
 							period = json.get("period").asDouble(0.02);
 
 					// Build PIDController object.
-					PIDController controller = new PIDController(pidName, subsystemName, p, i, d, period);
+					var controller = new PIDController(pidName, subsystemName, p, i, d, period);
 
 					// Read and apply PIDSuperSubsystem configuration from JSON file.
 					if (json.hasNonNull("continuous") && json.get("continuous").asBoolean(false))
@@ -64,7 +64,8 @@ public interface SuperPID {
 						controller.setTolerance(json.get("tolerance").asDouble());
 
 					if (json.hasNonNull("fixedValues") && !json.get("fixedValues").asBoolean(true))
-						Shuffleboard.getTab(subsystemName).add(pidName, controller).withSize(2, 2);
+						Shuffleboard.getTab(subsystemName).add(subsystemName + "_" + pidName, controller).withSize(2,
+								2);
 					// ...
 
 					// Put object in HashMap with its declared name as key after initialization and

@@ -6,11 +6,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import org.usfirst.lib6647.subsystem.ComponentInitException;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
-import org.usfirst.lib6647.wpilib.ProfiledPIDController;
+import org.usfirst.lib6647.wpilib.controller.ProfiledPIDController;
+import org.usfirst.lib6647.wpilib.trajectory.TrapezoidProfile.Constraints;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 
 /**
  * Interface to allow {@link ProfiledPIDController} initialization via JSON.
@@ -43,15 +43,15 @@ public interface SuperProfiledPID {
 		robotMap.get("pidProfiled").spliterator().forEachRemaining(json -> {
 			try {
 				if (json.hasNonNull("name") && !profiledPIDControllers.containsKey(json.get("name").asText())) {
-					String pidName = json.get("name").asText();
+					var pidName = json.get("name").asText();
 					double p = json.get("p").asDouble(), i = json.get("i").asDouble(), d = json.get("d").asDouble(),
 							period = json.get("period").asDouble(0.02),
 							maxVelocity = json.get("maxVelocity").asDouble(),
 							maxAcceleration = json.get("maxAcceleration").asDouble();
 
 					// Build ProfiledPIDController object.
-					ProfiledPIDController controller = new ProfiledPIDController(pidName, subsystemName, p, i, d,
-							new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration), period);
+					var controller = new ProfiledPIDController(pidName, subsystemName, p, i, d,
+							new Constraints(maxVelocity, maxAcceleration), period);
 
 					// Read and apply PIDSuperSubsystem configuration from JSON file.
 					if (json.hasNonNull("continuous") && json.get("continuous").asBoolean(false))

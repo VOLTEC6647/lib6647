@@ -1,4 +1,4 @@
-package org.usfirst.lib6647.util;
+package org.usfirst.lib6647.json;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;

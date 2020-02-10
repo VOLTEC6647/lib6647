@@ -43,7 +43,7 @@ public interface SuperAHRS {
 				if (json.hasNonNull("name") && !ahrsDevices.containsKey(json.get("name").asText())
 						&& json.hasNonNull("port")) {
 					// Read values from JsonNode.
-					SerialPort.Port port = getPort(json.get("port").asText());
+					var port = getPort(json.get("port").asText());
 
 					// Check if the required JsonNode values to initialize the object are present.
 					if (port == null)
@@ -52,7 +52,7 @@ public interface SuperAHRS {
 										json.get("name").asText(), subsystemName));
 
 					// Create HyperAHRS object.
-					HyperAHRS ahrs = new HyperAHRS(port, json.get("inverted").asBoolean());
+					var ahrs = new HyperAHRS(port, json.get("inverted").asBoolean());
 
 					// Additional initialization configuration.
 					if (json.hasNonNull("resetOnStart") && json.get("resetOnStart").asBoolean())

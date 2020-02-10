@@ -9,7 +9,7 @@ import org.usfirst.lib6647.subsystem.ComponentInitException;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.subsystem.hypercomponents.HyperTalon;
 import org.usfirst.lib6647.subsystem.hypercomponents.HyperVictor;
-import org.usfirst.lib6647.util.MotorUtils;
+import org.usfirst.lib6647.util.MotorUtil;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  * interface in order to initialize {@link HyperTalon HyperVictor objects}
  * declared in {@link SuperSubsystem#robotMap}.
  */
-public interface SuperVictor extends MotorUtils {
+public interface SuperVictor {
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperVictor} instances.
 	 */
@@ -44,7 +44,7 @@ public interface SuperVictor extends MotorUtils {
 				if (json.hasNonNull("name") && !victors.containsKey(json.get("name").asText())
 						&& json.hasNonNull("port")) {
 					// Read values from JsonNode.
-					int port = json.get("port").asInt(-1);
+					var port = json.get("port").asInt(-1);
 
 					// Check if the required JsonNode values to initialize the object are present.
 					if (port < 0)
@@ -53,7 +53,7 @@ public interface SuperVictor extends MotorUtils {
 										json.get("name").asText(), subsystemName));
 
 					// Create HyperVictor object.
-					HyperVictor victor = new HyperVictor(json.get("port").asInt());
+					var victor = new HyperVictor(json.get("port").asInt());
 
 					// Additional initialization configuration.
 					victor.setName(json.get("name").asText());
@@ -98,7 +98,7 @@ public interface SuperVictor extends MotorUtils {
 	 * @param victor The {@link HyperVictor} to configure
 	 */
 	private void setLimiter(JsonNode json, HyperVictor victor) {
-		double limiter = json.get("limiter").asDouble();
+		var limiter = json.get("limiter").asDouble();
 		victor.setLimiter(limiter < 0.0 ? 0.0 : limiter > 1.0 ? 1.0 : limiter);
 	}
 
@@ -123,12 +123,12 @@ public interface SuperVictor extends MotorUtils {
 	 *                                empty or invalid
 	 */
 	private void setNeutralMode(JsonNode json, HyperVictor victor) throws ComponentInitException {
-		if (getNeutralMode(json.get("neutralMode").asText()) == null)
+		if (MotorUtil.getNeutralMode(json.get("neutralMode").asText()) == null)
 			throw new ComponentInitException(
 					String.format("[!] INVALID OR EMPTY NEUTRAL MODE CONFIGURATION FOR VICTOR '%s'.",
 							json.get("name").asText().toUpperCase()));
 
-		victor.setNeutralMode(getNeutralMode(json.get("neutralMode").asText()));
+		victor.setNeutralMode(MotorUtil.getNeutralMode(json.get("neutralMode").asText()));
 	}
 
 	/**
@@ -148,7 +148,7 @@ public interface SuperVictor extends MotorUtils {
 	 * @param victor The {@link HyperVictor} to configure
 	 */
 	private void setClosedloopRamp(JsonNode json, HyperVictor victor) {
-		JsonNode closed = json.get("loopRamp").get("closed");
+		var closed = json.get("loopRamp").get("closed");
 
 		if (closed.hasNonNull("timeoutMs"))
 			victor.configClosedloopRamp(closed.get("secondsFromNeutralToFull").asDouble(),
@@ -164,7 +164,7 @@ public interface SuperVictor extends MotorUtils {
 	 * @param victor The {@link HyperVictor} to configure
 	 */
 	private void setOpenloopRamp(JsonNode json, HyperVictor victor) {
-		JsonNode open = json.get("loopRamp").get("open");
+		var open = json.get("loopRamp").get("open");
 
 		if (open.hasNonNull("timeoutMs"))
 			victor.configOpenloopRamp(open.get("secondsFromNeutralToFull").asDouble(), open.get("timeoutMs").asInt());

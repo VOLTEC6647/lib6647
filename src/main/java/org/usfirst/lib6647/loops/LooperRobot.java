@@ -1,14 +1,15 @@
-package org.usfirst.lib6647.wpilib;
+package org.usfirst.lib6647.loops;
 
 import java.util.HashMap;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import org.usfirst.lib6647.loops.Looper;
+import org.usfirst.lib6647.json.JSONReader;
 import org.usfirst.lib6647.oi.JController;
 import org.usfirst.lib6647.subsystem.RobotMap;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
-import org.usfirst.lib6647.util.JSONReader;
+import org.usfirst.lib6647.util.SimEnabler;
+import org.usfirst.lib6647.wpilib.TimedRobot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;

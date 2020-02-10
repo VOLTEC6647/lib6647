@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import org.usfirst.lib6647.util.JSONInitException;
-import org.usfirst.lib6647.util.JSONReader;
+import org.usfirst.lib6647.json.JSONInitException;
+import org.usfirst.lib6647.json.JSONReader;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;

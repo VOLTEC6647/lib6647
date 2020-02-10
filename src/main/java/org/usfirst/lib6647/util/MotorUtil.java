@@ -7,10 +7,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 
 /**
- * SuperInterface for converting String values from a {@link JSONObject} to enum
- * types.
+ * Utility class containing a couple useful methods for CTRE motor
+ * initialization.
  */
-public interface MotorUtils {
+public class MotorUtil {
 	/**
 	 * Get a {@link NeutralMode} value from a String.
 	 * 
@@ -28,7 +28,7 @@ public interface MotorUtils {
 	 * @param neutralMode The desired {@link NeutralMode}, as a String value
 	 * @return The {@link NeutralMode}, as a valid enum
 	 */
-	default NeutralMode getNeutralMode(String neutralMode) {
+	public static NeutralMode getNeutralMode(String neutralMode) {
 		switch (neutralMode) {
 		case "Coast":
 			return NeutralMode.Coast;
@@ -74,7 +74,7 @@ public interface MotorUtils {
 	 * @param feedbackDevice The desired {@link FeedbackDevice}, as a String value
 	 * @return The {@link FeedbackDevice}, as a valid enum
 	 */
-	default FeedbackDevice getFeedbackDevice(String feedbackDevice) {
+	public static FeedbackDevice getFeedbackDevice(String feedbackDevice) {
 		switch (feedbackDevice) {
 		case "QuadEncoder":
 			return FeedbackDevice.QuadEncoder;
@@ -109,7 +109,7 @@ public interface MotorUtils {
 	 * @param encodingType The desired {@link EncodingType}, as a String value
 	 * @return The {@link EncodingType}, as a valid enum
 	 */
-	default EncodingType getEncodingType(String encodingType) {
+	public static EncodingType getEncodingType(String encodingType) {
 		switch (encodingType) {
 		case "k1X":
 			return EncodingType.k1X;
@@ -122,4 +122,10 @@ public interface MotorUtils {
 		}
 	}
 
+	/**
+	 * This class must not be instantiated.
+	 */
+	private MotorUtil() {
+		throw new AssertionError("utility class");
+	}
 }

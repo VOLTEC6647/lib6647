@@ -52,7 +52,7 @@ public interface SuperDoubleSolenoid {
 								json.get("name").asText(), subsystemName));
 
 					// Create HyperDoubleSolenoid object.
-					HyperDoubleSolenoid doubleSolenoid = new HyperDoubleSolenoid(json.get("forwardChannel").asInt(),
+					var doubleSolenoid = new HyperDoubleSolenoid(json.get("forwardChannel").asInt(),
 							json.get("reverseChannel").asInt());
 
 					// Additional initialization configuration.

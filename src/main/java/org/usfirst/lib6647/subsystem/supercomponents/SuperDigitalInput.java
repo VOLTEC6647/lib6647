@@ -41,7 +41,7 @@ public interface SuperDigitalInput {
 				if (json.hasNonNull("name") && !digitalInputs.containsKey(json.get("name").asText())
 						&& json.hasNonNull("channel")) {
 					// Read values from JsonNode.
-					int channel = json.get("channel").asInt(-1);
+					var channel = json.get("channel").asInt(-1);
 
 					// Check if the required JsonNode values to initialize the object are present.
 					if (channel < 0)
@@ -50,7 +50,7 @@ public interface SuperDigitalInput {
 								json.get("name").asText(), subsystemName));
 
 					// Create DigitalInput object.
-					DigitalInput digitalInput = new DigitalInput(json.get("channel").asInt());
+					var digitalInput = new DigitalInput(json.get("channel").asInt());
 
 					// Additional initialization configuration.
 					// ...
