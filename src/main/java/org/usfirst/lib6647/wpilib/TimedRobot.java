@@ -98,6 +98,8 @@ public class TimedRobot extends IterativeRobotBase {
 
 	/**
 	 * Get time period between calls to Periodic() functions.
+	 * 
+	 * @return This {@link TimedRobot}'s period time, in seconds
 	 */
 	public double getPeriod() {
 		return m_period;

@@ -56,8 +56,14 @@ public class HyperAHRS extends AHRS {
 	}
 
 	/**
-	 * @NOTE Depending on the JSON configuration of this SuperComponent, the
-	 *       returned value may be inverted.
+	 * Returns the current yaw value reported by the sensor. This yaw value is
+	 * useful for implementing features including "auto rotate to a known angle".
+	 * 
+	 * <p>
+	 * <b>NOTE</b>: Depending on the JSON configuration of this SuperComponent, the
+	 * returned value may be inverted.
+	 * 
+	 * @return The {@link HyperAHRS}'s yaw angle in degrees, from -180 to 180
 	 */
 	@Override
 	public float getYaw() {
@@ -65,8 +71,23 @@ public class HyperAHRS extends AHRS {
 	}
 
 	/**
-	 * @NOTE Depending on the JSON configuration of this SuperComponent, the
-	 *       returned value may be inverted.
+	 * Returns the total accumulated yaw angle (Z Axis, in degrees) reported by the
+	 * sensor.
+	 * <p>
+	 * <b>NOTE</b>: The angle is continuous, meaning it's range is beyond 360
+	 * degrees. This ensures that algorithms that wouldn't want to see a
+	 * discontinuity in the gyro output as it sweeps past 0 on the second time
+	 * around.
+	 * <p>
+	 * Note that the returned yaw value will be offset by a user-specified offset
+	 * value; this user-specified offset value is set by invoking the zeroYaw()
+	 * method.
+	 * <p>
+	 * <b>NOTE</b>: Depending on the JSON configuration of this SuperComponent, the
+	 * returned value may be inverted.
+	 * 
+	 * @return The current total accumulated yaw angle (Z axis) of the robot in
+	 *         degrees
 	 */
 	@Override
 	public double getAngle() {

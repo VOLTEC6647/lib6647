@@ -22,7 +22,8 @@ public interface SuperComponent {
 	 * HashMap storing the {@link SuperSubsystem}'s {@link SuperComponent custom
 	 * Component} instances.
 	 * 
-	 * @NOTE Components obtained must be cast to be used properly.
+	 * <p>
+	 * <b>NOTE:</b> Components obtained must be cast to be used properly.
 	 */
 	final HashMap<String, Object> customComponents = new HashMap<>();
 
@@ -31,9 +32,10 @@ public interface SuperComponent {
 	 * {@link SuperSubsystem#robotMap JSON file}, and add them to the
 	 * {@link #customComponents} HashMap using its declared name as its key.
 	 * 
-	 * @param {@link        SuperSubsystem#robotMap}
-	 * @param {@link        SuperSubsystem#getName}
-	 * @param componentName
+	 * @param robotMap      The inherited {@link SuperSubsystem#robotMap} location
+	 * @param subsystemName The {@link SuperSubsystem}'s name; you can just pass on
+	 *                      the {@link SuperSubsystem#getName} method
+	 * @param componentName The name of this {@link SuperComponent custom Component}
 	 */
 	default void initCustomComponents(JsonNode robotMap, String subsystemName, String componentName) {
 
@@ -60,9 +62,9 @@ public interface SuperComponent {
 	 * You can view {@link SuperTalon any} {@link SuperVictor other}
 	 * {@link SuperSolenoid SuperComponent} for an example.
 	 * 
-	 * @NOTE Make sure to properly handle any {@link Exception} and throw a
-	 *       {@link ComponentInitException} with the subsystem's name in the
-	 *       message.
+	 * <p>
+	 * <b>NOTE:</b> Make sure to properly handle any {@link Exception} and throw a
+	 * {@link ComponentInitException} with the subsystem's name in the message.
 	 * 
 	 * @param node          The node in {@link SuperSubsystem#robotMap} to look for
 	 *                      initialization data
@@ -74,12 +76,15 @@ public interface SuperComponent {
 	public void customInit(JsonNode node, String subsystemName) throws ComponentInitException;
 
 	/**
-	 * Gets specified custom Component from the {@link #customComponents} HashMap.
+	 * Gets specified {@link SuperComponent custom Component} from the
+	 * {@link #customComponents} HashMap.
 	 * 
-	 * @NOTE Must be cast in order to be properly used.
+	 * <p>
+	 * <b>NOTE:</b> Objects obtained must be cast to be used properly.
 	 * 
-	 * @param componentName The name of the custom Component
-	 * @return The requested custom Component, if found
+	 * @param componentName The name of the {@link SuperComponent custom Component}
+	 * @return The requested {@link SuperComponent custom Component}, if found in
+	 *         the {@link #customComponents} HashMap
 	 */
 	default Object getComponent(String componentName) {
 		return customComponents.get(componentName);

@@ -27,7 +27,8 @@ public class RobotMap implements ILooper {
 	/**
 	 * Return a {@link Collection} of every declared {@link SuperSubsystem}.
 	 * 
-	 * @return subsystems
+	 * @return A {@link Collection} of every {@link SuperSubsystem} in the
+	 *         {@link #subsystems} HashMap
 	 */
 	public synchronized Collection<SuperSubsystem> getSubsystems() {
 		return subsystems.values();
@@ -36,8 +37,9 @@ public class RobotMap implements ILooper {
 	/**
 	 * Get a specific {@link SuperSubsystem}.
 	 * 
-	 * @param name
-	 * @return subsystem
+	 * @param name The name of the {@link SuperSubsystem} to look for
+	 * @return The specified {@link SuperSubsystem}, if found in the
+	 *         {@link #subsystems} HashMap
 	 */
 	public synchronized SuperSubsystem getSubsystem(String name) {
 		return subsystems.get(name);
@@ -47,12 +49,11 @@ public class RobotMap implements ILooper {
 	 * Adds one or many {@link SuperSubsystem Subsystems} to the {@link #subsystems}
 	 * map.
 	 * 
-	 * @param SuperSubsystem
-	 * @param subsystem
+	 * @param subsystems Each {@link SuperSubsystem} to register
 	 */
-	public synchronized void registerSubsystem(SuperSubsystem... subsystem) {
-		for (SuperSubsystem s : subsystem)
-			subsystems.putIfAbsent(s.getName(), s);
+	public synchronized void registerSubsystem(SuperSubsystem... subsystems) {
+		for (SuperSubsystem s : subsystems)
+			this.subsystems.putIfAbsent(s.getName(), s);
 	}
 
 	/**

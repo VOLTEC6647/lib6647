@@ -35,6 +35,7 @@ public final class ControllerUtil {
 	 * @param measurement  The current measurement
 	 * @param minimumInput The minimum value expected from the input
 	 * @param maximumInput The maximum value expected from the input
+	 * @return The calculated modulus of error
 	 */
 	public static double getModulusError(double reference, double measurement, double minimumInput,
 			double maximumInput) {

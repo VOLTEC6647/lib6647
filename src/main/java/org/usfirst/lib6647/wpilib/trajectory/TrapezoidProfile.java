@@ -191,6 +191,7 @@ public class TrapezoidProfile {
 	 * profile} at a time t where the beginning of the profile was at time t = 0.
 	 *
 	 * @param t The time since the beginning of the {@link TrapezoidProfile profile}
+	 * @return This {@link TrapezoidProfile}'s calculated output
 	 */
 	public State calculate(double t) {
 		var result = initial;
@@ -217,6 +218,7 @@ public class TrapezoidProfile {
 	 * profile} is reached.
 	 *
 	 * @param target The target distance
+	 * @return The calculated time until reaching a target
 	 */
 	public double timeLeftUntil(double target) {
 		var position = initial.position * direction;
@@ -277,8 +279,11 @@ public class TrapezoidProfile {
 	}
 
 	/**
-	 * Returns the total time the {@link TrapezoidProfile profile} takes to reach
-	 * the {@link #goal}.
+	 * Get the total time the {@link TrapezoidProfile profile} takes to reach the
+	 * {@link #goal}.
+	 * 
+	 * @return The total time this {@link TrapezoidProfile} takes to reach its
+	 *         {@link #goal}
 	 */
 	public double totalTime() {
 		return endDeccel;
@@ -293,6 +298,8 @@ public class TrapezoidProfile {
 	 * {@link TrapezoidProfile profile}'s total time.
 	 *
 	 * @param t The time since the beginning of the {@link TrapezoidProfile profile}
+	 * @return Whether or not this {@link TrapezoidProfile} is finished reaching its
+	 *         {@link #goal}
 	 */
 	public boolean isFinished(double t) {
 		return t >= totalTime();

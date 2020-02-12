@@ -372,8 +372,9 @@ public class PIDController implements Sendable, AutoCloseable {
 	/**
 	 * Returns the next output of the {@link PIDController}.
 	 *
-	 * @param measurement The current measurement of the process variable.
-	 * @param setpoint    The new {@link #setpoint} of the {@link PIDController}.
+	 * @param measurement The current measurement of the process variable
+	 * @param setpoint    The new {@link #setpoint} of the {@link PIDController}
+	 * @return This {@link PIDController}'s calculated output
 	 */
 	public double calculate(double measurement, double setpoint) {
 		// Set setpoint to provided value
@@ -384,7 +385,8 @@ public class PIDController implements Sendable, AutoCloseable {
 	/**
 	 * Returns the next output of the {@link PIDController}.
 	 *
-	 * @param measurement The current measurement of the process variable.
+	 * @param measurement The current measurement of the process variable
+	 * @return This {@link PIDController}'s calculated output
 	 */
 	public double calculate(double measurement) {
 		prevError = positionError;

@@ -1,9 +1,17 @@
 import org.gradle.internal.os.OperatingSystem
 
 plugins {
-    id "java"
-	id "maven"
+    id "java-library"
+    id "maven-publish"
     id "edu.wpi.first.GradleRIO" version "2020.2.2"
+}
+
+group = "com.github.VOLTEC6647"
+version = "v1.3.0"
+
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 repositories {
@@ -11,13 +19,13 @@ repositories {
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
     mavenLocal()
-	mavenCentral()
+    mavenCentral()
     gradlePluginPortal()
 
-    String frcYear = '2020'
+    String frcYear = "2020"
     File frcHome
     if (OperatingSystem.current().isWindows()) {
-        String publicFolder = System.getenv('PUBLIC')
+        String publicFolder = System.getenv("PUBLIC")
         if (publicFolder == null) {
             publicFolder = "C:\\Users\\Public"
         }
@@ -28,14 +36,14 @@ repositories {
         def homeRoot = new File(userFolder, "wpilib")
         frcHome = new File(homeRoot, frcYear)
     }
-    def frcHomeMaven = new File(frcHome, 'maven')
+    def frcHomeMaven = new File(frcHome, "maven")
     maven {
-        name 'frcHome'
+        name "frcHome"
         url frcHomeMaven
     }
 
-	maven {	url 'https://frcmaven.wpi.edu/artifactory/release/' } // Used by WPILib.
-	maven { url "http://devsite.ctr-electronics.com/maven/release" } // Used by CTRE Phoenix libraries.
+    maven { url "https://frcmaven.wpi.edu/artifactory/release/" } // Used by WPILib.
+    maven { url "https://devsite.ctr-electronics.com/maven/release/" } // Used by CTRE Phoenix libraries.
     maven { url "https://repo1.maven.org/maven2/" } // Used by NavX libraries.
 }
 
@@ -51,40 +59,81 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
-    implementation group: 'edu.wpi.first.wpilibNewCommands', name: 'wpilibNewCommands-java', version: '2020.2.2'
-    implementation group: 'edu.wpi.first.wpilibOldCommands', name: 'wpilibOldCommands-java', version: '2020.2.2'
+    implementation group: "edu.wpi.first.wpilibNewCommands", name: "wpilibNewCommands-java", version: "2020.2.2"
+    implementation group: "edu.wpi.first.wpilibOldCommands", name: "wpilibOldCommands-java", version: "2020.2.2"
 
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.2'
+    implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.10.2"
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.2'
+    implementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.10.2"
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.2'
-	
-	// Phoenix CTRE dependencies.
-	implementation group: 'com.ctre.phoenix', name: 'api-java', version: '5.18.1'
-	implementation group: 'com.ctre.phoenix', name: 'wpiapi-java', version: '5.18.1'
+    implementation group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.10.2"
 
-	testImplementation group: 'com.ctre.phoenix', name: 'cci', version: '5.18.1'
-	testImplementation group: 'com.ctre.phoenix', name: 'diagnostics', version: '5.18.1'
-	testImplementation group: 'com.ctre.phoenix', name: 'platform-stub', version: '5.18.1'
-	testImplementation group: 'com.ctre.phoenix', name: 'core', version: '5.18.1'
+    // Phoenix CTRE dependencies.
+    implementation group: "com.ctre.phoenix", name: "api-java", version: "5.18.1"
+    implementation group: "com.ctre.phoenix", name: "wpiapi-java", version: "5.18.1"
+
+    testImplementation group: "com.ctre.phoenix", name: "cci", version: "5.18.1"
+    testImplementation group: "com.ctre.phoenix", name: "diagnostics", version: "5.18.1"
+    testImplementation group: "com.ctre.phoenix", name: "canutils", version: "5.18.1"
+    testImplementation group: "com.ctre.phoenix", name: "platform-stub", version: "5.18.1"
+    testImplementation group: "com.ctre.phoenix", name: "core", version: "5.18.1"
 
     // Kauai Labs dependencies.
-    implementation group: 'com.kauailabs.navx.frc', name: 'navx-java', version: '3.1.409'
+    implementation group: "com.kauailabs.navx.frc", name: "navx-java", version: "3.1.409"
 
     // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
-
-    // Enable simulation gui support. Must check the box in vscode to enable support
-    // upon debugging
-    simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
+    testImplementation "junit:junit:4.12"
 }
 
 compileJava {
-    options.compilerArgs << '-parameters'
+    options.compilerArgs << "-parameters"
 }
 
 compileTestJava {
-    options.compilerArgs << '-parameters'
+    options.compilerArgs << "-parameters"
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId = "lib6647"
+            from components.java
+
+            pom {
+                name = "lib6647"
+                description = "Team 6647's library for JSON-oriented object initialization, among other things."
+                url = "https://lib6647.readthedocs.io/"
+                licenses {
+                    license {
+                        name = "BSD License for WPILib code"
+                        url = "https://github.com/wpilibsuite/allwpilib/blob/master/LICENSE.txt"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "pacoito123"
+                        name = "Francisco Rubio"
+                        email = "pacoito@protonmail.com"
+                    }
+                    developer {
+                        id = "ianyan11"
+                        name = "Ian De La Garza"
+                        email = "iandelagg@gmail.com"
+                    }
+                }
+            }
+        }
+    }
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
+
+// Setting up my Jar File. In this case, adding all libraries into the main jar ("fat jar")
+jar {
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
 }

@@ -218,8 +218,8 @@ public class ProfiledPIDController implements Sendable {
 	/**
 	 * Sets the {@link #goal} for the {@link ProfiledPIDController}.
 	 *
-	 * @param goal The desired {@link #goal} position
-	 * @param goal The desired {@link #goal} velocity
+	 * @param positionGoal The desired {@link #goal} position
+	 * @param velocityGoal The desired {@link #goal} velocity
 	 */
 	public void setGoal(double positionGoal, double velocityGoal) {
 		goal = new State(positionGoal, velocityGoal);
@@ -227,6 +227,8 @@ public class ProfiledPIDController implements Sendable {
 
 	/**
 	 * Gets the {@link #goal} for the {@link ProfiledPIDController}.
+	 * 
+	 * @return The {@link ProfiledPIDController}'s {@link #goal}
 	 */
 	public State getGoal() {
 		return goal;
@@ -237,6 +239,8 @@ public class ProfiledPIDController implements Sendable {
 	 *
 	 * <p>
 	 * This will return false until at least one input value has been computed.
+	 * 
+	 * @return Whether the {@link ProfiledPIDController} is at its goal or not
 	 */
 	public boolean atGoal() {
 		return controller.atSetpoint() && goal.equals(setpoint);
@@ -335,9 +339,9 @@ public class ProfiledPIDController implements Sendable {
 	 * Sets the {@link #controller PID controller}'s minimum and maximum output
 	 * values.
 	 * 
-	 * @param minimumOutput The {@link PIDController}'s {@link #minimumOutput
+	 * @param minimumOutput The {@link PIDController}'s {@link #minimumInput
 	 *                      minimum}
-	 * @param maximumOutput The {@link PIDController}'s {@link #maximumOutput
+	 * @param maximumOutput The {@link PIDController}'s {@link #maximumInput
 	 *                      maximum}
 	 */
 	public void setOutputRange(double minimumOutput, double maximumOutput) {
@@ -385,6 +389,7 @@ public class ProfiledPIDController implements Sendable {
 	 * Returns the next output of the {@link #controller PID controller}.
 	 *
 	 * @param measurement The current measurement of the process variable
+	 * @return This {@link ProfiledPIDController}'s calculated output
 	 */
 	public double calculate(double measurement) {
 		TrapezoidProfile profile;
@@ -407,6 +412,7 @@ public class ProfiledPIDController implements Sendable {
 	 *
 	 * @param measurement The current measurement of the process variable
 	 * @param goal        The new {@link #goal} position of the {@link #controller}
+	 * @return This {@link ProfiledPIDController}'s calculated output
 	 */
 	public double calculate(double measurement, State goal) {
 		setGoal(goal);
@@ -418,6 +424,7 @@ public class ProfiledPIDController implements Sendable {
 	 *
 	 * @param measurement The current measurement of the process variable
 	 * @param goal        The new {@link #goal} position of the {@link #controller}
+	 * @return This {@link ProfiledPIDController}'s calculated output
 	 */
 	public double calculate(double measurement, double goal) {
 		setGoal(goal, 0);
@@ -430,6 +437,7 @@ public class ProfiledPIDController implements Sendable {
 	 * @param measurement  The current measurement of the process variable
 	 * @param positionGoal The new {@link #goal} position of the {@link #controller}
 	 * @param velocityGoal The new {@link #goal} velocity of the {@link #controller}
+	 * @return This {@link ProfiledPIDController}'s calculated output
 	 */
 	public double calculate(double measurement, double positionGoal, double velocityGoal) {
 		setGoal(positionGoal, velocityGoal);
@@ -442,6 +450,7 @@ public class ProfiledPIDController implements Sendable {
 	 * @param measurement The current measurement of the process variable.
 	 * @param goal        The new {@link #goal} of the {@link #controller}.
 	 * @param constraints Velocity and acceleration constraints for {@link #goal}.
+	 * @return This {@link ProfiledPIDController}'s calculated output
 	 */
 	public double calculate(double measurement, TrapezoidProfile.State goal, TrapezoidProfile.Constraints constraints) {
 		setConstraints(constraints);

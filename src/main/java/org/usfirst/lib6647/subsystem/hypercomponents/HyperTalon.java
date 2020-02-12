@@ -144,6 +144,8 @@ public class HyperTalon extends WPI_TalonSRX {
 	/**
 	 * Set {@link #encoderDistancePerPulse encoder constant} for this
 	 * {@link HyperTalon}.
+	 * 
+	 * @param encoderDistancePerPulse The distance travelled per encoder pulse
 	 */
 	public void setEncoderDistancePerPulse(double encoderDistancePerPulse) {
 		this.encoderDistancePerPulse = encoderDistancePerPulse;

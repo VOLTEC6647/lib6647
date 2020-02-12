@@ -61,6 +61,7 @@ public class JController extends GenericHID {
 	 * <p>
 	 * Also initializes its {@link #profile} if possible.
 	 * 
+	 * @param port          The port used by this {@link JController}
 	 * @param axisTolerance The amount of {@link #axisTolerance tolerance} to apply
 	 *                      to this {@link JController}'s axes
 	 */

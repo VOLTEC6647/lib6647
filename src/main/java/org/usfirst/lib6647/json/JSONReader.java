@@ -32,6 +32,8 @@ public class JSONReader {
 
 	/**
 	 * Creates static {@link JSONReader} instance.
+	 * 
+	 * @param fileNames Every JSON file's names, without extension
 	 */
 	public static void createInstance(final String... fileNames) {
 		instance = new JSONReader(fileNames);

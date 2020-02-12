@@ -48,7 +48,7 @@ public abstract class LooperRobot extends TimedRobot {
 	 * 
 	 * @param period The robot's period time, in seconds
 	 */
-	protected <T extends SuperSubsystem> LooperRobot(double period) {
+	protected LooperRobot(double period) {
 		super(period);
 
 		// Make sure ~/lvuser/deploy/Profiles.json and ~/lvuser/deploy/RobotMap.json
