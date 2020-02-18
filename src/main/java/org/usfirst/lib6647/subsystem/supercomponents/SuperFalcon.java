@@ -527,8 +527,9 @@ public interface SuperFalcon {
 
 							falcon.configSelectedFeedbackSensor(
 									primary.hasNonNull("feedbackDevice")
-											? MotorUtil.getFeedbackDevice(primary.get("feedbackDevice").asText("None"))
-											: FeedbackDevice.None,
+											? MotorUtil.getFeedbackDevice(
+													primary.get("feedbackDevice").asText("IntegratedSensor"))
+											: FeedbackDevice.IntegratedSensor,
 									0, primary.hasNonNull("timeoutMs") ? primary.get("timeoutMs").asInt(0) : 0);
 							falcon.setSelectedSensorPosition(
 									primary.hasNonNull("sensorPos") ? primary.get("sensorPos").asInt() : 0, 0,
@@ -539,9 +540,9 @@ public interface SuperFalcon {
 
 							falcon.configSelectedFeedbackSensor(
 									auxiliary.hasNonNull("feedbackDevice")
-											? MotorUtil
-													.getFeedbackDevice(auxiliary.get("feedbackDevice").asText("None"))
-											: FeedbackDevice.None,
+											? MotorUtil.getFeedbackDevice(
+													auxiliary.get("feedbackDevice").asText("IntegratedSensor"))
+											: FeedbackDevice.IntegratedSensor,
 									1, auxiliary.hasNonNull("timeoutMs") ? auxiliary.get("timeoutMs").asInt(0) : 0);
 							falcon.setSelectedSensorPosition(
 									auxiliary.hasNonNull("sensorPos") ? auxiliary.get("sensorPos").asInt() : 0, 1,

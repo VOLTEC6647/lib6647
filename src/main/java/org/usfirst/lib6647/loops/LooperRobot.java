@@ -26,7 +26,7 @@ public abstract class LooperRobot extends TimedRobot {
 	/** Instance of {@link RobotMap}. */
 	private final RobotMap robotMap = new RobotMap();
 	/** HashMap holding initialized {@link JController joysticks}. */
-	protected final HashMap<String, JController> joysticks = new HashMap<>();
+	private final HashMap<String, JController> joysticks = new HashMap<>();
 
 	/**
 	 * Constructor for {@link LooperRobot} with a default period time of 0.02s.
@@ -138,6 +138,16 @@ public abstract class LooperRobot extends TimedRobot {
 	 */
 	public synchronized JController getJoystick(String name) {
 		return joysticks.get(name);
+	}
+
+	/**
+	 * Register each of the given {@link JController joysticks}.
+	 * 
+	 * @param joysticks Every joystick to be registered
+	 */
+	public synchronized void registerJoysticks(JController... joysticks) {
+		for (JController joystick : joysticks)
+			this.joysticks.putIfAbsent(joystick.getName(), joystick);
 	}
 
 	/**

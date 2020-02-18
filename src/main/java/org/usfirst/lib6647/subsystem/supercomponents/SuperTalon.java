@@ -475,8 +475,8 @@ public interface SuperTalon {
 
 							talon.configSelectedFeedbackSensor(
 									primary.hasNonNull("feedbackDevice")
-											? MotorUtil.getFeedbackDevice(primary.get("feedbackDevice").asText("None"))
-											: FeedbackDevice.None,
+											? MotorUtil.getFeedbackDevice(primary.get("feedbackDevice").asText("QuadEncoder"))
+											: FeedbackDevice.QuadEncoder,
 									0, primary.hasNonNull("timeoutMs") ? primary.get("timeoutMs").asInt(0) : 0);
 							talon.setSelectedSensorPosition(
 									primary.hasNonNull("sensorPos") ? primary.get("sensorPos").asInt() : 0, 0,
@@ -488,8 +488,8 @@ public interface SuperTalon {
 							talon.configSelectedFeedbackSensor(
 									auxiliary.hasNonNull("feedbackDevice")
 											? MotorUtil
-													.getFeedbackDevice(auxiliary.get("feedbackDevice").asText("None"))
-											: FeedbackDevice.None,
+													.getFeedbackDevice(auxiliary.get("feedbackDevice").asText("QuadEncoder"))
+											: FeedbackDevice.QuadEncoder,
 									1, auxiliary.hasNonNull("timeoutMs") ? auxiliary.get("timeoutMs").asInt(0) : 0);
 							talon.setSelectedSensorPosition(
 									auxiliary.hasNonNull("sensorPos") ? auxiliary.get("sensorPos").asInt() : 0, 1,
