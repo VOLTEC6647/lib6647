@@ -1,12 +1,12 @@
 package org.usfirst.lib6647.subsystem.hypercomponents;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 /**
- * Simple Wrapper for a {@link WPI_TalonSRX}, adds a couple of useful features.
+ * Simple Wrapper for a {@link WPI_TalonFX}, adds a couple of useful features.
  */
-public class HyperTalon extends WPI_TalonSRX {
+public class HyperFalcon extends WPI_TalonFX {
 	/**
 	 * Limits how fast the Talon can go as a percentage if using
 	 * {@link #setTalonWithRamp(double)} or {@link #setTalon(double, boolean)} if
@@ -25,25 +25,25 @@ public class HyperTalon extends WPI_TalonSRX {
 	protected ControlMode lastMode = null;
 
 	/**
-	 * HyperComponent Wrapper for {@link HyperTalon}.
+	 * HyperComponent Wrapper for {@link HyperFalcon}.
 	 * 
-	 * @param port The {@link HyperTalon}'s port (set via CTRE's Phoenix Tuner)
+	 * @param port The {@link HyperFalcon}'s port (set via CTRE's Phoenix Tuner)
 	 */
-	public HyperTalon(int port) {
+	public HyperFalcon(int port) {
 		super(port);
 	}
 
 	/**
-	 * Returns {@link #limiter} value for {@link HyperTalon} speed.
+	 * Returns {@link #limiter} value for {@link HyperFalcon} speed.
 	 * 
-	 * @return The {@link HyperTalon}'s current limiter
+	 * @return The {@link HyperFalcon}'s current limiter
 	 */
 	public double getLimiter() {
 		return limiter;
 	}
 
 	/**
-	 * Sets {@link #limiter} for {@link HyperTalon} speed.
+	 * Sets {@link #limiter} for {@link HyperFalcon} speed.
 	 * 
 	 * @param limiter The amount to set the {@link #limiter} to
 	 */
@@ -61,10 +61,10 @@ public class HyperTalon extends WPI_TalonSRX {
 	}
 
 	/**
-	 * Sets {@link HyperTalon} to a given speed, in {@link ControlMode#PercentOutput
-	 * PercentOutput}.
+	 * Sets {@link HyperFalcon} to a given speed, in
+	 * {@link ControlMode#PercentOutput PercentOutput}.
 	 * 
-	 * @param speed The speed at which to set this {@link HyperTalon}
+	 * @param speed The speed at which to set this {@link HyperFalcon}
 	 */
 	@Override
 	public void set(double speed) {
@@ -72,10 +72,11 @@ public class HyperTalon extends WPI_TalonSRX {
 	}
 
 	/**
-	 * Sets {@link HyperTalon} to a given speed, with the given {@link ControlMode}.
+	 * Sets {@link HyperFalcon} to a given speed, with the given
+	 * {@link ControlMode}.
 	 * 
-	 * @param mode  The mode at which to set this {@link HyperTalon}
-	 * @param speed The speed at which to set this {@link HyperTalon}
+	 * @param mode  The mode at which to set this {@link HyperFalcon}
+	 * @param speed The speed at which to set this {@link HyperFalcon}
 	 */
 	@Override
 	public void set(ControlMode mode, double speed) {
@@ -83,11 +84,11 @@ public class HyperTalon extends WPI_TalonSRX {
 	}
 
 	/**
-	 * Sets {@link HyperTalon} to a given speed, in the given {@link ControlMode}.
+	 * Sets {@link HyperFalcon} to a given speed, in the given {@link ControlMode}.
 	 * Also sets whether to limit the set value or not.
 	 * 
-	 * @param mode    The mode at which to set this {@link HyperTalon}
-	 * @param speed   The speed at which to set this {@link HyperTalon}
+	 * @param mode    The mode at which to set this {@link HyperFalcon}
+	 * @param speed   The speed at which to set this {@link HyperFalcon}
 	 * @param limited Whether or not to limit the given speed
 	 */
 	public void set(ControlMode mode, double speed, boolean limited) {
@@ -95,25 +96,26 @@ public class HyperTalon extends WPI_TalonSRX {
 	}
 
 	/**
-	 * Sets {@link HyperTalon} to a given amount multiplied by {@link #limiter}, for
-	 * the given {@link ControlMode}.
+	 * Sets {@link HyperFalcon} to a given amount multiplied by {@link #limiter},
+	 * for the given {@link ControlMode}.
 	 * 
-	 * @param mode  The mode at which to set this {@link HyperTalon}
-	 * @param speed The speed at which to set this {@link HyperTalon}
+	 * @param mode  The mode at which to set this {@link HyperFalcon}
+	 * @param speed The speed at which to set this {@link HyperFalcon}
 	 */
 	public void setWithRamp(ControlMode mode, double speed) {
 		lazySet(mode, speed * limiter);
 	}
 
 	/**
-	 * Sets {@link HyperTalon} to a given speed, with the given {@link ControlMode}.
+	 * Sets {@link HyperFalcon} to a given speed, with the given
+	 * {@link ControlMode}.
 	 * 
 	 * <p>
 	 * Copied over from:
 	 * https://github.com/Team254/FRC-2019-Public/blob/master/src/main/java/com/team254/lib/drivers/LazyTalonSRX.java
 	 * 
-	 * @param mode  The mode at which to set this {@link HyperTalon}
-	 * @param speed The speed at which to set this {@link HyperTalon}
+	 * @param mode  The mode at which to set this {@link HyperFalcon}
+	 * @param speed The speed at which to set this {@link HyperFalcon}
 	 */
 	private void lazySet(ControlMode mode, double speed) {
 		if (speed != lastSpeed || mode != lastMode) {
@@ -124,14 +126,14 @@ public class HyperTalon extends WPI_TalonSRX {
 	}
 
 	/**
-	 * Syntactic sugar for resetting the {@link HyperTalon}'s encoder.
+	 * Syntactic sugar for resetting the {@link HyperFalcon}'s encoder.
 	 */
 	public void reset() {
 		reset(0);
 	}
 
 	/**
-	 * Syntactic sugar for resetting the {@link HyperTalon}'s encoder.
+	 * Syntactic sugar for resetting the {@link HyperFalcon}'s encoder.
 	 * 
 	 * @param pidIdx The sensor slot to read
 	 */
@@ -141,7 +143,7 @@ public class HyperTalon extends WPI_TalonSRX {
 
 	/**
 	 * Set {@link #encoderDistancePerPulse encoder constant} for this
-	 * {@link HyperTalon}.
+	 * {@link HyperFalcon}.
 	 * 
 	 * @param encoderDistancePerPulse The distance travelled per encoder pulse
 	 */
@@ -150,7 +152,7 @@ public class HyperTalon extends WPI_TalonSRX {
 	}
 
 	/**
-	 * Syntactic sugar for getting the {@link HyperTalon}'s encoder's current
+	 * Syntactic sugar for getting the {@link HyperFalcon}'s encoder's current
 	 * position.
 	 * 
 	 * @return The distance traveled by the encoder, in units relative to the robot
@@ -160,7 +162,7 @@ public class HyperTalon extends WPI_TalonSRX {
 	}
 
 	/**
-	 * Syntactic sugar for getting the {@link HyperTalon}'s encoder's current
+	 * Syntactic sugar for getting the {@link HyperFalcon}'s encoder's current
 	 * position.
 	 * 
 	 * @param pidIdx The sensor slot to read
@@ -171,7 +173,7 @@ public class HyperTalon extends WPI_TalonSRX {
 	}
 
 	/**
-	 * Syntactic sugar for getting the {@link HyperTalon}'s encoder's current rate.
+	 * Syntactic sugar for getting the {@link HyperFalcon}'s encoder's current rate.
 	 * 
 	 * @return The rate at which the encoder changes, in units relative to the robot
 	 */
@@ -180,7 +182,7 @@ public class HyperTalon extends WPI_TalonSRX {
 	}
 
 	/**
-	 * Syntactic sugar for getting the {@link HyperTalon}'s encoder's current rate.
+	 * Syntactic sugar for getting the {@link HyperFalcon}'s encoder's current rate.
 	 * 
 	 * @param pidIdx The sensor slot to load
 	 * @return The rate at which the encoder changes, in units relative to the robot

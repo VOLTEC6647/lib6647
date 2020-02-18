@@ -26,8 +26,6 @@ public class HyperVictor extends WPI_VictorSPX {
 	 */
 	public HyperVictor(int port) {
 		super(port);
-
-		configFactoryDefault();
 	}
 
 	/**

@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import org.usfirst.lib6647.subsystem.ComponentInitException;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
-import org.usfirst.lib6647.util.MotorUtil;
 
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 
@@ -53,8 +53,7 @@ public interface SuperEncoder {
 
 					// Create Encoder object.
 					Encoder encoder = new Encoder(json.get("channelA").asInt(), json.get("channelB").asInt(),
-							json.get("reverse").asBoolean(),
-							MotorUtil.getEncodingType(json.get("encodingType").asText()));
+							json.get("reverse").asBoolean(), getEncodingType(json.get("encodingType").asText()));
 
 					// Additional initialization configuration.
 					if (json.get("resetOnStart").asBoolean(false))
@@ -73,6 +72,25 @@ public interface SuperEncoder {
 				DriverStation.reportError(e.getLocalizedMessage(), false);
 			}
 		});
+	}
+
+	/**
+	 * Get an {@link EncodingType} value from a String.
+	 * 
+	 * @param encodingType The desired {@link EncodingType}, as a String value
+	 * @return The {@link EncodingType}, as a valid enum
+	 */
+	private EncodingType getEncodingType(String encodingType) {
+		switch (encodingType) {
+			case "k1X":
+				return EncodingType.k1X;
+			case "k2X":
+				return EncodingType.k2X;
+			case "k4X":
+				return EncodingType.k4X;
+			default:
+				return null;
+		}
 	}
 
 	/**

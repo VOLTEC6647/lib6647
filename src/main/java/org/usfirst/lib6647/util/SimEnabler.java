@@ -4,6 +4,7 @@ import edu.wpi.first.hal.sim.DriverStationSim;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 
 /**
  * Class to enable characterization of simulations.
@@ -16,6 +17,7 @@ public class SimEnabler implements Sendable {
 	DriverStationSim sim = new DriverStationSim();
 
 	public SimEnabler() {
+		SendableRegistry.setName(this, "SimEnabler");
 		sim.setAutonomous(true);
 	}
 
@@ -31,24 +33,6 @@ public class SimEnabler implements Sendable {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	@Override
-	public String getName() {
-		return "SimEnabler";
-	}
-
-	@Override
-	public void setName(String name) {
-	}
-
-	@Override
-	public String getSubsystem() {
-		return "";
-	}
-
-	@Override
-	public void setSubsystem(String subsystem) {
 	}
 
 	@Override

@@ -95,6 +95,21 @@ public class HyperAHRS extends AHRS {
 	}
 
 	/**
+	 * Return the rate of rotation of the yaw (Z-axis) gyro, in degrees per second.
+	 * <p>
+	 * The rate is based on the most recent reading of the yaw gyro angle.
+	 * <p>
+	 * <b>NOTE</b>: Depending on the JSON configuration of this SuperComponent, the
+	 * returned value may be inverted.
+	 * 
+	 * @return The current rate of change in yaw angle (in degrees per second)
+	 */
+	@Override
+	public double getRate() {
+		return super.getRate() * (inverted ? -1.0 : 1.0);
+	}
+
+	/**
 	 * Returns the heading of the {@link HyperAHRS}.
 	 *
 	 * @return The {@link HyperAHRS}'s heading in degrees, from -180 to 180
