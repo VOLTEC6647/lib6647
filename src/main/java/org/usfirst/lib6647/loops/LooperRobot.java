@@ -141,13 +141,12 @@ public abstract class LooperRobot extends TimedRobot {
 	}
 
 	/**
-	 * Register each of the given {@link JController joysticks}.
+	 * Register a given {@link JController joystick}.
 	 * 
-	 * @param joysticks Every joystick to be registered
+	 * @param joystick The joystick to be registered
 	 */
-	public synchronized void registerJoysticks(JController... joysticks) {
-		for (JController joystick : joysticks)
-			this.joysticks.putIfAbsent(joystick.getName(), joystick);
+	public synchronized void registerJoystick(JController joystick, String name) {
+		joysticks.putIfAbsent(name, joystick);
 	}
 
 	/**
