@@ -79,7 +79,7 @@ public class HyperTalon extends WPI_TalonSRX {
 	/**
 	 * Sets the {@link HyperTalon} to the given speed and demand speed, in
 	 * {@link ControlMode#PercentOutput PercentOutput} and
-	 * {@ink DemandType#ArbitraryFeedForward ArbitraryFeedForward}.
+	 * {@link DemandType#ArbitraryFeedForward ArbitraryFeedForward}.
 	 * 
 	 * @param speed       The speed at which to set this {@link HyperTalon} to
 	 * @param demandSpeed The value at which to set this {@link HyperTalon}'s demand
@@ -150,11 +150,23 @@ public class HyperTalon extends WPI_TalonSRX {
 	 * Sets the {@link HyperTalon} to the given speed multiplied by the
 	 * {@link #limiter}, in {@link ControlMode#PercentOutput PercentOutput}.
 	 * 
-	 * @param mode  The mode at which to set this {@link HyperTalon} to
 	 * @param speed The speed at which to set this {@link HyperTalon} to
 	 */
 	public void setWithRamp(double speed) {
 		setWithRamp(ControlMode.PercentOutput, speed);
+	}
+
+	/**
+	 * Sets the {@link HyperTalon} to the given speed multiplied by the
+	 * {@link #limiter}, in {@link ControlMode#PercentOutput PercentOutput} and
+	 * {@link DemandType#ArbitraryFeedForward ArbitraryFeedForward}.
+	 * 
+	 * @param speed       The speed at which to set this {@link HyperTalon} to
+	 * @param demandSpeed The value at which to set this {@link HyperTalon}'s demand
+	 *                    speed to
+	 */
+	public void setWithRamp(double speed, double demandSpeed) {
+		setWithRamp(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, demandSpeed);
 	}
 
 	/**
