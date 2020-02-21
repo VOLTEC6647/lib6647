@@ -117,6 +117,29 @@ public class HyperFalcon extends WPI_TalonFX {
 	}
 
 	/**
+	 * Sets the {@link HyperFalcon} to the given speed multiplied by the
+	 * {@link #limiter}, in {@link ControlMode#PercentOutput PercentOutput}.
+	 * 
+	 * @param speed The speed at which to set this {@link HyperFalcon} to
+	 */
+	public void setWithRamp(double speed) {
+		set(ControlMode.PercentOutput, speed * limiter, false);
+	}
+
+	/**
+	 * Sets the {@link HyperFalcon} to the given speed multiplied by the
+	 * {@link #limiter}, in {@link ControlMode#PercentOutput PercentOutput} and
+	 * {@link DemandType#ArbitraryFeedForward ArbitraryFeedForward}.
+	 * 
+	 * @param speed       The speed at which to set this {@link HyperFalcon} to
+	 * @param demandSpeed The value at which to set this {@link HyperFalcon}'s
+	 *                    demand speed to
+	 */
+	public void setWithRamp(double speed, double demandSpeed) {
+		set(ControlMode.PercentOutput, speed * limiter, DemandType.ArbitraryFeedForward, demandSpeed * limiter, false);
+	}
+
+	/**
 	 * Sets the {@link HyperFalcon} to the given speed, for the given
 	 * {@link ControlMode}. Also sets whether to limit the set value or not.
 	 * 
@@ -147,76 +170,23 @@ public class HyperFalcon extends WPI_TalonFX {
 	}
 
 	/**
-	 * Sets the {@link HyperFalcon} to the given speed multiplied by the
-	 * {@link #limiter}, in {@link ControlMode#PercentOutput PercentOutput}.
-	 * 
-	 * @param speed The speed at which to set this {@link HyperFalcon} to
-	 */
-	public void setWithRamp(double speed) {
-		setWithRamp(ControlMode.PercentOutput, speed);
-	}
-
-	/**
-	 * Sets the {@link HyperFalcon} to the given speed multiplied by the
-	 * {@link #limiter}, in {@link ControlMode#PercentOutput PercentOutput} and
-	 * {@link DemandType#ArbitraryFeedForward ArbitraryFeedForward}.
-	 * 
-	 * @param speed       The speed at which to set this {@link HyperFalcon} to
-	 * @param demandSpeed The value at which to set this {@link HyperFalcon}'s
-	 *                    demand speed to
-	 */
-	public void setWithRamp(double speed, double demandSpeed) {
-		setWithRamp(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, demandSpeed);
-	}
-
-	/**
-	 * Sets the {@link HyperFalcon} to the given speed multiplied by the
-	 * {@link #limiter}, for the given {@link ControlMode}.
-	 * 
-	 * @param mode  The mode at which to set this {@link HyperFalcon} to
-	 * @param speed The speed at which to set this {@link HyperFalcon} to
-	 */
-	public void setWithRamp(ControlMode mode, double speed) {
-		lazySet(mode, speed * limiter);
-	}
-
-	/**
-	 * Sets the {@link HyperFalcon} to the given speed and demand multiplied by the
-	 * {@link #limiter}, for the given {@link ControlMode} and {@link DemandType}.
-	 * 
-	 * @param mode        The mode at which to set this {@link HyperFalcon} to
-	 * @param speed       The speed at which to set this {@link HyperFalcon} to
-	 * @param demandType  The type of demand to set this {@link HyperFalcon} to
-	 * @param demandSpeed The value at which to set this {@link HyperFalcon}'s
-	 *                    demand speed to
-	 */
-	public void setWithRamp(ControlMode mode, double speed, DemandType demandType, double demandSpeed) {
-		lazySet(mode, speed * limiter, demandType, demandSpeed * limiter);
-	}
-
-	/**
 	 * Sets the {@link HyperFalcon} to the given speed, for the given
 	 * {@link ControlMode}.
-	 * 
-	 * <p>
-	 * Copied over from:
-	 * https://github.com/Team254/FRC-2019-Public/blob/master/src/main/java/com/team254/lib/drivers/LazyTalonSRX.java
 	 * 
 	 * @param mode  The mode at which to set this {@link HyperFalcon} to
 	 * @param speed The speed at which to set this {@link HyperFalcon} to
 	 */
 	private void lazySet(ControlMode mode, double speed) {
-		if (speed != lastSpeed || mode != lastMode) {
-			lastSpeed = speed;
-			lastMode = mode;
-
-			super.set(mode, speed);
-		}
+		lazySet(mode, speed, DemandType.Neutral, 0);
 	}
 
 	/**
 	 * Sets the {@link HyperFalcon} to the given speed and demand, for the given
 	 * {@link ControlMode} and {@link DemandType}.
+	 * 
+	 * <p>
+	 * Originally copied over from:
+	 * https://github.com/Team254/FRC-2019-Public/blob/master/src/main/java/com/team254/lib/drivers/LazyTalonSRX.java
 	 * 
 	 * @param mode        The mode at which to set this {@link HyperFalcon} to
 	 * @param speed       The speed at which to set this {@link HyperFalcon} to

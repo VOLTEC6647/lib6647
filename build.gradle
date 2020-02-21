@@ -59,8 +59,8 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
-    implementation group: "edu.wpi.first.wpilibNewCommands", name: "wpilibNewCommands-java", version: "2020.3.1"
-    implementation group: "edu.wpi.first.wpilibOldCommands", name: "wpilibOldCommands-java", version: "2020.3.1"
+    implementation group: "edu.wpi.first.wpilibNewCommands", name: "wpilibNewCommands-java", version: "2020.3.2"
+    implementation group: "edu.wpi.first.wpilibOldCommands", name: "wpilibOldCommands-java", version: "2020.3.2"
 
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
     implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.10.2"
