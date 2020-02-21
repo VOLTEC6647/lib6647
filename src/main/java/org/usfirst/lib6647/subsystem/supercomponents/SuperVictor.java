@@ -87,7 +87,7 @@ public interface SuperVictor {
 							victorConfig.slot0.integralZone = slot.hasNonNull("integralZone")
 									? slot.get("integralZone").asInt()
 									: 0;
-							victorConfig.slot0.integralZone = slot.hasNonNull("allowableClosedloopError")
+							victorConfig.slot0.allowableClosedloopError = slot.hasNonNull("allowableClosedloopError")
 									? slot.get("allowableClosedloopError").asInt()
 									: 0;
 
@@ -113,7 +113,7 @@ public interface SuperVictor {
 							victorConfig.slot1.integralZone = slot.hasNonNull("integralZone")
 									? slot.get("integralZone").asInt()
 									: 0;
-							victorConfig.slot1.integralZone = slot.hasNonNull("allowableClosedloopError")
+							victorConfig.slot1.allowableClosedloopError = slot.hasNonNull("allowableClosedloopError")
 									? slot.get("allowableClosedloopError").asInt()
 									: 0;
 
@@ -139,7 +139,7 @@ public interface SuperVictor {
 							victorConfig.slot2.integralZone = slot.hasNonNull("integralZone")
 									? slot.get("integralZone").asInt()
 									: 0;
-							victorConfig.slot2.integralZone = slot.hasNonNull("allowableClosedloopError")
+							victorConfig.slot2.allowableClosedloopError = slot.hasNonNull("allowableClosedloopError")
 									? slot.get("allowableClosedloopError").asInt()
 									: 0;
 
@@ -165,7 +165,7 @@ public interface SuperVictor {
 							victorConfig.slot3.integralZone = slot.hasNonNull("integralZone")
 									? slot.get("integralZone").asInt()
 									: 0;
-							victorConfig.slot3.integralZone = slot.hasNonNull("allowableClosedloopError")
+							victorConfig.slot3.allowableClosedloopError = slot.hasNonNull("allowableClosedloopError")
 									? slot.get("allowableClosedloopError").asInt()
 									: 0;
 

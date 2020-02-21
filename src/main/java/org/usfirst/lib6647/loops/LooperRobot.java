@@ -144,6 +144,8 @@ public abstract class LooperRobot extends TimedRobot {
 	 * Register a given {@link JController joystick}.
 	 * 
 	 * @param joystick The joystick to be registered
+	 * @param name     The key to store the registered {@link JController joystick}
+	 *                 at in the {@link #joysticks} HashMap
 	 */
 	public synchronized void registerJoystick(JController joystick, String name) {
 		joysticks.putIfAbsent(name, joystick);

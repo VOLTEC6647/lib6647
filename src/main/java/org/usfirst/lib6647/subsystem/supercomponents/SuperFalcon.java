@@ -89,7 +89,7 @@ public interface SuperFalcon {
 							falconConfig.slot0.integralZone = slot.hasNonNull("integralZone")
 									? slot.get("integralZone").asInt()
 									: 0;
-							falconConfig.slot0.integralZone = slot.hasNonNull("allowableClosedloopError")
+							falconConfig.slot0.allowableClosedloopError = slot.hasNonNull("allowableClosedloopError")
 									? slot.get("allowableClosedloopError").asInt()
 									: 0;
 
@@ -115,7 +115,7 @@ public interface SuperFalcon {
 							falconConfig.slot1.integralZone = slot.hasNonNull("integralZone")
 									? slot.get("integralZone").asInt()
 									: 0;
-							falconConfig.slot1.integralZone = slot.hasNonNull("allowableClosedloopError")
+							falconConfig.slot1.allowableClosedloopError = slot.hasNonNull("allowableClosedloopError")
 									? slot.get("allowableClosedloopError").asInt()
 									: 0;
 
@@ -141,7 +141,7 @@ public interface SuperFalcon {
 							falconConfig.slot2.integralZone = slot.hasNonNull("integralZone")
 									? slot.get("integralZone").asInt()
 									: 0;
-							falconConfig.slot2.integralZone = slot.hasNonNull("allowableClosedloopError")
+							falconConfig.slot2.allowableClosedloopError = slot.hasNonNull("allowableClosedloopError")
 									? slot.get("allowableClosedloopError").asInt()
 									: 0;
 
@@ -167,7 +167,7 @@ public interface SuperFalcon {
 							falconConfig.slot3.integralZone = slot.hasNonNull("integralZone")
 									? slot.get("integralZone").asInt()
 									: 0;
-							falconConfig.slot3.integralZone = slot.hasNonNull("allowableClosedloopError")
+							falconConfig.slot3.allowableClosedloopError = slot.hasNonNull("allowableClosedloopError")
 									? slot.get("allowableClosedloopError").asInt()
 									: 0;
 

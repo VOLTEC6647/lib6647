@@ -86,7 +86,7 @@ public interface SuperTalon {
 							talonConfig.slot0.integralZone = slot.hasNonNull("integralZone")
 									? slot.get("integralZone").asInt()
 									: 0;
-							talonConfig.slot0.integralZone = slot.hasNonNull("allowableClosedloopError")
+							talonConfig.slot0.allowableClosedloopError = slot.hasNonNull("allowableClosedloopError")
 									? slot.get("allowableClosedloopError").asInt()
 									: 0;
 
@@ -112,7 +112,7 @@ public interface SuperTalon {
 							talonConfig.slot1.integralZone = slot.hasNonNull("integralZone")
 									? slot.get("integralZone").asInt()
 									: 0;
-							talonConfig.slot1.integralZone = slot.hasNonNull("allowableClosedloopError")
+							talonConfig.slot1.allowableClosedloopError = slot.hasNonNull("allowableClosedloopError")
 									? slot.get("allowableClosedloopError").asInt()
 									: 0;
 
@@ -138,7 +138,7 @@ public interface SuperTalon {
 							talonConfig.slot2.integralZone = slot.hasNonNull("integralZone")
 									? slot.get("integralZone").asInt()
 									: 0;
-							talonConfig.slot2.integralZone = slot.hasNonNull("allowableClosedloopError")
+							talonConfig.slot2.allowableClosedloopError = slot.hasNonNull("allowableClosedloopError")
 									? slot.get("allowableClosedloopError").asInt()
 									: 0;
 
@@ -164,7 +164,7 @@ public interface SuperTalon {
 							talonConfig.slot3.integralZone = slot.hasNonNull("integralZone")
 									? slot.get("integralZone").asInt()
 									: 0;
-							talonConfig.slot3.integralZone = slot.hasNonNull("allowableClosedloopError")
+							talonConfig.slot3.allowableClosedloopError = slot.hasNonNull("allowableClosedloopError")
 									? slot.get("allowableClosedloopError").asInt()
 									: 0;
 
@@ -475,7 +475,8 @@ public interface SuperTalon {
 
 							talon.configSelectedFeedbackSensor(
 									primary.hasNonNull("feedbackDevice")
-											? MotorUtil.getFeedbackDevice(primary.get("feedbackDevice").asText("QuadEncoder"))
+											? MotorUtil.getFeedbackDevice(
+													primary.get("feedbackDevice").asText("QuadEncoder"))
 											: FeedbackDevice.QuadEncoder,
 									0, primary.hasNonNull("timeoutMs") ? primary.get("timeoutMs").asInt(0) : 0);
 							talon.setSelectedSensorPosition(
@@ -487,8 +488,8 @@ public interface SuperTalon {
 
 							talon.configSelectedFeedbackSensor(
 									auxiliary.hasNonNull("feedbackDevice")
-											? MotorUtil
-													.getFeedbackDevice(auxiliary.get("feedbackDevice").asText("QuadEncoder"))
+											? MotorUtil.getFeedbackDevice(
+													auxiliary.get("feedbackDevice").asText("QuadEncoder"))
 											: FeedbackDevice.QuadEncoder,
 									1, auxiliary.hasNonNull("timeoutMs") ? auxiliary.get("timeoutMs").asInt(0) : 0);
 							talon.setSelectedSensorPosition(
