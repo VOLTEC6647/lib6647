@@ -14,41 +14,45 @@ import edu.wpi.first.hal.NotifierJNI;
 import edu.wpi.first.wpilibj.RobotController;
 
 /**
- * TimedRobot implements the IterativeRobotBase robot program framework.
+ * {@link TimedRobot} implements the {@link IterativeRobotBase} robot program
+ * framework.
  *
  * <p>
- * The TimedRobot class is intended to be subclassed by a user creating a robot
- * program.
+ * The {@link TimedRobot} class is intended to be subclassed by a user creating
+ * a robot program.
  *
  * <p>
  * periodic() functions from the base class are called on an interval by a
  * Notifier instance.
  */
 public class TimedRobot extends IterativeRobotBase {
-	public static final double kDefaultPeriod = 0.02;
-
-	// The C pointer to the notifier object. We don't use it directly, it is
-	// just passed to the JNI bindings.
-	private final int m_notifier = NotifierJNI.initializeNotifier();
-
-	// The absolute expiration time
-	private double m_expirationTime;
+	/** {@link TimedRobot}'s default period time. */
+	public static final double defaultPeriod = 0.02;
 
 	/**
-	 * Constructor for TimedRobot.
+	 * The C pointer to the notifier object. We don't use it directly, it is just
+	 * passed to the JNI bindings.
+	 */
+	private final int notifier = NotifierJNI.initializeNotifier();
+
+	/** The absolute expiration time. */
+	private double expirationTime;
+
+	/**
+	 * Constructor for {@link TimedRobot}.
 	 */
 	protected TimedRobot() {
-		this(kDefaultPeriod);
+		this(defaultPeriod);
 	}
 
 	/**
-	 * Constructor for TimedRobot.
+	 * Constructor for {@link TimedRobot}.
 	 *
 	 * @param period Period in seconds
 	 */
 	protected TimedRobot(double period) {
 		super(period);
-		NotifierJNI.setNotifierName(m_notifier, "TimedRobot");
+		NotifierJNI.setNotifierName(notifier, "TimedRobot");
 
 		HAL.report(tResourceType.kResourceType_Framework, tInstances.kFramework_Timed);
 	}
@@ -56,32 +60,36 @@ public class TimedRobot extends IterativeRobotBase {
 	@Override
 	@SuppressWarnings("NoFinalizer")
 	protected void finalize() {
-		NotifierJNI.stopNotifier(m_notifier);
-		NotifierJNI.cleanNotifier(m_notifier);
+		NotifierJNI.stopNotifier(notifier);
+		NotifierJNI.cleanNotifier(notifier);
 	}
 
 	/**
-	 * Provide an alternate "main loop" via startCompetition().
+	 * Provide an alternate "main loop" via {@link #startCompetition()}.
 	 */
 	@Override
 	@SuppressWarnings("UnsafeFinalization")
 	public void startCompetition() {
 		robotInit();
 
+		if (isSimulation()) {
+			simulationInit();
+		}
+
 		// Tell the DS that the robot is ready to be enabled
 		HAL.observeUserProgramStarting();
 
-		m_expirationTime = RobotController.getFPGATime() * 1e-6 + m_period;
+		expirationTime = RobotController.getFPGATime() * 1e-6 + period;
 		updateAlarm();
 
 		// Loop forever, calling the appropriate mode-dependent function
 		while (true) {
-			long curTime = NotifierJNI.waitForNotifierAlarm(m_notifier);
+			long curTime = NotifierJNI.waitForNotifierAlarm(notifier);
 			if (curTime == 0) {
 				break;
 			}
 
-			m_expirationTime += m_period;
+			expirationTime += period;
 			updateAlarm();
 
 			loopFunc();
@@ -89,11 +97,11 @@ public class TimedRobot extends IterativeRobotBase {
 	}
 
 	/**
-	 * Ends the main loop in startCompetition().
+	 * Ends the main loop in {@link #startCompetition()}.
 	 */
 	@Override
 	public void endCompetition() {
-		NotifierJNI.stopNotifier(m_notifier);
+		NotifierJNI.stopNotifier(notifier);
 	}
 
 	/**
@@ -102,7 +110,7 @@ public class TimedRobot extends IterativeRobotBase {
 	 * @return This {@link TimedRobot}'s period time, in seconds
 	 */
 	public double getPeriod() {
-		return m_period;
+		return period;
 	}
 
 	/**
@@ -110,6 +118,6 @@ public class TimedRobot extends IterativeRobotBase {
 	 */
 	@SuppressWarnings("UnsafeFinalization")
 	private void updateAlarm() {
-		NotifierJNI.updateNotifierAlarm(m_notifier, (long) (m_expirationTime * 1e6));
+		NotifierJNI.updateNotifierAlarm(notifier, (long) (expirationTime * 1e6));
 	}
 }

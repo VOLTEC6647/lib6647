@@ -44,14 +44,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public abstract class IterativeRobotBase extends RobotBase {
-	protected double m_period;
+	protected double period;
 
 	private enum Mode {
 		kNone, kDisabled, kAutonomous, kTeleop, kTest
 	}
 
-	private Mode m_lastMode = Mode.kNone;
-	private final Watchdog m_watchdog;
+	private Mode lastMode = Mode.kNone;
+	private final Watchdog watchdog;
 
 	/**
 	 * Constructor for IterativeRobotBase.
@@ -59,11 +59,11 @@ public abstract class IterativeRobotBase extends RobotBase {
 	 * @param period Period in seconds.
 	 */
 	protected IterativeRobotBase(double period) {
-		m_period = period;
-		m_watchdog = new Watchdog(period, this::printLoopOverrunMessage);
+		this.period = period;
+		watchdog = new Watchdog(period, this::printLoopOverrunMessage);
 
-		m_watchdog.disable();
-		m_watchdog.suppressTimeoutMessage(true);
+		watchdog.disable();
+		watchdog.suppressTimeoutMessage(true);
 
 		Thread.currentThread().setPriority(9);
 		Thread.currentThread().setName("RobotMainThread");
@@ -93,6 +93,19 @@ public abstract class IterativeRobotBase extends RobotBase {
 	 */
 	public void robotInit() {
 		System.out.println("Default robotInit() method... Override me!");
+	}
+
+	/**
+	 * Robot-wide simulation initialization code should go here.
+	 *
+	 * <p>
+	 * Users should override this method for default Robot-wide simulation related
+	 * initialization which will be called when the robot is first started. It will
+	 * be called exactly one time after RobotInit is called only when the robot is
+	 * in simulation.
+	 */
+	public void simulationInit() {
+		System.out.println("Default simulationInit() method... Override me!");
 	}
 
 	/**
@@ -154,6 +167,21 @@ public abstract class IterativeRobotBase extends RobotBase {
 		}
 	}
 
+	private boolean m_spFirstRun = true;
+
+	/**
+	 * Periodic simulation code should go here.
+	 *
+	 * <p>
+	 * This function is called in a simulated robot after user code executes.
+	 */
+	public void simulationPeriodic() {
+		if (m_spFirstRun) {
+			System.out.println("Default simulationPeriodic() method... Override me!");
+			m_spFirstRun = false;
+		}
+	}
+
 	private boolean m_dpFirstRun = true;
 
 	/**
@@ -204,81 +232,87 @@ public abstract class IterativeRobotBase extends RobotBase {
 	}
 
 	protected void loopFunc() {
-		m_watchdog.reset();
+		watchdog.reset();
 
 		// Call the appropriate function depending upon the current robot mode
 		if (isDisabled()) {
 			// Call DisabledInit() if we are now just entering disabled mode from either a
 			// different mode
 			// or from power-on.
-			if (m_lastMode != Mode.kDisabled) {
+			if (lastMode != Mode.kDisabled) {
 				LiveWindow.setEnabled(false);
 				Shuffleboard.disableActuatorWidgets();
 				disabledInit();
-				m_watchdog.addEpoch("disabledInit()");
-				m_lastMode = Mode.kDisabled;
+				watchdog.addEpoch("disabledInit()");
+				lastMode = Mode.kDisabled;
 			}
 
 			HAL.observeUserProgramDisabled();
 			disabledPeriodic();
-			m_watchdog.addEpoch("disablePeriodic()");
+			watchdog.addEpoch("disablePeriodic()");
 		} else if (isAutonomous()) {
 			// Call AutonomousInit() if we are now just entering autonomous mode from either
 			// a different
 			// mode or from power-on.
-			if (m_lastMode != Mode.kAutonomous) {
+			if (lastMode != Mode.kAutonomous) {
 				LiveWindow.setEnabled(false);
 				Shuffleboard.disableActuatorWidgets();
 				autonomousInit();
-				m_watchdog.addEpoch("autonomousInit()");
-				m_lastMode = Mode.kAutonomous;
+				watchdog.addEpoch("autonomousInit()");
+				lastMode = Mode.kAutonomous;
 			}
 
 			HAL.observeUserProgramAutonomous();
 			autonomousPeriodic();
-			m_watchdog.addEpoch("autonomousPeriodic()");
+			watchdog.addEpoch("autonomousPeriodic()");
 		} else if (isOperatorControl()) {
 			// Call TeleopInit() if we are now just entering teleop mode from either a
 			// different mode or
 			// from power-on.
-			if (m_lastMode != Mode.kTeleop) {
+			if (lastMode != Mode.kTeleop) {
 				LiveWindow.setEnabled(false);
 				Shuffleboard.disableActuatorWidgets();
 				teleopInit();
-				m_watchdog.addEpoch("teleopInit()");
-				m_lastMode = Mode.kTeleop;
+				watchdog.addEpoch("teleopInit()");
+				lastMode = Mode.kTeleop;
 			}
 
 			HAL.observeUserProgramTeleop();
 			teleopPeriodic();
-			m_watchdog.addEpoch("teleopPeriodic()");
+			watchdog.addEpoch("teleopPeriodic()");
 		} else {
 			// Call TestInit() if we are now just entering test mode from either a different
 			// mode or from
 			// power-on.
-			if (m_lastMode != Mode.kTest) {
+			if (lastMode != Mode.kTest) {
 				LiveWindow.setEnabled(true);
 				Shuffleboard.enableActuatorWidgets();
 				testInit();
-				m_watchdog.addEpoch("testInit()");
-				m_lastMode = Mode.kTest;
+				watchdog.addEpoch("testInit()");
+				lastMode = Mode.kTest;
 			}
 
 			HAL.observeUserProgramTest();
 			testPeriodic();
-			m_watchdog.addEpoch("testPeriodic()");
+			watchdog.addEpoch("testPeriodic()");
 		}
 
 		robotPeriodic();
-		m_watchdog.addEpoch("robotPeriodic()");
+		watchdog.addEpoch("robotPeriodic()");
 
 		SmartDashboard.updateValues();
-		m_watchdog.addEpoch("SmartDashboard.updateValues()");
+		watchdog.addEpoch("SmartDashboard.updateValues()");
 		LiveWindow.updateValues();
-		m_watchdog.addEpoch("LiveWindow.updateValues()");
+		watchdog.addEpoch("LiveWindow.updateValues()");
 		Shuffleboard.update();
-		m_watchdog.addEpoch("Shuffleboard.update()");
-		m_watchdog.disable();
+		watchdog.addEpoch("Shuffleboard.update()");
+
+		if (isSimulation()) {
+			simulationPeriodic();
+			watchdog.addEpoch("simulationPeriodic()");
+		}
+
+		watchdog.disable();
 	}
 
 	private void printLoopOverrunMessage() {

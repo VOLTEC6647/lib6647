@@ -270,6 +270,7 @@ public class JController extends GenericHID {
 			break;
 		case kRight:
 			rightX = axis;
+			break;
 		default:
 		}
 	}
@@ -313,6 +314,7 @@ public class JController extends GenericHID {
 			break;
 		case kRight:
 			rightY = axis;
+			break;
 		default:
 		}
 	}

@@ -87,11 +87,11 @@ dependencies {
 }
 
 compileJava {
-    options.compilerArgs << "-parameters"
+    options.compilerArgs << "-parameters" << "-Xlint:all"
 }
 
 compileTestJava {
-    options.compilerArgs << "-parameters"
+    options.compilerArgs << "-parameters" << "-Xlint:all"
 }
 
 publishing {
