@@ -25,6 +25,7 @@ Currently written documentation can be found at https://lib6647.readthedocs.io/,
   + [x] HyperFalcon
   + [ ] HyperPDP
   + [x] HyperSolenoid
+  + [ ] HyperSpark
   + [x] HyperTalon
   + [ ] HyperUltrasonic
   + [x] HyperVictor
@@ -42,6 +43,7 @@ Currently written documentation can be found at https://lib6647.readthedocs.io/,
   + [x] SuperProfiledPID
   + [ ] SuperServo
   + [x] SuperSolenoid
+  + [ ] SuperSpark
   + [x] SuperTalon
   + [x] SuperUltrasonic
   + [x] SuperVictor
@@ -61,10 +63,11 @@ Currently written documentation can be found at https://lib6647.readthedocs.io/,
   + [x] Copy SimEnabler class from frc-characterization, to enable characterization of simulations.
   + [ ] Create CharLoop classes, with templates to run characterization routines across different robots.
 * [ ] Implement trajectory generation into library.
-* [x] Add more flexibility and configuration options.
+* [ ] Add more flexibility and configuration options.
   + [x] To HyperTalon.
   + [x] To HyperVictor.
   + [x] To HyperFalcon.
+  + [ ] To SparkMax.
 * [ ] Add field to display SuperComponents in Shuffleboard.
   + [ ] Rewrite initSendable in HyperComponents, to support added features.
 * [x] Comment everything.

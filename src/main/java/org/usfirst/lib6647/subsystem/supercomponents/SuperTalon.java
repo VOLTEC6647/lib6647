@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.usfirst.lib6647.subsystem.ComponentInitException;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.subsystem.hypercomponents.HyperTalon;
-import org.usfirst.lib6647.util.MotorUtil;
+import org.usfirst.lib6647.util.CTREUtil;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -190,7 +190,7 @@ public interface SuperTalon {
 										"remoteSensorDeviceID") ? remoteFilter.get("remoteSensorDeviceID").asInt() : 0;
 								talonConfig.remoteFilter0.remoteSensorSource = remoteFilter
 										.hasNonNull("remoteSensorSource")
-												? MotorUtil.getRemoteSensorSource(
+												? CTREUtil.getRemoteSensorSource(
 														remoteFilter.get("remoteSensorSource").asText())
 												: RemoteSensorSource.Off;
 							}
@@ -201,7 +201,7 @@ public interface SuperTalon {
 										"remoteSensorDeviceID") ? remoteFilter.get("remoteSensorDeviceID").asInt() : 0;
 								talonConfig.remoteFilter1.remoteSensorSource = remoteFilter
 										.hasNonNull("remoteSensorSource")
-												? MotorUtil.getRemoteSensorSource(
+												? CTREUtil.getRemoteSensorSource(
 														remoteFilter.get("remoteSensorSource").asText())
 												: RemoteSensorSource.Off;
 							}
@@ -263,7 +263,7 @@ public interface SuperTalon {
 									? voltage.get("voltageMeasurementFilter").asInt(32)
 									: 32;
 							talonConfig.velocityMeasurementPeriod = voltage.hasNonNull("velocityMeasurementPeriod")
-									? MotorUtil.getVelocityMeasurementPeriod(
+									? CTREUtil.getVelocityMeasurementPeriod(
 											voltage.get("velocityMeasurementPeriod").asText())
 									: VelocityMeasPeriod.Period_100Ms;
 							talonConfig.velocityMeasurementWindow = voltage.hasNonNull("velocityMeasurementWindow")
@@ -361,7 +361,7 @@ public interface SuperTalon {
 												: 1.0;
 								talonConfig.primaryPID.selectedFeedbackSensor = primary
 										.hasNonNull("selectedFeedbackSensor")
-												? MotorUtil.getFeedbackDevice(
+												? CTREUtil.getFeedbackDevice(
 														primary.get("selectedFeedbackSensor").asText("QuadEncoder"))
 												: FeedbackDevice.QuadEncoder;
 							}
@@ -374,7 +374,7 @@ public interface SuperTalon {
 												: 1.0;
 								talonConfig.auxiliaryPID.selectedFeedbackSensor = auxiliary
 										.hasNonNull("selectedFeedbackSensor")
-												? MotorUtil.getFeedbackDevice(
+												? CTREUtil.getFeedbackDevice(
 														auxiliary.get("selectedFeedbackSensor").asText("QuadEncoder"))
 												: FeedbackDevice.QuadEncoder;
 							}
@@ -387,7 +387,7 @@ public interface SuperTalon {
 								var forward = limitSwitch.get("forward");
 
 								talonConfig.forwardLimitSwitchSource = forward.hasNonNull("forwardLimitSwitchSource")
-										? MotorUtil.getLimitSwitchSource(
+										? CTREUtil.getLimitSwitchSource(
 												forward.get("forwardLimitSwitchSource").asText("FeedbackConnector"))
 										: LimitSwitchSource.FeedbackConnector;
 								talonConfig.forwardLimitSwitchDeviceID = forward
@@ -395,7 +395,7 @@ public interface SuperTalon {
 												? forward.get("forwardLimitSwitchDeviceID").asInt()
 												: 0;
 								talonConfig.forwardLimitSwitchNormal = forward.hasNonNull("forwardLimitSwitchNormal")
-										? MotorUtil.getLimitSwitchNormal(
+										? CTREUtil.getLimitSwitchNormal(
 												forward.get("forwardLimitSwitchNormal").asText("NormallyOpen"))
 										: LimitSwitchNormal.NormallyOpen;
 							}
@@ -403,7 +403,7 @@ public interface SuperTalon {
 								var reverse = limitSwitch.get("reverse");
 
 								talonConfig.reverseLimitSwitchSource = reverse.hasNonNull("reverseLimitSwitchSource")
-										? MotorUtil.getLimitSwitchSource(
+										? CTREUtil.getLimitSwitchSource(
 												reverse.get("reverseLimitSwitchSource").asText("FeedbackConnector"))
 										: LimitSwitchSource.FeedbackConnector;
 								talonConfig.reverseLimitSwitchDeviceID = reverse
@@ -411,7 +411,7 @@ public interface SuperTalon {
 												? reverse.get("reverseLimitSwitchDeviceID").asInt()
 												: 0;
 								talonConfig.reverseLimitSwitchNormal = reverse.hasNonNull("reverseLimitSwitchNormal")
-										? MotorUtil.getLimitSwitchNormal(
+										? CTREUtil.getLimitSwitchNormal(
 												reverse.get("reverseLimitSwitchNormal").asText("NormallyOpen"))
 										: LimitSwitchNormal.NormallyOpen;
 							}
@@ -426,16 +426,16 @@ public interface SuperTalon {
 							var sumDiff = config.get("sumDiff");
 
 							talonConfig.sum0Term = sumDiff.hasNonNull("sum0Term")
-									? MotorUtil.getFeedbackDevice(sumDiff.get("sum0Term").asText("QuadEncoder"))
+									? CTREUtil.getFeedbackDevice(sumDiff.get("sum0Term").asText("QuadEncoder"))
 									: FeedbackDevice.QuadEncoder;
 							talonConfig.sum1Term = sumDiff.hasNonNull("sum1Term")
-									? MotorUtil.getFeedbackDevice(sumDiff.get("sum1Term").asText("QuadEncoder"))
+									? CTREUtil.getFeedbackDevice(sumDiff.get("sum1Term").asText("QuadEncoder"))
 									: FeedbackDevice.QuadEncoder;
 							talonConfig.diff0Term = sumDiff.hasNonNull("diff0Term")
-									? MotorUtil.getFeedbackDevice(sumDiff.get("diff0Term").asText("QuadEncoder"))
+									? CTREUtil.getFeedbackDevice(sumDiff.get("diff0Term").asText("QuadEncoder"))
 									: FeedbackDevice.QuadEncoder;
 							talonConfig.diff1Term = sumDiff.hasNonNull("diff1Term")
-									? MotorUtil.getFeedbackDevice(sumDiff.get("diff1Term").asText("QuadEncoder"))
+									? CTREUtil.getFeedbackDevice(sumDiff.get("diff1Term").asText("QuadEncoder"))
 									: FeedbackDevice.QuadEncoder;
 						}
 
@@ -461,7 +461,7 @@ public interface SuperTalon {
 					talon.setLimiter(limiter < 0.0 ? 0.0 : limiter > 1.0 ? 1.0 : limiter);
 
 					talon.setNeutralMode(
-							json.hasNonNull("neutralMode") ? MotorUtil.getNeutralMode(json.get("neutralMode").asText())
+							json.hasNonNull("neutralMode") ? CTREUtil.getNeutralMode(json.get("neutralMode").asText())
 									: NeutralMode.Coast);
 					talon.setInverted(json.hasNonNull("inverted") ? json.get("inverted").asBoolean() : false);
 
@@ -475,7 +475,7 @@ public interface SuperTalon {
 
 							talon.configSelectedFeedbackSensor(
 									primary.hasNonNull("feedbackDevice")
-											? MotorUtil.getFeedbackDevice(
+											? CTREUtil.getFeedbackDevice(
 													primary.get("feedbackDevice").asText("QuadEncoder"))
 											: FeedbackDevice.QuadEncoder,
 									0, primary.hasNonNull("timeoutMs") ? primary.get("timeoutMs").asInt(0) : 0);
@@ -488,7 +488,7 @@ public interface SuperTalon {
 
 							talon.configSelectedFeedbackSensor(
 									auxiliary.hasNonNull("feedbackDevice")
-											? MotorUtil.getFeedbackDevice(
+											? CTREUtil.getFeedbackDevice(
 													auxiliary.get("feedbackDevice").asText("QuadEncoder"))
 											: FeedbackDevice.QuadEncoder,
 									1, auxiliary.hasNonNull("timeoutMs") ? auxiliary.get("timeoutMs").asInt(0) : 0);

@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * Utility class containing a couple useful methods for CTRE motor
  * initialization.
  */
-public class MotorUtil {
+public class CTREUtil {
 	/**
 	 * Get a {@link NeutralMode} value from a String.
 	 * 
@@ -463,7 +463,7 @@ public class MotorUtil {
 	/**
 	 * This class must not be instantiated.
 	 */
-	private MotorUtil() {
+	private CTREUtil() {
 		throw new AssertionError("utility class");
 	}
 }

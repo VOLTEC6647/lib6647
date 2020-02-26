@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.usfirst.lib6647.subsystem.ComponentInitException;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.subsystem.hypercomponents.HyperFalcon;
-import org.usfirst.lib6647.util.MotorUtil;
+import org.usfirst.lib6647.util.CTREUtil;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -193,7 +193,7 @@ public interface SuperFalcon {
 										"remoteSensorDeviceID") ? remoteFilter.get("remoteSensorDeviceID").asInt() : 0;
 								falconConfig.remoteFilter0.remoteSensorSource = remoteFilter
 										.hasNonNull("remoteSensorSource")
-												? MotorUtil.getRemoteSensorSource(
+												? CTREUtil.getRemoteSensorSource(
 														remoteFilter.get("remoteSensorSource").asText())
 												: RemoteSensorSource.Off;
 							}
@@ -204,7 +204,7 @@ public interface SuperFalcon {
 										"remoteSensorDeviceID") ? remoteFilter.get("remoteSensorDeviceID").asInt() : 0;
 								falconConfig.remoteFilter1.remoteSensorSource = remoteFilter
 										.hasNonNull("remoteSensorSource")
-												? MotorUtil.getRemoteSensorSource(
+												? CTREUtil.getRemoteSensorSource(
 														remoteFilter.get("remoteSensorSource").asText())
 												: RemoteSensorSource.Off;
 							}
@@ -266,7 +266,7 @@ public interface SuperFalcon {
 									? voltage.get("voltageMeasurementFilter").asInt(32)
 									: 32;
 							falconConfig.velocityMeasurementPeriod = voltage.hasNonNull("velocityMeasurementPeriod")
-									? MotorUtil.getVelocityMeasurementPeriod(
+									? CTREUtil.getVelocityMeasurementPeriod(
 											voltage.get("velocityMeasurementPeriod").asText())
 									: VelocityMeasPeriod.Period_100Ms;
 							falconConfig.velocityMeasurementWindow = voltage.hasNonNull("velocityMeasurementWindow")
@@ -364,7 +364,7 @@ public interface SuperFalcon {
 												: 1.0;
 								falconConfig.primaryPID.selectedFeedbackSensor = primary
 										.hasNonNull("selectedFeedbackSensor")
-												? MotorUtil.getFeedbackDevice(primary.get("selectedFeedbackSensor")
+												? CTREUtil.getFeedbackDevice(primary.get("selectedFeedbackSensor")
 														.asText("IntegratedSensor"))
 												: FeedbackDevice.IntegratedSensor;
 							}
@@ -377,7 +377,7 @@ public interface SuperFalcon {
 												: 1.0;
 								falconConfig.auxiliaryPID.selectedFeedbackSensor = auxiliary
 										.hasNonNull("selectedFeedbackSensor")
-												? MotorUtil.getFeedbackDevice(auxiliary.get("selectedFeedbackSensor")
+												? CTREUtil.getFeedbackDevice(auxiliary.get("selectedFeedbackSensor")
 														.asText("IntegratedSensor"))
 												: FeedbackDevice.IntegratedSensor;
 							}
@@ -390,7 +390,7 @@ public interface SuperFalcon {
 								var forward = limitSwitch.get("forward");
 
 								falconConfig.forwardLimitSwitchSource = forward.hasNonNull("forwardLimitSwitchSource")
-										? MotorUtil.getLimitSwitchSource(
+										? CTREUtil.getLimitSwitchSource(
 												forward.get("forwardLimitSwitchSource").asText("FeedbackConnector"))
 										: LimitSwitchSource.FeedbackConnector;
 								falconConfig.forwardLimitSwitchDeviceID = forward
@@ -398,7 +398,7 @@ public interface SuperFalcon {
 												? forward.get("forwardLimitSwitchDeviceID").asInt()
 												: 0;
 								falconConfig.forwardLimitSwitchNormal = forward.hasNonNull("forwardLimitSwitchNormal")
-										? MotorUtil.getLimitSwitchNormal(
+										? CTREUtil.getLimitSwitchNormal(
 												forward.get("forwardLimitSwitchNormal").asText("NormallyOpen"))
 										: LimitSwitchNormal.NormallyOpen;
 							}
@@ -406,7 +406,7 @@ public interface SuperFalcon {
 								var reverse = limitSwitch.get("reverse");
 
 								falconConfig.reverseLimitSwitchSource = reverse.hasNonNull("reverseLimitSwitchSource")
-										? MotorUtil.getLimitSwitchSource(
+										? CTREUtil.getLimitSwitchSource(
 												reverse.get("reverseLimitSwitchSource").asText("FeedbackConnector"))
 										: LimitSwitchSource.FeedbackConnector;
 								falconConfig.reverseLimitSwitchDeviceID = reverse
@@ -414,7 +414,7 @@ public interface SuperFalcon {
 												? reverse.get("reverseLimitSwitchDeviceID").asInt()
 												: 0;
 								falconConfig.reverseLimitSwitchNormal = reverse.hasNonNull("reverseLimitSwitchNormal")
-										? MotorUtil.getLimitSwitchNormal(
+										? CTREUtil.getLimitSwitchNormal(
 												reverse.get("reverseLimitSwitchNormal").asText("NormallyOpen"))
 										: LimitSwitchNormal.NormallyOpen;
 							}
@@ -429,16 +429,16 @@ public interface SuperFalcon {
 							var sumDiff = config.get("sumDiff");
 
 							falconConfig.sum0Term = sumDiff.hasNonNull("sum0Term")
-									? MotorUtil.getFeedbackDevice(sumDiff.get("sum0Term").asText("IntegratedSensor"))
+									? CTREUtil.getFeedbackDevice(sumDiff.get("sum0Term").asText("IntegratedSensor"))
 									: FeedbackDevice.IntegratedSensor;
 							falconConfig.sum1Term = sumDiff.hasNonNull("sum1Term")
-									? MotorUtil.getFeedbackDevice(sumDiff.get("sum1Term").asText("IntegratedSensor"))
+									? CTREUtil.getFeedbackDevice(sumDiff.get("sum1Term").asText("IntegratedSensor"))
 									: FeedbackDevice.IntegratedSensor;
 							falconConfig.diff0Term = sumDiff.hasNonNull("diff0Term")
-									? MotorUtil.getFeedbackDevice(sumDiff.get("diff0Term").asText("IntegratedSensor"))
+									? CTREUtil.getFeedbackDevice(sumDiff.get("diff0Term").asText("IntegratedSensor"))
 									: FeedbackDevice.IntegratedSensor;
 							falconConfig.diff1Term = sumDiff.hasNonNull("diff1Term")
-									? MotorUtil.getFeedbackDevice(sumDiff.get("diff1Term").asText("IntegratedSensor"))
+									? CTREUtil.getFeedbackDevice(sumDiff.get("diff1Term").asText("IntegratedSensor"))
 									: FeedbackDevice.IntegratedSensor;
 						}
 
@@ -491,17 +491,17 @@ public interface SuperFalcon {
 							}
 						}
 						falconConfig.motorCommutation = config.hasNonNull("motorCommutation")
-								? MotorUtil.getMotorCommutation(config.get("motorCommutation").asText("Trapezoidal"))
+								? CTREUtil.getMotorCommutation(config.get("motorCommutation").asText("Trapezoidal"))
 								: MotorCommutation.Trapezoidal;
 						falconConfig.absoluteSensorRange = config.hasNonNull("absoluteSensorRange")
-								? MotorUtil.getAbsoluteSensorRange(
+								? CTREUtil.getAbsoluteSensorRange(
 										config.get("absoluteSensorRange").asText("Unsigned_0_to_360"))
 								: AbsoluteSensorRange.Unsigned_0_to_360;
 						falconConfig.integratedSensorOffsetDegrees = config.hasNonNull("integratedSensorOffsetDegrees")
 								? config.get("integratedSensorOffsetDegrees").asDouble()
 								: 0.0;
 						falconConfig.initializationStrategy = config.hasNonNull("initializationStrategy")
-								? MotorUtil.getSensorInitializationStrategy(
+								? CTREUtil.getSensorInitializationStrategy(
 										config.get("initializationStrategy").asText("BootToZero"))
 								: SensorInitializationStrategy.BootToZero;
 					}
@@ -513,7 +513,7 @@ public interface SuperFalcon {
 					falcon.setLimiter(limiter < 0.0 ? 0.0 : limiter > 1.0 ? 1.0 : limiter);
 
 					falcon.setNeutralMode(
-							json.hasNonNull("neutralMode") ? MotorUtil.getNeutralMode(json.get("neutralMode").asText())
+							json.hasNonNull("neutralMode") ? CTREUtil.getNeutralMode(json.get("neutralMode").asText())
 									: NeutralMode.Coast);
 					falcon.setInverted(json.hasNonNull("inverted") ? json.get("inverted").asBoolean() : false);
 
@@ -527,7 +527,7 @@ public interface SuperFalcon {
 
 							falcon.configSelectedFeedbackSensor(
 									primary.hasNonNull("feedbackDevice")
-											? MotorUtil.getFeedbackDevice(
+											? CTREUtil.getFeedbackDevice(
 													primary.get("feedbackDevice").asText("IntegratedSensor"))
 											: FeedbackDevice.IntegratedSensor,
 									0, primary.hasNonNull("timeoutMs") ? primary.get("timeoutMs").asInt(0) : 0);
@@ -540,7 +540,7 @@ public interface SuperFalcon {
 
 							falcon.configSelectedFeedbackSensor(
 									auxiliary.hasNonNull("feedbackDevice")
-											? MotorUtil.getFeedbackDevice(
+											? CTREUtil.getFeedbackDevice(
 													auxiliary.get("feedbackDevice").asText("IntegratedSensor"))
 											: FeedbackDevice.IntegratedSensor,
 									1, auxiliary.hasNonNull("timeoutMs") ? auxiliary.get("timeoutMs").asInt(0) : 0);

@@ -15,7 +15,7 @@ import org.usfirst.lib6647.subsystem.ComponentInitException;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
 import org.usfirst.lib6647.subsystem.hypercomponents.HyperTalon;
 import org.usfirst.lib6647.subsystem.hypercomponents.HyperVictor;
-import org.usfirst.lib6647.util.MotorUtil;
+import org.usfirst.lib6647.util.CTREUtil;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -191,7 +191,7 @@ public interface SuperVictor {
 										"remoteSensorDeviceID") ? remoteFilter.get("remoteSensorDeviceID").asInt() : 0;
 								victorConfig.remoteFilter0.remoteSensorSource = remoteFilter
 										.hasNonNull("remoteSensorSource")
-												? MotorUtil.getRemoteSensorSource(
+												? CTREUtil.getRemoteSensorSource(
 														remoteFilter.get("remoteSensorSource").asText())
 												: RemoteSensorSource.Off;
 							}
@@ -202,7 +202,7 @@ public interface SuperVictor {
 										"remoteSensorDeviceID") ? remoteFilter.get("remoteSensorDeviceID").asInt() : 0;
 								victorConfig.remoteFilter1.remoteSensorSource = remoteFilter
 										.hasNonNull("remoteSensorSource")
-												? MotorUtil.getRemoteSensorSource(
+												? CTREUtil.getRemoteSensorSource(
 														remoteFilter.get("remoteSensorSource").asText())
 												: RemoteSensorSource.Off;
 							}
@@ -264,7 +264,7 @@ public interface SuperVictor {
 									? voltage.get("voltageMeasurementFilter").asInt(32)
 									: 32;
 							victorConfig.velocityMeasurementPeriod = voltage.hasNonNull("velocityMeasurementPeriod")
-									? MotorUtil.getVelocityMeasurementPeriod(
+									? CTREUtil.getVelocityMeasurementPeriod(
 											voltage.get("velocityMeasurementPeriod").asText())
 									: VelocityMeasPeriod.Period_100Ms;
 							victorConfig.velocityMeasurementWindow = voltage.hasNonNull("velocityMeasurementWindow")
@@ -362,7 +362,7 @@ public interface SuperVictor {
 												: 1.0;
 								victorConfig.primaryPID.selectedFeedbackSensor = primary
 										.hasNonNull("selectedFeedbackSensor")
-												? MotorUtil.getRemoteFeedbackDevice(
+												? CTREUtil.getRemoteFeedbackDevice(
 														primary.get("selectedFeedbackSensor").asText("None"))
 												: RemoteFeedbackDevice.None;
 							}
@@ -375,7 +375,7 @@ public interface SuperVictor {
 												: 1.0;
 								victorConfig.auxiliaryPID.selectedFeedbackSensor = auxiliary
 										.hasNonNull("selectedFeedbackSensor")
-												? MotorUtil.getRemoteFeedbackDevice(
+												? CTREUtil.getRemoteFeedbackDevice(
 														auxiliary.get("selectedFeedbackSensor").asText("None"))
 												: RemoteFeedbackDevice.None;
 							}
@@ -388,7 +388,7 @@ public interface SuperVictor {
 								var forward = limitSwitch.get("forward");
 
 								victorConfig.forwardLimitSwitchSource = forward.hasNonNull("forwardLimitSwitchSource")
-										? MotorUtil.getRemoteLimitSwitchSource(
+										? CTREUtil.getRemoteLimitSwitchSource(
 												forward.get("forwardLimitSwitchSource").asText("Deactivated"))
 										: RemoteLimitSwitchSource.Deactivated;
 								victorConfig.forwardLimitSwitchDeviceID = forward
@@ -396,7 +396,7 @@ public interface SuperVictor {
 												? forward.get("forwardLimitSwitchDeviceID").asInt()
 												: 0;
 								victorConfig.forwardLimitSwitchNormal = forward.hasNonNull("forwardLimitSwitchNormal")
-										? MotorUtil.getLimitSwitchNormal(
+										? CTREUtil.getLimitSwitchNormal(
 												forward.get("forwardLimitSwitchNormal").asText("NormallyOpen"))
 										: LimitSwitchNormal.NormallyOpen;
 							}
@@ -404,7 +404,7 @@ public interface SuperVictor {
 								var reverse = limitSwitch.get("reverse");
 
 								victorConfig.reverseLimitSwitchSource = reverse.hasNonNull("reverseLimitSwitchSource")
-										? MotorUtil.getRemoteLimitSwitchSource(
+										? CTREUtil.getRemoteLimitSwitchSource(
 												reverse.get("reverseLimitSwitchSource").asText("Deactivated"))
 										: RemoteLimitSwitchSource.Deactivated;
 								victorConfig.reverseLimitSwitchDeviceID = reverse
@@ -412,7 +412,7 @@ public interface SuperVictor {
 												? reverse.get("reverseLimitSwitchDeviceID").asInt()
 												: 0;
 								victorConfig.reverseLimitSwitchNormal = reverse.hasNonNull("reverseLimitSwitchNormal")
-										? MotorUtil.getLimitSwitchNormal(
+										? CTREUtil.getLimitSwitchNormal(
 												reverse.get("reverseLimitSwitchNormal").asText("NormallyOpen"))
 										: LimitSwitchNormal.NormallyOpen;
 							}
@@ -427,16 +427,16 @@ public interface SuperVictor {
 							var sumDiff = config.get("sumDiff");
 
 							victorConfig.sum0Term = sumDiff.hasNonNull("sum0Term")
-									? MotorUtil.getRemoteFeedbackDevice(sumDiff.get("sum0Term").asText("None"))
+									? CTREUtil.getRemoteFeedbackDevice(sumDiff.get("sum0Term").asText("None"))
 									: RemoteFeedbackDevice.None;
 							victorConfig.sum1Term = sumDiff.hasNonNull("sum1Term")
-									? MotorUtil.getRemoteFeedbackDevice(sumDiff.get("sum1Term").asText("None"))
+									? CTREUtil.getRemoteFeedbackDevice(sumDiff.get("sum1Term").asText("None"))
 									: RemoteFeedbackDevice.None;
 							victorConfig.diff0Term = sumDiff.hasNonNull("diff0Term")
-									? MotorUtil.getRemoteFeedbackDevice(sumDiff.get("diff0Term").asText("None"))
+									? CTREUtil.getRemoteFeedbackDevice(sumDiff.get("diff0Term").asText("None"))
 									: RemoteFeedbackDevice.None;
 							victorConfig.diff1Term = sumDiff.hasNonNull("diff1Term")
-									? MotorUtil.getRemoteFeedbackDevice(sumDiff.get("diff1Term").asText("None"))
+									? CTREUtil.getRemoteFeedbackDevice(sumDiff.get("diff1Term").asText("None"))
 									: RemoteFeedbackDevice.None;
 						}
 					}
@@ -448,7 +448,7 @@ public interface SuperVictor {
 					victor.setLimiter(limiter < 0.0 ? 0.0 : limiter > 1.0 ? 1.0 : limiter);
 
 					victor.setNeutralMode(
-							json.hasNonNull("neutralMode") ? MotorUtil.getNeutralMode(json.get("neutralMode").asText())
+							json.hasNonNull("neutralMode") ? CTREUtil.getNeutralMode(json.get("neutralMode").asText())
 									: NeutralMode.Coast);
 					victor.setInverted(json.hasNonNull("inverted") ? json.get("inverted").asBoolean() : false);
 
