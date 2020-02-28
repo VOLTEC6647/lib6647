@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 
 import org.usfirst.lib6647.subsystem.ComponentInitException;
@@ -25,6 +27,16 @@ public interface SuperSparkMax {
 	 * HashMap storing the {@link SuperSubsystem}'s {@link CANSparkMax} instances.
 	 */
 	final Map<String, CANSparkMax> sparks = new HashMap<>();
+
+	/**
+	 * HashMap storing the {@link SuperSubsystem}'s {@link CANPIDController}
+	 * instances.
+	 */
+	final Map<String, CANPIDController> sparkPIDcontrollers = new HashMap<>();
+	/**
+	 * HashMap storing the {@link SuperSubsystem}'s {@link CANEncoder} instances.
+	 */
+	final Map<String, CANEncoder> sparkEncoders = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link CANSparkMax CANSparkMax objects} declared in the
@@ -52,12 +64,14 @@ public interface SuperSparkMax {
 
 					// Create CANSparkMax object.
 					var spark = new CANSparkMax(json.get("port").asInt(), type);
+					var controller = spark.getPIDController();
+					var encoder = spark.getEncoder();
+
 					spark.restoreFactoryDefaults();
 
 					// Additional initialization configuration.
 					if (json.hasNonNull("pid")) {
 						var pid = json.get("pid");
-						var controller = spark.getPIDController();
 
 						for (int i = 0; i < 4; i++) {
 							if (pid.hasNonNull("slot" + i)) {
@@ -79,6 +93,8 @@ public interface SuperSparkMax {
 					// Put object in HashMap with its declared name as key after initialization and
 					// configuration.
 					sparks.put(json.get("name").asText(), spark);
+					sparkPIDcontrollers.put(json.get("name").asText(), controller);
+					sparkEncoders.put(json.get("name").asText(), encoder);
 				}
 			} catch (Exception e) {
 				System.out.println(e.getLocalizedMessage());
