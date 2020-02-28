@@ -1,6 +1,7 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
@@ -33,7 +34,7 @@ public interface SuperFalcon {
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperFalcon} instances.
 	 */
-	final HashMap<String, HyperFalcon> falcons = new HashMap<>();
+	final Map<String, HyperFalcon> falcons = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link HyperFalcon HyperFalcon objects} declared in the

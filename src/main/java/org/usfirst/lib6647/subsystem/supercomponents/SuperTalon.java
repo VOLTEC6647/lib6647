@@ -1,6 +1,7 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
@@ -30,7 +31,7 @@ public interface SuperTalon {
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperTalon} instances.
 	 */
-	final HashMap<String, HyperTalon> talons = new HashMap<>();
+	final Map<String, HyperTalon> talons = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link HyperTalon HyperTalon objects} declared in the

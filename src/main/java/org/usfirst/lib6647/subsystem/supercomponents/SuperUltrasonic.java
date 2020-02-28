@@ -1,6 +1,7 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -22,7 +23,7 @@ public interface SuperUltrasonic {
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s {@link Ultrasonic} instances.
 	 */
-	final HashMap<String, Ultrasonic> ultrasonics = new HashMap<>();
+	final Map<String, Ultrasonic> ultrasonics = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link Ultrasonic Ultrasonic objects} declared in the

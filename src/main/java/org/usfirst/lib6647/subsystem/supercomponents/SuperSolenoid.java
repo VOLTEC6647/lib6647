@@ -1,6 +1,7 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -22,7 +23,7 @@ public interface SuperSolenoid {
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperSolenoid} instances.
 	 */
-	final HashMap<String, HyperSolenoid> solenoids = new HashMap<>();
+	final Map<String, HyperSolenoid> solenoids = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link HyperSolenoid HyperSolenoid objects} declared in

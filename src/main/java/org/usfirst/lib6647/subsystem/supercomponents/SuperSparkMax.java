@@ -1,6 +1,7 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.revrobotics.CANSparkMax;
@@ -23,7 +24,7 @@ public interface SuperSparkMax {
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s {@link CANSparkMax} instances.
 	 */
-	final HashMap<String, CANSparkMax> sparks = new HashMap<>();
+	final Map<String, CANSparkMax> sparks = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link CANSparkMax CANSparkMax objects} declared in the
@@ -51,8 +52,28 @@ public interface SuperSparkMax {
 
 					// Create CANSparkMax object.
 					var spark = new CANSparkMax(json.get("port").asInt(), type);
+					spark.restoreFactoryDefaults();
 
 					// Additional initialization configuration.
+					if (json.hasNonNull("pid")) {
+						var pid = json.get("pid");
+						var controller = spark.getPIDController();
+
+						for (int i = 0; i < 4; i++) {
+							if (pid.hasNonNull("slot" + i)) {
+								var slot = pid.get("slot" + i);
+
+								controller.setP(slot.get("p").asDouble(), i);
+								controller.setI(slot.get("i").asDouble(), i);
+								controller.setD(slot.get("d").asDouble(), i);
+								controller.setFF(slot.get("f").asDouble(), i);
+
+								controller.setIZone(slot.get("iZone").asDouble());
+								controller.setOutputRange(slot.get("outputMin").asDouble(-1),
+										slot.get("outputMax").asDouble(1));
+							}
+						}
+					}
 					// ...
 
 					// Put object in HashMap with its declared name as key after initialization and

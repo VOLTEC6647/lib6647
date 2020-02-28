@@ -1,57 +1,30 @@
-package org.usfirst.lib6647.subsystem;
+package org.usfirst.lib6647.loops;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.usfirst.lib6647.loops.ILooper;
-import org.usfirst.lib6647.loops.Loop;
-import org.usfirst.lib6647.loops.LoopType;
-import org.usfirst.lib6647.loops.Looper;
+import org.usfirst.lib6647.subsystem.SuperSubsystem;
 
 /**
- * Class holding instances of objects required to read values from a JSON file,
- * for {@link SuperSubsystem} usage. Also contains an ArrayList holding each of
- * the {@link SuperSubsystem subsystems}. Think of this class as a
- * {@link SuperSubsystem} manager.
+ * This class contains everything necessary to run every provided
+ * {@link SuperSubsystem}'s {@link Loop loops}.
  */
-public class RobotMap implements ILooper {
-	/** Map holding every {@link SuperSubsystem}, with its name as its key. */
+public class LoopRegistrar implements ILooper {
+	/** HashMap holding every {@link SuperSubsystem}, with its name as its key. */
 	private final Map<String, SuperSubsystem> subsystems = new HashMap<>();
 	/** Lists holding every {@link Loop}. */
 	private final List<Loop> enabledLoops = new ArrayList<>(), teleopLoops = new ArrayList<>(),
 			autoLoops = new ArrayList<>(), disabledLoops = new ArrayList<>();
 
 	/**
-	 * Return a {@link Collection} of every declared {@link SuperSubsystem}.
-	 * 
-	 * @return A {@link Collection} of every {@link SuperSubsystem} in the
-	 *         {@link #subsystems} HashMap
-	 */
-	public synchronized Collection<SuperSubsystem> getSubsystems() {
-		return subsystems.values();
-	}
-
-	/**
-	 * Get a specific {@link SuperSubsystem}.
-	 * 
-	 * @param name The name of the {@link SuperSubsystem} to look for
-	 * @return The specified {@link SuperSubsystem}, if found in the
-	 *         {@link #subsystems} HashMap
-	 */
-	public synchronized SuperSubsystem getSubsystem(String name) {
-		return subsystems.get(name);
-	}
-
-	/**
-	 * Adds one or many {@link SuperSubsystem Subsystems} to the {@link #subsystems}
-	 * map.
+	 * Adds each given @link SuperSubsystem} to the {@link #subsystems} HashMap,
+	 * with its name as its key.
 	 * 
 	 * @param subsystems Each {@link SuperSubsystem} to register
 	 */
-	public synchronized void registerSubsystem(SuperSubsystem... subsystems) {
+	public synchronized void registerSubsystems(SuperSubsystem... subsystems) {
 		for (SuperSubsystem s : subsystems)
 			this.subsystems.putIfAbsent(s.getName(), s);
 	}
@@ -211,19 +184,19 @@ public class RobotMap implements ILooper {
 	public void register(Loop... loops) {
 		for (Loop loop : loops) {
 			switch (loop.getType()) {
-			case ENABLED:
-				enabledLoops.add(loop);
-				break;
-			case TELEOP:
-				teleopLoops.add(loop);
-				break;
-			case AUTO:
-				autoLoops.add(loop);
-				break;
-			case DISABLED:
-				disabledLoops.add(loop);
-				break;
-			default:
+				case ENABLED:
+					enabledLoops.add(loop);
+					break;
+				case TELEOP:
+					teleopLoops.add(loop);
+					break;
+				case AUTO:
+					autoLoops.add(loop);
+					break;
+				case DISABLED:
+					disabledLoops.add(loop);
+					break;
+				default:
 			}
 		}
 	}

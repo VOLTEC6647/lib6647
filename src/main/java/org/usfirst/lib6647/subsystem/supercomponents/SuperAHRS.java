@@ -1,6 +1,7 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -24,7 +25,7 @@ public interface SuperAHRS {
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperAHRS} instances.
 	 */
-	final HashMap<String, HyperAHRS> ahrsDevices = new HashMap<>();
+	final Map<String, HyperAHRS> ahrsDevices = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link HyperAHRS HyperAHRS objects} declared in the
@@ -91,18 +92,18 @@ public interface SuperAHRS {
 	 */
 	private SerialPort.Port getPort(String port) {
 		switch (port) {
-		case "MXP":
-			return Port.kMXP;
-		case "Onboard":
-			return Port.kOnboard;
-		case "USB":
-			return Port.kUSB;
-		case "USB1":
-			return Port.kUSB1;
-		case "USB2":
-			return Port.kUSB2;
-		default:
-			return null;
+			case "MXP":
+				return Port.kMXP;
+			case "Onboard":
+				return Port.kOnboard;
+			case "USB":
+				return Port.kUSB;
+			case "USB1":
+				return Port.kUSB1;
+			case "USB2":
+				return Port.kUSB2;
+			default:
+				return null;
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -25,7 +26,7 @@ public interface SuperComponent {
 	 * <p>
 	 * <b>NOTE:</b> Components obtained must be cast to be used properly.
 	 */
-	final HashMap<String, Object> customComponents = new HashMap<>();
+	final Map<String, Object> customComponents = new HashMap<>();
 
 	/**
 	 * Method to initialize custom Components declared in the

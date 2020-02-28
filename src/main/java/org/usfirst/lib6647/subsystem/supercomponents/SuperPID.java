@@ -1,6 +1,7 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -23,7 +24,7 @@ public interface SuperPID {
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s {@link PIDController} instances.
 	 */
-	final HashMap<String, PIDController> pidControllers = new HashMap<>();
+	final Map<String, PIDController> pidControllers = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link PIDController PIDController objects} declared in

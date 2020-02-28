@@ -1,6 +1,7 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -22,7 +23,7 @@ public interface SuperCompressor {
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s {@link Compressor} instances.
 	 */
-	final HashMap<String, Compressor> compressors = new HashMap<>();
+	final Map<String, Compressor> compressors = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link Compressor objects} declared in the

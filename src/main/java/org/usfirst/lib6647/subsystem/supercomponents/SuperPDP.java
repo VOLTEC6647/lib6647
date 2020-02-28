@@ -1,6 +1,7 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -23,7 +24,7 @@ public interface SuperPDP {
 	 * HashMap storing the {@link SuperSubsystem}'s {@link PowerDistributionPanel}
 	 * instances.
 	 */
-	final HashMap<String, PowerDistributionPanel> PDPs = new HashMap<>();
+	final Map<String, PowerDistributionPanel> PDPs = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link PowerDistributionPanel PowerDistributionPanel

@@ -46,15 +46,15 @@ public interface Loop {
 	 * Currently we use four different types of {@link Loop Loops}:
 	 * 
 	 * <p>
-	 * - <b>ENABLED</b>, which runs while the {@link LooperRobot Robot} is enabled.
+	 * - <b>ENABLED</b>, which runs while the Robot is enabled.
 	 * <p>
-	 * - <b>TELEOP</b>, which runs while the {@link LooperRobot Robot} is enabled
-	 * AND in teleoperated mode.
+	 * - <b>TELEOP</b>, which runs while the Robot is enabled AND in teleoperated
+	 * mode.
 	 * <p>
-	 * - <b>DISABLED</b>, which runs while the {@link LooperRobot Robot} is enabled
-	 * AND in autonomous mode.
+	 * - <b>DISABLED</b>, which runs while the Robot is enabled AND in autonomous
+	 * mode.
 	 * <p>
-	 * - <b>AUTO</b>, which runs while the {@link LooperRobot Robot} is disabled.
+	 * - <b>AUTO</b>, which runs while the Robot is disabled.
 	 * 
 	 * @return type The type of {@link Loop}
 	 */

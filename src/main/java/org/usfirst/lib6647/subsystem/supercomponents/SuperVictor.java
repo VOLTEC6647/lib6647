@@ -1,6 +1,7 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -31,7 +32,7 @@ public interface SuperVictor {
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s {@link HyperVictor} instances.
 	 */
-	final HashMap<String, HyperVictor> victors = new HashMap<>();
+	final Map<String, HyperVictor> victors = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link HyperVictor HyperVictor objects} declared in the

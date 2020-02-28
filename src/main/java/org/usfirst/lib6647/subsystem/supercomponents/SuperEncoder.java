@@ -1,6 +1,7 @@
 package org.usfirst.lib6647.subsystem.supercomponents;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -23,7 +24,7 @@ public interface SuperEncoder {
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s {@link Encoder} instances.
 	 */
-	final HashMap<String, Encoder> encoders = new HashMap<>();
+	final Map<String, Encoder> encoders = new HashMap<>();
 
 	/**
 	 * Method to initialize {@link Encoder Encoder objects} declared in the
