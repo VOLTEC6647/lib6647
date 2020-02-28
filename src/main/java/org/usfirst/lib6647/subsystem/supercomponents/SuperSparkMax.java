@@ -27,7 +27,6 @@ public interface SuperSparkMax {
 	 * HashMap storing the {@link SuperSubsystem}'s {@link CANSparkMax} instances.
 	 */
 	final Map<String, CANSparkMax> sparks = new HashMap<>();
-
 	/**
 	 * HashMap storing the {@link SuperSubsystem}'s {@link CANPIDController}
 	 * instances.
@@ -101,5 +100,37 @@ public interface SuperSparkMax {
 				DriverStation.reportError(e.getLocalizedMessage(), false);
 			}
 		});
+	}
+
+	/**
+	 * Gets specified {@link CANSparkMax} from the {@link #sparks} HashMap.
+	 * 
+	 * @param sparkName The name of the {@link CANSparkMax}
+	 * @return The requested {@link CANSparkMax}, if found
+	 */
+	default CANSparkMax getSpark(String sparkName) {
+		return sparks.get(sparkName);
+	}
+
+	/**
+	 * Gets the specified {@link CANSparkMax}'s {@link CANPIDController} from the
+	 * {@link #sparkPIDcontrollers} HashMap.
+	 * 
+	 * @param sparkName The name of the {@link CANSparkMax}
+	 * @return The requested {@link CANPIDController}, if found
+	 */
+	default CANPIDController getSparkPID(String sparkName) {
+		return sparkPIDcontrollers.get(sparkName);
+	}
+
+	/**
+	 * Gets the specified {@link CANSparkMax}'s {@link CANEncoder} from the
+	 * {@link #sparkEncoders} HashMap.
+	 * 
+	 * @param sparkName The name of the {@link CANSparkMax}
+	 * @return The requested {@link CANEncoder}, if found
+	 */
+	default CANEncoder getSparkEncoder(String sparkName) {
+		return sparkEncoders.get(sparkName);
 	}
 }
