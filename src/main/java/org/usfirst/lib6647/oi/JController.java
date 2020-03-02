@@ -129,12 +129,20 @@ public class JController extends GenericHID {
 	 * Method for getting a {@link Button} with a friendly name (declared in the
 	 * JSON configuration) from this {@link JController}.
 	 * 
-	 * @param buttonName The {@link Button}'s 'friendly' name
-	 * @return A {@link Button} that matches the 'friendly' name in the
+	 * @param buttonNames The {@link Button}'s possible 'friendly' names
+	 * @return A {@link Button} that matches the first 'friendly' name found in the
 	 *         {@link JController}'s profile
+	 * @throws NullPointerException When no provided 'friendly' {@link Button} names
+	 *                              are found in the {@link #profile}.
 	 */
-	public Button get(String buttonName) {
-		return buttons.get(profile.get(buttonName).asText());
+	public Button get(String... buttonNames) throws NullPointerException {
+		for (String buttonName : buttonNames) {
+			var button = buttons.get(profile.get(buttonName).asText());
+			if (button != null)
+				return button;
+		}
+		throw new NullPointerException("[!] JSON 'FRIENDLY' NAME NOT FOUND FOR JCONTROLLER: " + getName()
+				+ "!\nPOSSIBLE 'FRIENDLY' NAMES PROVIDED WERE:\n\t" + buttonNames.toString());
 	}
 
 	/**
@@ -265,13 +273,13 @@ public class JController extends GenericHID {
 	 */
 	public void setX(Hand hand, int axis) {
 		switch (hand) {
-		case kLeft:
-			leftX = axis;
-			break;
-		case kRight:
-			rightX = axis;
-			break;
-		default:
+			case kLeft:
+				leftX = axis;
+				break;
+			case kRight:
+				rightX = axis;
+				break;
+			default:
 		}
 	}
 
@@ -291,12 +299,12 @@ public class JController extends GenericHID {
 	 */
 	public double getX(Hand hand, boolean useTolerance) {
 		switch (hand) {
-		case kLeft:
-			return getRawAxis(leftX, useTolerance);
-		case kRight:
-			return getRawAxis(rightX, useTolerance);
-		default:
-			return Double.NaN;
+			case kLeft:
+				return getRawAxis(leftX, useTolerance);
+			case kRight:
+				return getRawAxis(rightX, useTolerance);
+			default:
+				return Double.NaN;
 		}
 	}
 
@@ -309,13 +317,13 @@ public class JController extends GenericHID {
 	 */
 	public void setY(Hand hand, int axis) {
 		switch (hand) {
-		case kLeft:
-			leftY = axis;
-			break;
-		case kRight:
-			rightY = axis;
-			break;
-		default:
+			case kLeft:
+				leftY = axis;
+				break;
+			case kRight:
+				rightY = axis;
+				break;
+			default:
 		}
 	}
 
@@ -335,12 +343,12 @@ public class JController extends GenericHID {
 	 */
 	public double getY(Hand hand, boolean useTolerance) {
 		switch (hand) {
-		case kLeft:
-			return getRawAxis(leftY, useTolerance);
-		case kRight:
-			return getRawAxis(rightY, useTolerance);
-		default:
-			return Double.NaN;
+			case kLeft:
+				return getRawAxis(leftY, useTolerance);
+			case kRight:
+				return getRawAxis(rightY, useTolerance);
+			default:
+				return Double.NaN;
 		}
 	}
 
