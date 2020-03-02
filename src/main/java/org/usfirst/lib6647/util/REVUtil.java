@@ -1,6 +1,7 @@
 package org.usfirst.lib6647.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 /**
@@ -29,6 +30,32 @@ public class REVUtil {
 				return MotorType.kBrushed;
 			case "Brushless":
 				return MotorType.kBrushless;
+			default:
+				return null;
+		}
+	}
+
+	/**
+	 * Get a {@link IdleMode} value from a String.
+	 * 
+	 * <p>
+	 * There are two {@link IdleMode idle modes}:
+	 * <p>
+	 * - <b>{@link IdleMode#kCoast}</b>
+	 * <p>
+	 * - <b>{@link IdleMode#kBrake}</b>
+	 * <p>
+	 * All of which must share the same name in the {@link JsonNode}.
+	 * 
+	 * @param idleMode The desired {@link IdleMode}, as a String value
+	 * @return The {@link IdleMode}, as a valid enum
+	 */
+	public static IdleMode getIdleMode(String idleMode) {
+		switch (idleMode) {
+			case "Coast":
+				return IdleMode.kCoast;
+			case "Brake":
+				return IdleMode.kBrake;
 			default:
 				return null;
 		}

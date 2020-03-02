@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 
 import org.usfirst.lib6647.subsystem.ComponentInitException;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
@@ -69,6 +70,26 @@ public interface SuperSparkMax {
 					spark.restoreFactoryDefaults();
 
 					// Additional initialization configuration.
+					if (json.hasNonNull("idleMode")) {
+						var idleMode = REVUtil.getIdleMode(json.get("idleMode").asText());
+
+						if (idleMode == null)
+							throw new ComponentInitException(String.format(
+									"[!] INVALID OR EMPTY IDLEMODE VALUE FOR SPARK '%1$s' IN SUBSYSTEM '%2$s'",
+									json.get("name").asText(), subsystemName));
+
+						spark.setIdleMode(idleMode);
+					}
+
+					if (json.hasNonNull("softLimitForward")) {
+						spark.enableSoftLimit(SoftLimitDirection.kForward, true);
+						spark.setSoftLimit(SoftLimitDirection.kForward, json.get("softLimitForward").floatValue());
+					}
+					if (json.hasNonNull("softLimitReverse")) {
+						spark.enableSoftLimit(SoftLimitDirection.kReverse, true);
+						spark.setSoftLimit(SoftLimitDirection.kReverse, json.get("softLimitReverse").floatValue());
+					}
+
 					if (json.hasNonNull("pid")) {
 						var pid = json.get("pid");
 
