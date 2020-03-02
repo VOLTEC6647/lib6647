@@ -70,6 +70,8 @@ public interface SuperSparkMax {
 					spark.restoreFactoryDefaults();
 
 					// Additional initialization configuration.
+					spark.setInverted(json.hasNonNull("inverted") ? json.get("inverted").asBoolean() : false);
+
 					if (json.hasNonNull("idleMode")) {
 						var idleMode = REVUtil.getIdleMode(json.get("idleMode").asText());
 
