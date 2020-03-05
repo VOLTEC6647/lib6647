@@ -36,7 +36,7 @@ public abstract class SuperSubsystem extends SubsystemBase {
 	public SuperSubsystem(String name) {
 		this.name = name;
 
-		Shuffleboard.getTab("Robot").getLayout(name.substring(0, 1).toUpperCase() + name.substring(1),
+		layout = Shuffleboard.getTab("Robot").getLayout(name.substring(0, 1).toUpperCase() + name.substring(1),
 				BuiltInLayouts.kList);
 
 		try {
