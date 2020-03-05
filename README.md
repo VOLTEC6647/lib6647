@@ -26,6 +26,7 @@ Currently written documentation can be found at https://lib6647.readthedocs.io/,
   + [ ] HyperPDP
   + [x] HyperSolenoid
   + [ ] HyperSpark
+  + [x] HyperSparkMax
   + [x] HyperTalon
   + [ ] HyperUltrasonic
   + [x] HyperVictor
@@ -41,9 +42,10 @@ Currently written documentation can be found at https://lib6647.readthedocs.io/,
   + [x] SuperPDP
   + [x] SuperPID
   + [x] SuperProfiledPID
-  + [ ] SuperServo
+  + [x] SuperServo
   + [x] SuperSolenoid
   + [ ] SuperSpark
+  + [x] SuperSparkMax
   + [x] SuperTalon
   + [x] SuperUltrasonic
   + [x] SuperVictor
@@ -67,9 +69,10 @@ Currently written documentation can be found at https://lib6647.readthedocs.io/,
   + [x] To HyperTalon.
   + [x] To HyperVictor.
   + [x] To HyperFalcon.
-  + [ ] To SparkMax.
+  + [ ] To HyperSparkMax.
 * [ ] Add field to display SuperComponents in Shuffleboard.
   + [ ] Rewrite initSendable in HyperComponents, to support added features.
+  + [ ] 
 * [x] Comment everything.
 * [x] Do proper Exception handling.
 * [ ] Write proper documentation for this library.

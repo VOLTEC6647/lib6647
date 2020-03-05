@@ -9,6 +9,9 @@ import org.usfirst.lib6647.loops.Loop;
 import org.usfirst.lib6647.loops.Looper;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -20,6 +23,10 @@ public abstract class SuperSubsystem extends SubsystemBase {
 	protected JsonNode robotMap;
 	/** Name of the {@link SuperSubsystem}. */
 	private final String name;
+	/**
+	 * The {@link ShuffleboardLayout layout} to update in the {@link Shuffleboard}.
+	 */
+	protected ShuffleboardLayout layout;
 
 	/**
 	 * Constructor for {@link SuperSubsystem}.
@@ -28,6 +35,9 @@ public abstract class SuperSubsystem extends SubsystemBase {
 	 */
 	public SuperSubsystem(String name) {
 		this.name = name;
+
+		Shuffleboard.getTab("Robot").getLayout(name.substring(0, 1).toUpperCase() + name.substring(1),
+				BuiltInLayouts.kList);
 
 		try {
 			robotMap = JSONReader.getInstance().getNode("RobotMap", name);
@@ -79,4 +89,10 @@ public abstract class SuperSubsystem extends SubsystemBase {
 	 */
 	public void zeroSensors() {
 	}
+
+	/**
+	 * Run any {@link Shuffleboard} {@link #layout} data output here. Make sure to
+	 * call this method in your {@link SuperSubsystem}'s constructor.
+	 */
+	protected abstract void outputToShuffleboard();
 }

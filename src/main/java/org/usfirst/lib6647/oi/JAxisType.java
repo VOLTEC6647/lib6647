@@ -23,7 +23,7 @@ public enum JAxisType {
 	 * 
 	 * @param name The {@link JAxisType axis'} name
 	 */
-	JAxisType(String name) {
+	private JAxisType(String name) {
 		this.name = name;
 	}
 }

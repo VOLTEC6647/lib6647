@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.usfirst.lib6647.oi.JController;
 
+import edu.wpi.first.wpilibj2.command.Command;
+
 /**
  * This class is a template Container for other template Containers, it only
  * holds a {@link #joysticks} HashMap, and a method to register
@@ -34,4 +36,20 @@ public abstract class BaseContainer {
 	public synchronized void registerJoystick(JController joystick, String name) {
 		joysticks.putIfAbsent(name, joystick);
 	}
+
+	/**
+	 * Run any {@link JController} initialization here.
+	 */
+	public abstract void initJoysticks();
+
+	/**
+	 * Run any {@link SuperSubsystem} initialization code here.
+	 */
+	public abstract void initSubsystems();
+
+	/**
+	 * Throw all {@link Command} initialization and {@link JController} binding into
+	 * this method.
+	 */
+	public abstract void configureButtonBindings();
 }

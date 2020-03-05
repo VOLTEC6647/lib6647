@@ -18,17 +18,5 @@ package org.usfirst.lib6647.loops;
  * - <b>AUTO</b>, which runs while the Robot is disabled.
  */
 public enum LoopType {
-	ENABLED("enabled"), TELEOP("teleop"), AUTO("auto"), DISABLED("disabled");
-
-	/** String value of the {@link LoopType} */
-	public String value;
-
-	/**
-	 * Constructor for {@link LoopType}.
-	 * 
-	 * @param value The String value of the {@link LoopType}
-	 */
-	private LoopType(String value) {
-		this.value = value;
-	}
+	ENABLED, TELEOP, AUTO, DISABLED
 }

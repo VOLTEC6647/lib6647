@@ -2,6 +2,7 @@ package org.usfirst.lib6647.loops;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.usfirst.lib6647.subsystem.BaseContainer;
 import org.usfirst.lib6647.subsystem.SuperSubsystem;
@@ -12,7 +13,7 @@ import org.usfirst.lib6647.subsystem.SuperSubsystem;
  * {@link #registerSubsystems} method with your own {@link SuperSubsystem}
  * instances.
  */
-public class LoopContainer extends BaseContainer {
+public abstract class LoopContainer extends BaseContainer {
 	/** HashMap holding each {@link Looper} instance, to be run separately. */
 	private final Map<String, Looper> loopers = new HashMap<>();
 	/** Instance of {@link LoopRegistrar}. */
@@ -24,10 +25,8 @@ public class LoopContainer extends BaseContainer {
 	 * your own {@link SuperSubsystem} instances.
 	 */
 	public LoopContainer() {
-		loopers.put(LoopType.ENABLED.value, new Looper(LoopType.ENABLED.value));
-		loopers.put(LoopType.DISABLED.value, new Looper(LoopType.DISABLED.value));
-		loopers.put(LoopType.AUTO.value, new Looper(LoopType.AUTO.value));
-		loopers.put(LoopType.TELEOP.value, new Looper(LoopType.TELEOP.value));
+		Stream.of(LoopType.values())
+				.forEach(type -> loopers.put(type.name().toLowerCase(), new Looper(type.name().toLowerCase())));
 	}
 
 	/**
@@ -37,7 +36,7 @@ public class LoopContainer extends BaseContainer {
 	 * @return The requested {@link Looper} instance, if it exists.
 	 */
 	public Looper getLooper(LoopType type) {
-		return loopers.get(type.value);
+		return loopers.get(type.name().toLowerCase());
 	}
 
 	/**

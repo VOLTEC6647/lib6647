@@ -64,8 +64,8 @@ public class JSONReader {
 	 * 
 	 * @param fileName A JSON file's name, without extension
 	 * @param nodeName The node to be read
-	 * @return The JsonNode object
-	 * @throws JSONInitException When JSON file does not exist, or is not
+	 * @return The {@link JsonNode} object
+	 * @throws JSONInitException When a JSON file does not exist, or is not
 	 *                           readable/writeable.
 	 */
 	public synchronized JsonNode getNode(String fileName, String nodeName) throws JSONInitException {
