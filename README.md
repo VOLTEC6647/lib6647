@@ -39,6 +39,7 @@ Currently written documentation can be found at https://lib6647.readthedocs.io/,
   + [x] SuperDoubleSolenoid
   + [x] SuperEncoder
   + [x] SuperFalcon
+  + [ ] SuperLimelight
   + [x] SuperPDP
   + [x] SuperPID
   + [x] SuperProfiledPID
@@ -72,7 +73,6 @@ Currently written documentation can be found at https://lib6647.readthedocs.io/,
   + [ ] To HyperSparkMax.
 * [ ] Add field to display SuperComponents in Shuffleboard.
   + [ ] Rewrite initSendable in HyperComponents, to support added features.
-  + [ ] 
 * [x] Comment everything.
 * [x] Do proper Exception handling.
 * [ ] Write proper documentation for this library.

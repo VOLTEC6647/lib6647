@@ -61,6 +61,8 @@ public abstract class SuperSubsystem extends SubsystemBase {
 		return name;
 	}
 
+	// TODO: Rewrite these to actually be useful with our project structure.
+
 	/**
 	 * Optional design pattern for caching periodic reads to avoid hammering the
 	 * HAL/CAN.
@@ -91,8 +93,8 @@ public abstract class SuperSubsystem extends SubsystemBase {
 	}
 
 	/**
-	 * Run any {@link Shuffleboard} {@link #layout} data output here. Make sure to
-	 * call this method in your {@link SuperSubsystem}'s constructor.
+	 * Optional method to run any {@link Shuffleboard} {@link #layout} data output.
 	 */
-	protected abstract void outputToShuffleboard();
+	public void outputToShuffleboard() {
+	}
 }

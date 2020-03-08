@@ -57,6 +57,7 @@ public interface SuperSparkMax {
 
 					spark.restoreFactoryDefaults();
 
+					// TODO: Mirror actual SparkMax configuration from http://www.revrobotics.com/sparkmax-users-manual/#appendix-a.
 					// Additional initialization configuration.
 					spark.setInverted(json.hasNonNull("inverted") ? json.get("inverted").asBoolean() : false);
 
@@ -79,6 +80,25 @@ public interface SuperSparkMax {
 						spark.enableSoftLimit(SoftLimitDirection.kReverse, true);
 						spark.setSoftLimit(SoftLimitDirection.kReverse, json.get("softLimitReverse").floatValue());
 					}
+
+					if (json.hasNonNull("encoder") && json.get("encoder").hasNonNull("type")
+							&& json.get("encoder").hasNonNull("countsPerRev")) {
+						var encoder = json.get("encoder");
+
+						spark.setEncoder(REVUtil.getEncoderType(encoder.get("type").asText()),
+								encoder.get("countsPerRev").asInt());
+					} else
+						spark.setEncoder();
+
+					if (json.hasNonNull("alternateEncoder") && json.get("alternateEncoder").hasNonNull("type")
+							&& json.get("alternateEncoder").hasNonNull("countsPerRev")) {
+						var alternateEncoder = json.get("alternateEncoder");
+
+						spark.setAlternateEncoder(
+								REVUtil.getAlternateEncoderType(alternateEncoder.get("type").asText()),
+								alternateEncoder.get("countsPerRev").asInt());
+					} else
+						spark.setAlternateEncoder();
 
 					if (json.hasNonNull("pid")) {
 						var pid = json.get("pid");

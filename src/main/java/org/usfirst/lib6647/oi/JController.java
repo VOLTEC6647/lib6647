@@ -136,11 +136,10 @@ public class JController extends GenericHID {
 	 *                              are found in the {@link #profile}.
 	 */
 	public Button get(String... buttonNames) throws NullPointerException {
-		for (String buttonName : buttonNames) {
-			var button = buttons.get(profile.get(buttonName).asText());
-			if (button != null)
-				return button;
-		}
+		for (String buttonName : buttonNames)
+			if (profile.hasNonNull(buttonName))
+				return buttons.get(profile.get(buttonName).asText());
+
 		throw new NullPointerException("[!] JSON 'FRIENDLY' NAME NOT FOUND FOR JCONTROLLER: " + getName()
 				+ "!\nPOSSIBLE 'FRIENDLY' NAMES PROVIDED WERE:\n\t" + buttonNames.toString());
 	}

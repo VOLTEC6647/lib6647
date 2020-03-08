@@ -10,6 +10,8 @@ public class HyperDoubleSolenoid {
 	/** {@link Solenoid Solenoids} used by this HyperComponent. */
 	private Solenoid forward, reverse;
 
+	// TODO: Make this Sendable, add Solenoids as children.
+
 	/**
 	 * HyperComponent Wrapper for a {@link Solenoid DoubleSolenoid}.
 	 * 
@@ -36,6 +38,24 @@ public class HyperDoubleSolenoid {
 	 */
 	public void toggle() {
 		set(!forward.get());
+	}
+
+	/**
+	 * Gets the state of the {@link #forward} {@link HyperDoubleSolenoid}.
+	 * 
+	 * @return The state of the {@link #forward forward solenoid}
+	 */
+	public boolean getForward() {
+		return forward.get();
+	}
+
+	/**
+	 * Gets the state of the {@link #reverse} {@link HyperDoubleSolenoid}.
+	 * 
+	 * @return The state of the {@link #reverse reverse solenoid}
+	 */
+	public boolean getReverse() {
+		return reverse.get();
 	}
 
 	/**

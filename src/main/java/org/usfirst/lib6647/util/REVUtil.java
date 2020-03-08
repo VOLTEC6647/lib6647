@@ -1,8 +1,10 @@
 package org.usfirst.lib6647.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.revrobotics.AlternateEncoderType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.EncoderType;
 
 /**
  * Utility class containing a couple useful methods for REV motor
@@ -58,6 +60,63 @@ public class REVUtil {
 				return IdleMode.kBrake;
 			default:
 				return null;
+		}
+	}
+
+	/**
+	 * Get a {@link EncoderType} value from a String.
+	 * 
+	 * <p>
+	 * There are four {@link EncoderType encoder types}:
+	 * <p>
+	 * - <b>{@link EncoderType#kHallSensor}</b>
+	 * <p>
+	 * - <b>{@link EncoderType#kQuadrature}</b>
+	 * <p>
+	 * - <b>{@link EncoderType#kSensorless}</b>
+	 * <p>
+	 * - <b>{@link EncoderType#kNoSensor}</b>
+	 * <p>
+	 * All of which must share the same name in the {@link JsonNode}.
+	 * 
+	 * @param encoderType The desired {@link EncoderType}, as a String value
+	 * @return The {@link EncoderType}, as a valid enum
+	 */
+	public static EncoderType getEncoderType(String encoderType) {
+		switch (encoderType) {
+			case "HallSensor":
+				return EncoderType.kHallSensor;
+			case "Quadrature":
+				return EncoderType.kQuadrature;
+			case "Sensorless":
+				return EncoderType.kSensorless;
+			case "None":
+			case "NoSensor":
+			default:
+				return EncoderType.kNoSensor;
+		}
+	}
+
+	/**
+	 * Get a {@link AlternateEncoderType} value from a String.
+	 * 
+	 * <p>
+	 * There is currently only one {@link AlternateEncoderType alternate encoder
+	 * type}:
+	 * <p>
+	 * - <b>{@link AlternateEncoderType#kQuadrature}</b>
+	 * <p>
+	 * It must share the same name in the {@link JsonNode}.
+	 * 
+	 * @param alternateEncoderType The desired {@link AlternateEncoderType}, as a
+	 *                             String value
+	 * @return The {@link AlternateEncoderType}, as a valid enum
+	 */
+	public static AlternateEncoderType getAlternateEncoderType(String alternateEncoderType) {
+		switch (alternateEncoderType) {
+			case "Quadrature":
+			default:
+				return AlternateEncoderType.kQuadrature;
 		}
 	}
 

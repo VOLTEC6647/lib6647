@@ -131,6 +131,7 @@ public class LoopRegistrar implements ILooper {
 	private class DisabledLoop implements Loop {
 		@Override
 		public void onFirstStart(double timestamp) {
+			subsystems.values().forEach(SuperSubsystem::outputToShuffleboard);
 			disabledLoops.forEach(loop -> loop.onFirstStart(timestamp));
 		}
 

@@ -1,4 +1,4 @@
-package org.usfirst.lib6647.util;
+package org.usfirst.lib6647.control;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
