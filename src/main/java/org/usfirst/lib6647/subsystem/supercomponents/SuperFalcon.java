@@ -62,7 +62,7 @@ public interface SuperFalcon {
 										json.get("name").asText(), subsystemName));
 
 					// Create HyperFalcon and TalonFXConfiguration objects.
-					var falcon = new HyperFalcon(json.get("port").asInt());
+					var falcon = new HyperFalcon(json.get("name").asText(), json.get("port").asInt());
 					var falconConfig = new TalonFXConfiguration();
 
 					// Additional initialization & configuration.

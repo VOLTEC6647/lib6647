@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
 /**
@@ -26,10 +27,13 @@ public class HyperVictor extends WPI_VictorSPX {
 	/**
 	 * HyperComponent Wrapper for {@link WPI_VictorSPX}.
 	 * 
+	 * @param name The name of this {@link HyperVictor}
 	 * @param port The {@link HyperVictor}'s port (set via CTRE's Phoenix Tuner)
 	 */
-	public HyperVictor(int port) {
+	public HyperVictor(String name, int port) {
 		super(port);
+
+		SendableRegistry.setName(this, name);
 	}
 
 	/**

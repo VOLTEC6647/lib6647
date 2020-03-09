@@ -20,7 +20,7 @@ Currently written documentation can be found at https://lib6647.readthedocs.io/,
   + [ ] HyperAnalogPotentiometer
   + [ ] HyperCompressor
   + [ ] HyperDigitalInput
-  + [ ] HyperDoubleSolenoid
+  + [x] HyperDoubleSolenoid
   + [ ] HyperEncoder
   + [x] HyperFalcon
   + [ ] HyperPDP

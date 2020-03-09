@@ -27,6 +27,8 @@ public class HyperSparkMax extends CANSparkMax implements Sendable {
 	/** The {@link HyperSparkMax}'s {@link CANEncoder} instances. */
 	private CANEncoder encoder, alternateEncoder;
 
+	// TODO: Comment this.
+
 	private SimDevice simDevice;
 	private SimDouble simSpeed;
 	private SimBoolean simInvert;
@@ -44,19 +46,17 @@ public class HyperSparkMax extends CANSparkMax implements Sendable {
 		super(deviceID, type);
 
 		SendableRegistry.setName(this, name);
-		SendableRegistry.addLW(this, "Spark Max ", deviceID);
+		SendableRegistry.addLW(this, name);
 
 		controller = super.getPIDController();
 		alternateEncoder = super.getAlternateEncoder();
 
-		simDevice = SimDevice.create("Spark Max", deviceID);
+		simDevice = SimDevice.create(name);
 		if (simDevice != null) {
 			simSpeed = simDevice.createDouble("Motor Output", false, 0.0);
 			simInvert = simDevice.createBoolean("Inverted?", false, false);
 		}
 	}
-
-	// TODO: Comment this.
 
 	@Override
 	public void setInverted(boolean inverted) {

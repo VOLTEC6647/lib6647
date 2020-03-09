@@ -51,7 +51,7 @@ public interface SuperSolenoid {
 								json.get("name").asText(), subsystemName));
 
 					// Create HyperSolenoid object.
-					var solenoid = new HyperSolenoid(json.get("channel").asInt());
+					var solenoid = new HyperSolenoid(json.get("name").asText(), json.get("channel").asInt());
 
 					// Additional initialization configuration.
 					if (json.hasNonNull("initialValue"))

@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
 /**
@@ -32,10 +33,13 @@ public class HyperFalcon extends WPI_TalonFX {
 	/**
 	 * HyperComponent Wrapper for {@link WPI_TalonFX}.
 	 * 
+	 * @param name The name of this {@link HyperFalcon}
 	 * @param port The {@link HyperFalcon}'s port (set via CTRE's Phoenix Tuner)
 	 */
-	public HyperFalcon(int port) {
+	public HyperFalcon(String name, int port) {
 		super(port);
+
+		SendableRegistry.setName(this, name);
 	}
 
 	/**

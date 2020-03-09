@@ -59,7 +59,7 @@ public interface SuperTalon {
 										json.get("name").asText(), subsystemName));
 
 					// Create HyperTalon object.
-					var talon = new HyperTalon(json.get("port").asInt());
+					var talon = new HyperTalon(json.get("name").asText(), json.get("port").asInt());
 					var talonConfig = new TalonSRXConfiguration();
 
 					// Additional initialization configuration.

@@ -51,7 +51,7 @@ public interface SuperPDP {
 								String.format("[!] INVALID OR EMPTY PORT VALUE FOR PDP '%1$s' IN SUBSYSTEM '%2$s'",
 										json.get("name").asText(), subsystemName));
 
-					// Create Ultrasonic object.
+					// Create PDP object.
 					var pdp = new PowerDistributionPanel(module);
 
 					// Additional initialization configuration.

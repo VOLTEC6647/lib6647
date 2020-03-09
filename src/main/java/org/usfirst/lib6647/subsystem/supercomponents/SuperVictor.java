@@ -60,7 +60,7 @@ public interface SuperVictor {
 										json.get("name").asText(), subsystemName));
 
 					// Create HyperVictor object.
-					var victor = new HyperVictor(json.get("port").asInt());
+					var victor = new HyperVictor(json.get("name").asText(), json.get("port").asInt());
 					var victorConfig = new VictorSPXConfiguration();
 
 					// Additional initialization configuration.

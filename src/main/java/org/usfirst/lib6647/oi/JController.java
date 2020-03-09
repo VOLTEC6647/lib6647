@@ -112,6 +112,16 @@ public class JController extends GenericHID {
 	}
 
 	/**
+	 * Sets this {@link JController}'s {@link #axisTolerance}.
+	 * 
+	 * @param axisTolerance The sensitivity at which to set the {@link JController}
+	 *                      to
+	 */
+	public void setAxisTolerance(double axisTolerance) {
+		this.axisTolerance = axisTolerance;
+	}
+
+	/**
 	 * Get the value of the axis, with or without {@link #axisTolerance tolerance}.
 	 *
 	 * @param axis         The axis to read, starting at 0

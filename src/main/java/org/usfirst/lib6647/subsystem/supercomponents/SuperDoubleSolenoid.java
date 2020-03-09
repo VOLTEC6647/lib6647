@@ -53,11 +53,14 @@ public interface SuperDoubleSolenoid {
 								json.get("name").asText(), subsystemName));
 
 					// Create HyperDoubleSolenoid object.
-					var doubleSolenoid = new HyperDoubleSolenoid(json.get("forwardChannel").asInt(),
-							json.get("reverseChannel").asInt());
+					var doubleSolenoid = new HyperDoubleSolenoid(json.get("name").asText(),
+							json.get("forwardChannel").asInt(), json.get("reverseChannel").asInt());
 
 					// Additional initialization configuration.
-					doubleSolenoid.stop();
+					if (json.hasNonNull("initialValue"))
+						doubleSolenoid.set(json.get("initialValue").asBoolean());
+					else
+						doubleSolenoid.stop();
 					// ...
 
 					// Put object in HashMap with its declared name as key after initialization and
