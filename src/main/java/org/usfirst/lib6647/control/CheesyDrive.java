@@ -16,7 +16,7 @@ import edu.wpi.first.wpiutil.math.MathUtil;
  */
 public class CheesyDrive {
 
-	// TODO: Comment properly.
+	// TODO: Comment properly, and fix output.
 
 	// These factor determine how fast the wheel traverses the "non linear" sine
 	// curve.

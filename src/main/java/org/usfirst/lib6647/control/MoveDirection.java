@@ -7,5 +7,5 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  * for {@link CommandBase Commands}.
  */
 public enum MoveDirection {
-	UP, DOWN, FRONT, BACK, LEFT, RIGHT, FORWARD, BACKWARD, IN, OUT, NONE
+	UP, DOWN, FRONT, BACK, LEFT, RIGHT, FORWARD, BACKWARD, REVERSE, IN, OUT, REIN, RAUS, NONE
 }
