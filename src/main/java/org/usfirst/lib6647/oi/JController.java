@@ -204,7 +204,7 @@ public class JController extends GenericHID {
 		return new Button() {
 			@Override
 			public boolean get() {
-				return getPOV(pov) > -1;
+				return getPOV(pov) != -1;
 			}
 		};
 	}
@@ -235,7 +235,7 @@ public class JController extends GenericHID {
 		return new Button() {
 			@Override
 			public boolean get() {
-				return Math.abs(getRawAxis(axis)) < axisTolerance;
+				return Math.abs(getRawAxis(axis)) > axisTolerance;
 			}
 		};
 	}
@@ -254,7 +254,7 @@ public class JController extends GenericHID {
 		return new Button() {
 			@Override
 			public boolean get() {
-				return getRawAxis(axis) < (axisTolerance * (negative ? -1 : 1));
+				return negative ? (getRawAxis(axis) < -axisTolerance) : (getRawAxis(axis) > axisTolerance);
 			}
 		};
 	}
