@@ -71,14 +71,14 @@ dependencies {
     implementation group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.10.2"
 
     // Phoenix CTRE dependencies.
-    implementation group: "com.ctre.phoenix", name: "api-java", version: "5.18.2"
-    implementation group: "com.ctre.phoenix", name: "wpiapi-java", version: "5.18.2"
+    implementation group: "com.ctre.phoenix", name: "api-java", version: "5.18.3"
+    implementation group: "com.ctre.phoenix", name: "wpiapi-java", version: "5.18.3"
 
-    testImplementation group: "com.ctre.phoenix", name: "cci", version: "5.18.2"
-    testImplementation group: "com.ctre.phoenix", name: "diagnostics", version: "5.18.2"
-    testImplementation group: "com.ctre.phoenix", name: "canutils", version: "5.18.2"
-    testImplementation group: "com.ctre.phoenix", name: "platform-stub", version: "5.18.2"
-    testImplementation group: "com.ctre.phoenix", name: "core", version: "5.18.2"
+    testImplementation group: "com.ctre.phoenix", name: "cci", version: "5.18.3"
+    testImplementation group: "com.ctre.phoenix", name: "diagnostics", version: "5.18.3"
+    testImplementation group: "com.ctre.phoenix", name: "canutils", version: "5.18.3"
+    testImplementation group: "com.ctre.phoenix", name: "platform-stub", version: "5.18.3"
+    testImplementation group: "com.ctre.phoenix", name: "core", version: "5.18.3"
 
 	// REV Robotics dependencies.
 	implementation group: "com.revrobotics.frc", name: "SparkMax-java", version: "1.5.2"
@@ -86,7 +86,7 @@ dependencies {
 	testImplementation group: "com.revrobotics.frc", name: "SparkMax-driver", version: "1.5.2"
 
     // Kauai Labs dependencies.
-    implementation group: "com.kauailabs.navx.frc", name: "navx-java", version: "3.1.409"
+    implementation group: "com.kauailabs.navx.frc", name: "navx-java", version: "3.1.413"
 
     // Use JUnit test framework
     testImplementation "junit:junit:4.12"
