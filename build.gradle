@@ -84,6 +84,7 @@ dependencies {
     testImplementation group: "com.ctre.phoenix", name: "core", version: "5.18.3"
 
 	// REV Robotics dependencies.
+	// TODO: Update to 1.5.4; check changes.
     implementation group: "com.revrobotics.frc", name: "SparkMax-java", version: "1.5.2"
 
     testImplementation group: "com.revrobotics.frc", name: "SparkMax-driver", version: "1.5.2"

@@ -15,6 +15,7 @@ Currently written documentation can be found at https://lib6647.readthedocs.io/,
 
 ## To do (for now)
 
+* [ ] Add simulation support for HyperComponents.
 * [ ] Implement every HyperComponent Wrapper (if needed).
   + [x] HyperAHRS
   + [ ] HyperAnalogPotentiometer
@@ -30,6 +31,7 @@ Currently written documentation can be found at https://lib6647.readthedocs.io/,
   + [x] HyperTalon
   + [ ] HyperUltrasonic
   + [x] HyperVictor
+* [ ] Centralize SuperComponent storage, overhaul 'interface' workaround.
 * [ ] Implement SuperComponents.
   + [x] SuperAHRS
   + [ ] SuperAnalogPotentiometer
@@ -50,6 +52,8 @@ Currently written documentation can be found at https://lib6647.readthedocs.io/,
   + [x] SuperTalon
   + [x] SuperUltrasonic
   + [x] SuperVictor
+* [ ] Add field to output SuperComponents to Shuffleboard.
+  + [ ] Overwrite initSendable in HyperComponents, to support added features.
 * [x] Improve Controller initialization.
   + [x] Create JController class, for initializing Buttons along with a Controller.
   + [x] Add Buttons for each POV and axis found for the Controller.
@@ -63,16 +67,16 @@ Currently written documentation can be found at https://lib6647.readthedocs.io/,
   + [x] Allow for different PID loops within the same PIDSuperSubsystem.
   + [x] Re-implement max output functionality into PIDControllers.
 * [ ] Implement characterization routines into library.
-  + [x] Copy SimEnabler class from frc-characterization, to enable characterization of simulations.
+  + [x] Copy SimEnabler class from 'frc-characterization', to enable characterization of simulations.
   + [ ] Create CharLoop classes, with templates to run characterization routines across different robots.
-* [ ] Implement trajectory generation into library.
+* [ ] Fully implement trajectory generation into library.
 * [ ] Add more flexibility and configuration options.
   + [x] To HyperTalon.
   + [x] To HyperVictor.
   + [x] To HyperFalcon.
   + [ ] To HyperSparkMax.
-* [ ] Add field to display SuperComponents in Shuffleboard.
-  + [ ] Rewrite initSendable in HyperComponents, to support added features.
+* [ ] Use FastMath calculations wherever possible/useful (recommend usage for projects using this library).
+* [ ] Use FastUtil implementations of Java Collections (recommend usage for projects using this library).
 * [x] Comment everything.
 * [x] Do proper Exception handling.
 * [ ] Write proper documentation for this library.
@@ -85,5 +89,5 @@ Currently written documentation can be found at https://lib6647.readthedocs.io/,
 
 ## License
 
-This project is under the BSD License for WPILib code, see: [BSD_License_for_WPILib_code.txt](BSD_License_for_WPILib_code.txt).
+This project is under the WPILib License, see: [WPILib-License.md](WPILib-License.md).
 
