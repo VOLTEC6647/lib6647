@@ -44,7 +44,7 @@ public class JSONReader {
 	 * 
 	 * @return The static {@link JSONReader} instance
 	 */
-	public synchronized static JSONReader getInstance() {
+	public static synchronized JSONReader getInstance() {
 		return instance;
 	}
 
@@ -74,10 +74,10 @@ public class JSONReader {
 			return node;
 		} catch (FileNotFoundException e) {
 			String message = String.format(
-					"\n[!] FILE '%s' NOT FOUND, PLEASE MAKE SURE IT EXISTS AND IS NAMED ACCORDINGLY.", fileName);
+					"%n[!] FILE '%s' NOT FOUND, PLEASE MAKE SURE IT EXISTS AND IS NAMED ACCORDINGLY.", fileName);
 			throw new JSONInitException(message);
 		} catch (IOException e) {
-			String message = String.format("\n[!] FILE '%s' CAN NOT BE READ/MODIFIED.", fileName);
+			String message = String.format("%n[!] FILE '%s' CAN NOT BE READ/MODIFIED.", fileName);
 			throw new JSONInitException(message);
 		}
 	}

@@ -6,6 +6,7 @@ import java.util.List;
 import org.usfirst.lib6647.util.ControlUtil;
 
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import net.jafama.FastMath;
 
 public class PathSegment {
 	// TODO: Comment this.
@@ -53,7 +54,7 @@ public class PathSegment {
 
 			var vector = new Translation2d(path.get(i + 1).getX() - path.get(i).getX(),
 					path.get(i + 1).getY() - path.get(i).getY());
-			final var numExtraPoints = (int) Math.ceil(ControlUtil.getMagnitude(vector) / pointsSpacing);
+			final var numExtraPoints = (int) FastMath.ceil(ControlUtil.getMagnitude(vector) / pointsSpacing);
 
 			vector = ControlUtil.normalize(vector);
 			vector.times(pointsSpacing);
@@ -120,7 +121,7 @@ public class PathSegment {
 					/ ((path.get(i + 1).getX() * k2) - path.get(i + 1).getY() + path.get(i - 1).getY()
 							- (path.get(i - 1).getX() * k2));
 			var a = k1 - (k2 * b);
-			var r = Math.sqrt(((path.get(i).getX() - a) * (path.get(i).getX() - a))
+			var r = FastMath.sqrt(((path.get(i).getX() - a) * (path.get(i).getX() - a))
 					+ ((path.get(i).getY() - b) * (path.get(i).getY() - b)));
 
 			curvatures.add(Double.isNaN(1 / r) ? 0.0 : 1 / r);
@@ -148,7 +149,7 @@ public class PathSegment {
 				tempVel = Math.min(maxVel, (k / curvatures.get(i)));
 
 			velocities.set(i, Math.min(tempVel,
-					Math.sqrt((velocities.get(i + 1) * velocities.get(i + 1)) + (2.0 * distance * maxAccel))));
+					FastMath.sqrt((velocities.get(i + 1) * velocities.get(i + 1)) + (2.0 * distance * maxAccel))));
 		}
 
 		int idealnum = (int) (slowingDownRampDistance / pointsSpacing);

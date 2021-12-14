@@ -2,6 +2,7 @@ package org.usfirst.lib6647.subsystem.supercomponents;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -464,7 +465,7 @@ public interface SuperVictor {
 							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY VICTOR ENTRY IN SUBSYSTEM '%s'",
 									subsystemName.toUpperCase()));
 			} catch (Exception e) {
-				System.out.println(e.getLocalizedMessage());
+				Logger.getGlobal().severe(e::getLocalizedMessage);
 				DriverStation.reportError(e.getLocalizedMessage(), false);
 			}
 		});

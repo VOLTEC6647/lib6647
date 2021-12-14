@@ -13,6 +13,7 @@ import org.usfirst.lib6647.util.ControllerUtil;
 
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
+import net.jafama.FastMath;
 
 /**
  * A trapezoid-shaped velocity profile.
@@ -152,7 +153,7 @@ public class TrapezoidProfile {
 
 		// Handle the case where the profile never reaches full speed
 		if (fullSpeedDist < 0) {
-			accelerationTime = Math.sqrt(fullTrapezoidDist / constraints.maxAcceleration);
+			accelerationTime = FastMath.sqrt(fullTrapezoidDist / constraints.maxAcceleration);
 			fullSpeedDist = 0;
 		}
 
@@ -247,7 +248,7 @@ public class TrapezoidProfile {
 
 		var accelDist = velocity * endAccel + 0.5 * acceleration * endAccel * endAccel;
 
-		var deccelVelocity = endAccel > 0 ? Math.sqrt(Math.abs(velocity * velocity + 2 * acceleration * accelDist))
+		var deccelVelocity = endAccel > 0 ? FastMath.sqrt(Math.abs(velocity * velocity + 2 * acceleration * accelDist))
 				: velocity;
 
 		var deccelDist = deccelVelocity * endDeccel + 0.5 * decceleration * endDeccel * endDeccel;
@@ -266,7 +267,7 @@ public class TrapezoidProfile {
 		} else
 			deccelDist = distToTarget - fullSpeedDist - accelDist;
 
-		var accelTime = (-velocity + Math.sqrt(Math.abs(velocity * velocity + 2 * acceleration * accelDist)))
+		var accelTime = (-velocity + FastMath.sqrt(Math.abs(velocity * velocity + 2 * acceleration * accelDist)))
 				/ acceleration;
 
 		var deccelTime = (-deccelVelocity

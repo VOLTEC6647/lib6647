@@ -2,6 +2,7 @@ package org.usfirst.lib6647.subsystem.supercomponents;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
@@ -510,7 +511,7 @@ public interface SuperTalon {
 							String.format("[!] UNDECLARED, DUPLICATE, OR EMPTY TALON ENTRY IN SUBSYSTEM '%s'",
 									subsystemName.toUpperCase()));
 			} catch (Exception e) {
-				System.out.println(e.getLocalizedMessage());
+				Logger.getGlobal().severe(e::getLocalizedMessage);
 				DriverStation.reportError(e.getLocalizedMessage(), false);
 			}
 		});

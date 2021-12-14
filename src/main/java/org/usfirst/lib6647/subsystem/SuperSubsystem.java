@@ -1,5 +1,7 @@
 package org.usfirst.lib6647.subsystem;
 
+import java.util.logging.Logger;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.usfirst.lib6647.json.JSONInitException;
@@ -42,10 +44,10 @@ public abstract class SuperSubsystem extends SubsystemBase {
 		try {
 			robotMap = JSONReader.getInstance().getNode("RobotMap", name);
 		} catch (JSONInitException e) {
-			String error = String.format("[!] SUBSYSTEM '%1$s' JSON INIT ERROR:\n\t%2$s", name.toUpperCase(),
+			String error = String.format("[!] SUBSYSTEM '%1$s' JSON INIT ERROR:%n\t%2$s", name.toUpperCase(),
 					e.getLocalizedMessage());
 
-			System.out.println(error);
+			Logger.getGlobal().severe(() -> error);
 			DriverStation.reportError(error, false);
 
 			System.exit(1);
@@ -57,7 +59,7 @@ public abstract class SuperSubsystem extends SubsystemBase {
 	 * 
 	 * @return The {@link SuperSubsystem}'s name
 	 */
-	public String getName() {
+	public String getSubsystemName() {
 		return name;
 	}
 

@@ -1,11 +1,12 @@
 package org.usfirst.lib6647.subsystem.hypercomponents;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 
 /**
- * Simple Wrapper for a {@link Solenoid}, currently only adds a
- * {@link #toggle()} method.
+ * Simple Wrapper for a {@link Solenoid}, currently only sets its
+ * custom name on the {@link Shuffleboard}.
  */
 public class HyperSolenoid extends Solenoid {
 	/**
@@ -18,12 +19,5 @@ public class HyperSolenoid extends Solenoid {
 		super(channel);
 
 		SendableRegistry.setName(this, name);
-	}
-
-	/**
-	 * Toggle the {@link HyperSolenoid}.
-	 */
-	public void toggle() {
-		set(!get());
 	}
 }

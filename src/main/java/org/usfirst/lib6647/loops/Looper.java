@@ -2,6 +2,7 @@ package org.usfirst.lib6647.loops;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
@@ -100,7 +101,7 @@ public class Looper implements ILooper {
 	 */
 	public synchronized void start() {
 		if (!running) {
-			System.out.println("Starting " + name + " loops...");
+			Logger.getGlobal().finest(() -> "Starting " + name + " loops...");
 
 			synchronized (lock) {
 				if (firstStart) {
@@ -124,7 +125,7 @@ public class Looper implements ILooper {
 	 */
 	public synchronized void stop() {
 		if (running) {
-			System.out.println("Stopping " + name + " loops...");
+			Logger.getGlobal().info(() -> "Stopping " + name + " loops...");
 			notifier.stop();
 
 			synchronized (lock) {

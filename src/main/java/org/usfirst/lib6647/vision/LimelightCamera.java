@@ -53,19 +53,18 @@ public class LimelightCamera {
 		this.name = name;
 		table = NetworkTableInstance.getDefault().getTable(name);
 
-		heartbeat = new Notifier(new Runnable() {
-			@Override
-			public void run() {
-				resetPipelineLatency();
+		heartbeat = new Notifier(() -> {
+			resetPipelineLatency();
 
-				try {
-					Thread.sleep(50);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-				isConnected = getData(Data.PIPELINE_LATENCY) != 0.0;
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				// TODO: Properly format this error.
+				e.printStackTrace();
+				Thread.currentThread().interrupt();
 			}
+
+			isConnected = getData(Data.PIPELINE_LATENCY) != 0.0;
 		});
 
 		heartbeat.setName(name + "Heartbeat");

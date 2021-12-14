@@ -17,12 +17,11 @@ java {
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
-    jcenter()
     mavenLocal()
     mavenCentral()
     gradlePluginPortal()
 
-    String frcYear = "2020"
+    String frcYear = "2021"
     File frcHome
     if (OperatingSystem.current().isWindows()) {
         String publicFolder = System.getenv("PUBLIC")
@@ -44,8 +43,8 @@ repositories {
 
     maven { url "https://frcmaven.wpi.edu/artifactory/release/" } // Used by WPILib.
     maven { url "https://devsite.ctr-electronics.com/maven/release/" } // Used by CTRE Phoenix libraries.
-	maven { url "http://www.revrobotics.com/content/sw/max/sdk/maven/" } // Used by REV Robotics libraries.
-    maven { url "https://repo1.maven.org/maven2/" } // Used by NavX libraries.
+    maven { url "http://www.revrobotics.com/content/sw/max/sdk/maven/" } // Used by REV Robotics libraries.
+    maven { url "https://repo1.maven.org/maven2/" } // Used by NavX library.
 }
 
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
@@ -60,17 +59,21 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
-    implementation group: "edu.wpi.first.wpilibNewCommands", name: "wpilibNewCommands-java", version: "2020.3.2"
-    implementation group: "edu.wpi.first.wpilibOldCommands", name: "wpilibOldCommands-java", version: "2020.3.2"
+    implementation group: "edu.wpi.first.wpilibNewCommands", name: "wpilibNewCommands-java", version: "2021.3.1"
+    implementation group: "edu.wpi.first.wpilibOldCommands", name: "wpilibOldCommands-java", version: "2021.3.1"
 
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-    implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.10.2"
+    implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.13.0"
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-    implementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.10.2"
+    implementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.13.0"
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
-    implementation group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.10.2"
+    implementation group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.13.0"
+
+    // https://mvnrepository.com/artifact/net.jafama/jafama
+    api group: "net.jafama", name: "jafama", version: "2.3.2"
 
     // Phoenix CTRE dependencies.
+	// TODO: Update to 5.19.4.1; check changes.
     implementation group: "com.ctre.phoenix", name: "api-java", version: "5.18.3"
     implementation group: "com.ctre.phoenix", name: "wpiapi-java", version: "5.18.3"
 
@@ -81,11 +84,12 @@ dependencies {
     testImplementation group: "com.ctre.phoenix", name: "core", version: "5.18.3"
 
 	// REV Robotics dependencies.
-	implementation group: "com.revrobotics.frc", name: "SparkMax-java", version: "1.5.2"
+    implementation group: "com.revrobotics.frc", name: "SparkMax-java", version: "1.5.2"
 
-	testImplementation group: "com.revrobotics.frc", name: "SparkMax-driver", version: "1.5.2"
+    testImplementation group: "com.revrobotics.frc", name: "SparkMax-driver", version: "1.5.2"
 
     // Kauai Labs dependencies.
+	// TODO: Update to 4.0.345; check changes.
     implementation group: "com.kauailabs.navx.frc", name: "navx-java", version: "3.1.413"
 
     // Use JUnit test framework

@@ -1,13 +1,13 @@
 # lib6647
 
-Team 6647's library for JSON-oriented object initialization, among other things.
+FRC Team #6647's library for JSON-oriented object initialization, among other things.
 <p align="left"><a href="https://github.com/pacoito123/lib6647" target="_blank"><img src="https://i.imgur.com/F4focyC.png"></a></p>
 
 ## Getting Started
 
 ### Usage
 
-Team 6647 encourages the usage of this library by any team that may find it useful, period. Giving us credit is optional, but greatly appreciated. Please feel free to request anything your team might need that could be added to this library.
+FRC Team #6647 encourages the usage of this library by any team that may find it useful, period. Giving us credit is optional, but greatly appreciated. Please feel free to request anything your team might need that could be added to this library.
 
 ### Documentation
 

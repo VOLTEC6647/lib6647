@@ -3,6 +3,7 @@ package org.usfirst.lib6647.control;
 import java.util.function.BiConsumer;
 
 import edu.wpi.first.wpiutil.math.MathUtil;
+import net.jafama.FastMath;
 
 /**
  * Helper class to implement "Cheesy Drive". "Cheesy Drive" simply means that
@@ -15,7 +16,6 @@ import edu.wpi.first.wpiutil.math.MathUtil;
  * https://github.com/Team254/FRC-2019-Public/blob/master/src/main/java/com/team254/lib/util/CheesyDriveHelper.java.
  */
 public class CheesyDrive {
-
 	// TODO: Comment properly, and fix output.
 
 	// These factor determine how fast the wheel traverses the "non linear" sine
@@ -48,18 +48,18 @@ public class CheesyDrive {
 		if (highGear) {
 			wheelNonLinearity = highWheelNonLinearity;
 
-			var denominator = Math.sin(Math.PI / 2.0 * wheelNonLinearity);
+			var denominator = FastMath.sin(Math.PI / 2.0 * wheelNonLinearity);
 
-			forward = Math.sin(Math.PI / 2.0 * wheelNonLinearity * forward) / denominator;
-			forward = Math.sin(Math.PI / 2.0 * wheelNonLinearity * forward) / denominator;
+			forward = FastMath.sin(Math.PI / 2.0 * wheelNonLinearity * forward) / denominator;
+			forward = FastMath.sin(Math.PI / 2.0 * wheelNonLinearity * forward) / denominator;
 		} else {
 			wheelNonLinearity = lowWheelNonLinearity;
 
-			var denominator = Math.sin(Math.PI / 2.0 * wheelNonLinearity);
+			var denominator = FastMath.sin(Math.PI / 2.0 * wheelNonLinearity);
 
-			forward = Math.sin(Math.PI / 2.0 * wheelNonLinearity * forward) / denominator;
-			forward = Math.sin(Math.PI / 2.0 * wheelNonLinearity * forward) / denominator;
-			forward = Math.sin(Math.PI / 2.0 * wheelNonLinearity * forward) / denominator;
+			forward = FastMath.sin(Math.PI / 2.0 * wheelNonLinearity * forward) / denominator;
+			forward = FastMath.sin(Math.PI / 2.0 * wheelNonLinearity * forward) / denominator;
+			forward = FastMath.sin(Math.PI / 2.0 * wheelNonLinearity * forward) / denominator;
 		}
 
 		double leftPwm, rightPwm, overpower;

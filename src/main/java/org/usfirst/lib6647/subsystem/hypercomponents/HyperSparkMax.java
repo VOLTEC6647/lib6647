@@ -9,6 +9,7 @@ import com.revrobotics.EncoderType;
 
 import edu.wpi.first.hal.SimBoolean;
 import edu.wpi.first.hal.SimDevice;
+import edu.wpi.first.hal.SimDevice.Direction;
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Sendable;
@@ -53,8 +54,8 @@ public class HyperSparkMax extends CANSparkMax implements Sendable {
 
 		simDevice = SimDevice.create(name);
 		if (simDevice != null) {
-			simSpeed = simDevice.createDouble("Motor Output", false, 0.0);
-			simInvert = simDevice.createBoolean("Inverted?", false, false);
+			simSpeed = simDevice.createDouble("Motor Output", Direction.kOutput, 0.0);
+			simInvert = simDevice.createBoolean("Inverted?", Direction.kOutput, false);
 		}
 	}
 

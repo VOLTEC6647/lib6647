@@ -1,6 +1,8 @@
 package org.usfirst.lib6647.oi;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -12,6 +14,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import net.jafama.FastMath;
 
 /**
  * Wrapper for the {@link GenericHID} class, for easy {@link Button}
@@ -75,11 +78,11 @@ public class JController extends GenericHID {
 			profile = JSONReader.getInstance().getNode("Profiles", getName());
 		} catch (JSONInitException e) {
 			String error = String.format(
-					"[!] COULD NOT INITIALIZE CONTROLLER PROFILE FOR CONTROLLER '%1$s', USER-FRIENDLY NAMES WON'T WORK!\n\t%2$s",
+					"[!] COULD NOT INITIALIZE CONTROLLER PROFILE FOR CONTROLLER '%1$s', USER-FRIENDLY NAMES WON'T WORK!%n\t%2$s",
 					getName().toUpperCase(), e.getLocalizedMessage());
 
-			System.out.println(error);
-			DriverStation.reportWarning(error, false);
+			Logger.getGlobal().severe(() -> error);
+			DriverStation.reportError(error, false);
 		}
 
 		// Button initialization. Starting at 1.
@@ -145,13 +148,13 @@ public class JController extends GenericHID {
 	 * @throws NullPointerException When no provided 'friendly' {@link Button} names
 	 *                              are found in the {@link #profile}.
 	 */
-	public Button get(String... buttonNames) throws NullPointerException {
+	public Button get(String... buttonNames) {
 		for (String buttonName : buttonNames)
 			if (profile.hasNonNull(buttonName))
 				return buttons.get(profile.get(buttonName).asText());
 
 		throw new NullPointerException("[!] JSON 'FRIENDLY' NAME NOT FOUND FOR JCONTROLLER: " + getName()
-				+ "!\nPOSSIBLE 'FRIENDLY' NAMES PROVIDED WERE:\n\t" + buttonNames.toString());
+				+ "!\nPOSSIBLE 'FRIENDLY' NAMES PROVIDED WERE:\n\t" + Arrays.toString(buttonNames));
 	}
 
 	/**
@@ -381,7 +384,7 @@ public class JController extends GenericHID {
 	 * @return The direction of the vector in radians
 	 */
 	public double getAngleRadians(Hand hand, boolean useTolerance) {
-		return Math.atan2(getX(hand, useTolerance), -getY(hand, useTolerance));
+		return FastMath.atan2(getX(hand, useTolerance), -getY(hand, useTolerance));
 	}
 
 	/**
@@ -404,6 +407,6 @@ public class JController extends GenericHID {
 	 * @return The direction of the vector in degrees
 	 */
 	public double getAngleDegrees(Hand hand, boolean useTolerance) {
-		return Math.toDegrees(getAngleRadians(hand, useTolerance));
+		return FastMath.toDegrees(getAngleRadians(hand, useTolerance));
 	}
 }

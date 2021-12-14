@@ -1,8 +1,8 @@
 package org.usfirst.lib6647.util;
 
-import edu.wpi.first.hal.sim.DriverStationSim;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Sendable;
+import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 
@@ -14,30 +14,29 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
  * https://github.com/wpilibsuite/frc-characterization/blob/master/frc_characterization/robot/project/src/main/java/dc/SimEnabler.java.
  */
 public class SimEnabler implements Sendable {
-	DriverStationSim sim = new DriverStationSim();
-
 	public SimEnabler() {
 		SendableRegistry.setName(this, "SimEnabler");
-		sim.setAutonomous(true);
+		DriverStationSim.setAutonomous(true);
 	}
 
 	public void setEnabled(boolean enabled) {
-		sim.setEnabled(enabled);
-		sim.notifyNewData();
+		DriverStationSim.setEnabled(enabled);
+		DriverStationSim.notifyNewData();
 
 		DriverStation.getInstance().isNewControlData();
 		while (DriverStation.getInstance().isEnabled() != enabled) {
 			try {
 				Thread.sleep(1);
 			} catch (InterruptedException e) {
+				// TODO: Properly format this error.
 				e.printStackTrace();
+				Thread.currentThread().interrupt();
 			}
 		}
 	}
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
-		builder.addBooleanProperty("Enabled", () -> DriverStation.getInstance().isEnabled(),
-				enabled -> setEnabled(enabled));
+		builder.addBooleanProperty("Enabled", DriverStation.getInstance()::isEnabled, this::setEnabled);
 	}
 }

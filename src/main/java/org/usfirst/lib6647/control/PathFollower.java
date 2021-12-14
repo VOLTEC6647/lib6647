@@ -7,6 +7,7 @@ import org.usfirst.lib6647.util.ControlUtil;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import net.jafama.FastMath;
 
 public class PathFollower {
 	// TODO: Comment this.
@@ -59,7 +60,7 @@ public class PathFollower {
 				// ray didn't totally miss sphere,
 				// so there is a solution to
 				// the equation.
-				discriminant = Math.sqrt(discriminant);
+				discriminant = FastMath.sqrt(discriminant);
 				// either solution may be on or off the ray so need to test both
 				// t1 is always the smaller value, because BOTH discriminant and
 				// a are nonnegative.
@@ -100,19 +101,19 @@ public class PathFollower {
 
 	public double curvatureArc(Translation2d lookAheadPoint, Pose2d currentPose) {
 		var L = currentPose.getTranslation().getDistance(lookAheadPoint);
-		var a = Math.tan(currentPose.getRotation().getDegrees() * (Math.PI / 180)) * -1.0;
+		var a = FastMath.tan(currentPose.getRotation().getDegrees() * (Math.PI / 180)) * -1.0;
 
 		var b = 1.0;
-		var c = (Math.tan(currentPose.getRotation().getDegrees() * (Math.PI / 180))
+		var c = (FastMath.tan(currentPose.getRotation().getDegrees() * (Math.PI / 180))
 				* currentPose.getTranslation().getX()) - currentPose.getTranslation().getY();
 
 		var x = Math.abs((a * lookAheadPoint.getX()) + (b * lookAheadPoint.getY()) + c)
-				/ (Math.sqrt((a * a) + (b * b)));
+				/ (FastMath.sqrt((a * a) + (b * b)));
 
 		var sign = 1.0;
-		var signednum = (Math.sin(currentPose.getRotation().getDegrees() * (Math.PI / 180))
+		var signednum = (FastMath.sin(currentPose.getRotation().getDegrees() * (Math.PI / 180))
 				* (lookAheadPoint.getX() - currentPose.getTranslation().getX()))
-				- (Math.cos(currentPose.getRotation().getDegrees() * (Math.PI / 180))
+				- (FastMath.cos(currentPose.getRotation().getDegrees() * (Math.PI / 180))
 						* (lookAheadPoint.getY() - currentPose.getTranslation().getY()));
 		if (signednum < 0.0)
 			sign = -1.0;
