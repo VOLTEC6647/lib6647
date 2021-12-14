@@ -101,7 +101,7 @@ public class Looper implements ILooper {
 	 */
 	public synchronized void start() {
 		if (!running) {
-			Logger.getGlobal().finest(() -> "Starting " + name + " loops...");
+			Logger.getGlobal().info(() -> "Starting " + name + " loops...");
 
 			synchronized (lock) {
 				if (firstStart) {

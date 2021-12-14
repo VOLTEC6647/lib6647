@@ -111,7 +111,7 @@ public abstract class IterativeRobotBase extends RobotBase {
 	 * ready, causing the robot to be bypassed in a match.
 	 */
 	public void robotInit() {
-		Logger.getGlobal().info("Default robotInit() method... Override me!");
+		Logger.getGlobal().info(() -> "Default robotInit() method... Override me!");
 	}
 
 	/**
@@ -124,7 +124,7 @@ public abstract class IterativeRobotBase extends RobotBase {
 	 * in simulation.
 	 */
 	public void simulationInit() {
-		Logger.getGlobal().info("Default simulationInit() method... Override me!");
+		Logger.getGlobal().info(() -> "Default simulationInit() method... Override me!");
 	}
 
 	/**
@@ -135,7 +135,7 @@ public abstract class IterativeRobotBase extends RobotBase {
 	 * called each time the robot enters disabled mode.
 	 */
 	public void disabledInit() {
-		Logger.getGlobal().info("Default disabledInit() method... Override me!");
+		Logger.getGlobal().info(() -> "Default disabledInit() method... Override me!");
 	}
 
 	/**
@@ -146,7 +146,7 @@ public abstract class IterativeRobotBase extends RobotBase {
 	 * called each time the robot enters autonomous mode.
 	 */
 	public void autonomousInit() {
-		Logger.getGlobal().info("Default autonomousInit() method... Override me!");
+		Logger.getGlobal().info(() -> "Default autonomousInit() method... Override me!");
 	}
 
 	/**
@@ -157,7 +157,7 @@ public abstract class IterativeRobotBase extends RobotBase {
 	 * called each time the robot enters teleop mode.
 	 */
 	public void teleopInit() {
-		Logger.getGlobal().info("Default teleopInit() method... Override me!");
+		Logger.getGlobal().info(() -> "Default teleopInit() method... Override me!");
 	}
 
 	/**
@@ -169,7 +169,7 @@ public abstract class IterativeRobotBase extends RobotBase {
 	 */
 	@SuppressWarnings("PMD.JUnit4TestShouldUseTestAnnotation")
 	public void testInit() {
-		Logger.getGlobal().info("Default testInit() method... Override me!");
+		Logger.getGlobal().info(() -> "Default testInit() method... Override me!");
 	}
 
 	/* ----------- Overridable periodic code ----------------- */
@@ -181,7 +181,7 @@ public abstract class IterativeRobotBase extends RobotBase {
 	 */
 	public void robotPeriodic() {
 		if (rpFirstRun) {
-			Logger.getGlobal().info("Default robotPeriodic() method... Override me!");
+			Logger.getGlobal().info(() -> "Default robotPeriodic() method... Override me!");
 			rpFirstRun = false;
 		}
 	}
@@ -196,7 +196,7 @@ public abstract class IterativeRobotBase extends RobotBase {
 	 */
 	public void simulationPeriodic() {
 		if (spFirstRun) {
-			Logger.getGlobal().info("Default simulationPeriodic() method... Override me!");
+			Logger.getGlobal().info(() -> "Default simulationPeriodic() method... Override me!");
 			spFirstRun = false;
 		}
 	}
@@ -208,7 +208,7 @@ public abstract class IterativeRobotBase extends RobotBase {
 	 */
 	public void disabledPeriodic() {
 		if (dpFirstRun) {
-			Logger.getGlobal().info("Default disabledPeriodic() method... Override me!");
+			Logger.getGlobal().info(() -> "Default disabledPeriodic() method... Override me!");
 			dpFirstRun = false;
 		}
 	}
@@ -220,7 +220,7 @@ public abstract class IterativeRobotBase extends RobotBase {
 	 */
 	public void autonomousPeriodic() {
 		if (apFirstRun) {
-			Logger.getGlobal().info("Default autonomousPeriodic() method... Override me!");
+			Logger.getGlobal().info(() -> "Default autonomousPeriodic() method... Override me!");
 			apFirstRun = false;
 		}
 	}
@@ -232,7 +232,7 @@ public abstract class IterativeRobotBase extends RobotBase {
 	 */
 	public void teleopPeriodic() {
 		if (tpFirstRun) {
-			Logger.getGlobal().info("Default teleopPeriodic() method... Override me!");
+			Logger.getGlobal().info(() -> "Default teleopPeriodic() method... Override me!");
 			tpFirstRun = false;
 		}
 	}
@@ -245,7 +245,7 @@ public abstract class IterativeRobotBase extends RobotBase {
 	@SuppressWarnings("PMD.JUnit4TestShouldUseTestAnnotation")
 	public void testPeriodic() {
 		if (tmpFirstRun) {
-			Logger.getGlobal().info("Default testPeriodic() method... Override me!");
+			Logger.getGlobal().info(() -> "Default testPeriodic() method... Override me!");
 			tmpFirstRun = false;
 		}
 	}
